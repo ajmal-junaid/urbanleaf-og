@@ -1,0 +1,30 @@
+<div class="mt-5 container">
+  <div class="row">
+    <!-- Form controls -->
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <h5 class="card-header">Add Category</h5>
+        <div class="card-body">
+          <form action="/admin/add-category/" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label class="form-label">Category</label>
+              <input type="text" class="form-control" name="category" required/>
+            </div>
+            <div>
+              <label class="form-label">Description
+              </label>
+              <textarea class="form-control" name="description" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label mt-4">Category Image</label>
+              <input class="form-control" type="file" name="Image" required/>
+            </div>
+
+            <div class="mt-5 div"><button type="submit" class="btn btn-outline-success">Submit</button></div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

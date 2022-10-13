@@ -1,0 +1,190 @@
+<div class="mt-5 container">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <h5 class="card-header">Edit product</h5>
+                <div class="card-body">
+                    <form action="/admin/edit-product?id={{product._id}}" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+
+                            <label class="form-label">Product
+                                ID</label>
+                            <input type="text" class="form-control" name="productID" value="{{product.productID}}" />
+                        </div>
+                        <div class="mb-3">
+
+                            <label class="form-label">Stock Quantity</label>
+                            <input type="text" class="form-control" name="stock" value="{{product.stock}}" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Product
+                                Name</label>
+                            <input type="text" class="form-control" name="productName"
+                                value="{{product.productName}}" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Select Category </label>
+                            <select class="form-select" name="category" aria-label="Default select example">
+                                <option selected>{{product.category}}</option>
+                                {{#each category}}
+                                <option value={{this.category}}>{{this.category}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label">Market Price</label>
+                                <input type="text" class="form-control" name="marketPrice"
+                                    value="{{product.marketPrice}}" />
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Our Price</label>
+                                <input type="text" class="form-control" name="OurPrice" value="{{product.OurPrice}}" />
+                            </div>
+                        </div>
+                        <div class="mb-3 mt-4">
+                            <label class="form-label">Product Image</label>
+                            <img src="/product-images/{{product._id}}.jpg" style="width: 200px;height: auto"
+                                id="imgView">
+                            <input class="form-control" type="file" name="Image" onchange="viewImage(event)" multiple />
+                        </div>
+
+
+
+                        <div class="mt-5 div">
+                            <button onclick="return confirm('Are you sure to Changes in {{product.productName}} ?')"
+                                type="submit" class="btn btn-outline-success">Submit</button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-6">
+            <!-- Hoverable Table rows -->
+            <div class="card mb-4">
+                <span>
+                    <h5 class="card-header">Show options</h5>
+                </span>
+
+                <div class="table-responsive text-nowrap">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Type Name</th>
+                                <th>Status</th>
+                                <th>Show/Hide</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-border-bottom-0">
+
+                            <tr>
+                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                    <strong>Featured</strong>
+                                </td>
+                                <td>{{product.featured}}</td>
+
+
+                                <td>
+                                    {{!-- href="/admin/edit-product/{{this._id}}" --}}
+
+                                    {{#if product.featured}}
+                                    <a href="/admin/hidefeature/{{this._id}}"
+                                        class="badge bg-label-warning me-1">Hide</a>
+                                    {{else}}
+                                    <a href="/admin/showfeature?id={{this._id}}"
+                                        class="badge bg-label-success me-1">Show</a>
+                                    {{/if}}
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                    <strong>Sale</strong>
+                                </td>
+                                <td>{{product.sale}}</td>
+
+
+                                <td>
+                                    {{!-- href="/admin/edit-product/{{this._id}}" --}}
+
+                                    {{#if product.sale}}
+                                    <a href="/admin/hide?id={{this._id}}" class="badge bg-label-warning me-1">Hide</a>
+                                    {{else}}
+                                    <a href="/admin/show?id={{this._id}}" class="badge bg-label-success me-1">Show</a>
+                                    {{/if}}
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                    <strong>Latest</strong>
+                                </td>
+                                <td>{{product.latest}}</td>
+
+
+                                <td>
+                                    {{!-- href="/admin/edit-product/{{this._id}}" --}}
+
+                                    {{#if product.latest}}
+                                    <a href="/admin/hide?id={{this._id}}" class="badge bg-label-warning me-1">Hide</a>
+                                    {{else}}
+                                    <a href="/admin/show?id={{this._id}}" class="badge bg-label-success me-1">Show</a>
+                                    {{/if}}
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                    <strong>Top</strong>
+                                </td>
+                                <td>{{product.top}}</td>
+
+
+                                <td>
+                                    {{!-- href="/admin/edit-product/{{this._id}}" --}}
+
+                                    {{#if product.top}}
+                                    <a href="/admin/hide?id={{this._id}}" class="badge bg-label-warning me-1">Hide</a>
+                                    {{else}}
+                                    <a href="/admin/show?id={{this._id}}" class="badge bg-label-success me-1">Show</a>
+                                    {{/if}}
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                    <strong>Review</strong>
+                                </td>
+                                <td>{{product.top}}</td>
+
+
+                                <td>
+                                    {{!-- href="/admin/edit-product/{{this._id}}" --}}
+
+                                    {{#if top.sale}}
+                                    <a href="/admin/hide?id={{this._id}}" class="badge bg-label-warning me-1">Hide</a>
+                                    {{else}}
+                                    <a href="/admin/show?id={{this._id}}" class="badge bg-label-success me-1">Show</a>
+                                    {{/if}}
+
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function viewImage(event) {
+        document.getElementById('imgView').src = URL.createObjectURL(event.target.files[0])
+    }
+</script>

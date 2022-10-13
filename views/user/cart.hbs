@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Handlebars Pagination</title>
+  <link href="main.css" rel="stylesheet" />
+  <script src="jquery.min.js"></script>
+  <script src="handlebars.min.js"></script>
+  <script src="functions.js"></script>
+</head>
+
+<body class="container">
+
+  <div id="posts"></div>
+
+  <script id="pagination-template" type="text/x-handlebars-template">
+        <ul class="pagination">
+            <li class="pagination-prev"><a href="#">&laquo;</a></li>
+
+            
+            <li class="pagination-page" data-page="545454"><a href="#">jhoihujhjklh</a></li>
+            
+
+            <li class="pagination-next"><a href="#">&raquo;</a></li>
+        </ul>
+    </script>
+
+
+  <script id="post-template" type="text/x-handlebars-template">
+        <div class="score-structural score-column2-wideright search-listings post">
+            <div class="score-right">
+                <h4>{{record_count}}</h4>
+                <h5 style="z-index: 1;">
+                    <a href="#"> {{ title }} </a>
+                </h5>
+                <p style="z-index: 1;"> {{ desc }} </p>
+            </div>
+        </div>
+        <hr>
+    </script>
+
+</body>
+
+</html>
+
+<script>
+  $(function () {
+    var opts = {
+      pageMax: 2,
+      postsDiv: $('#posts'),
+      dataUrl: "searchResult.json"
+    }
+
+    function loadPosts(posts) {
+      opts.postsDiv.empty();
+      posts.each(function () {
+        var source = $("#post-template").html();
+        var template = Handlebars.compile(source);
+        var context = {
+          title: this.title,
+          desc: this.body,
+        };
+        var html = template(context);
+        opts.postsDiv.append(html);
+      });
+      hidePrev();
+    }
+
+    function hidePrev() { $('.pagination .pagination-prev').hide(); }
+    function showPrev() { $('.pagination .pagination-prev').show(); }
+
+    function hideNext() { $('.pagination .pagination-next').hide(); }
+    function showNext() { $('.pagination .pagination-next').show(); }
+
+    function paginate(page, pageCount) {
+      var source = $("#pagination-template").html();
+      var template = Handlebars.compile(source);
+      var context = { pages: range(page, pageCount) };
+      console.log(range(page, pageCount));
+      var html = template(context);
+      var paginationTag = opts.postsDiv.parent().find(".pagination");
+      paginationTag.length > 0 ? paginationTag.replaceWith(html) : opts.postsDiv.before(html);
+
+      function changePage(page) {
+        pageItems.removeClass('active');
+        pageItems.filter('[data-page="' + page + '"]').addClass('active');
+        loadPosts(data.slice(page * opts.pageMax - opts.pageMax, page * opts.pageMax));
+        paginate(page, pageCount);
+        if (gotoPageNumber <= 1) {
+          hidePrev();
+        }
+      }
+
+      var pageItems = $('.pagination>li.pagination-page');
+      var pageItemsLastPage = $('.pagination li').length - 2;
+      pageItems.removeClass('active');
+      pageItems.filter('[data-page="' + page + '"]').addClass('active');
+
+      pageItems.on('click', function () {
+        getDataPageNo = this.getAttribute('data-page')
+        console.log(getDataPageNo)
+        changePage(getDataPageNo);
+        if (getDataPageNo == 1) {
+          hidePrev()
+        }
+        else if (getDataPageNo == pageItemsLastPage) {
+          hideNext();
+        }
+        else {
+          showPrev();
+          showNext();
+        }
+      });
+
+      $('.pagination>li.pagination-prev').on('click', function () {
+        gotoPageNumber = parseInt($('.pagination>li.active').attr('data-page')) - 1;
+        changePage(gotoPageNumber);
+      });
+
+      $('.pagination>li.pagination-next').on('click', function () {
+        gotoPageNumber = parseInt($('.pagination>li.active').attr('data-page')) + 1;
+        if (gotoPageNumber > pageCount) {
+          gotoPageNumber = 1;
+          showPrev();
+        }
+        changePage(gotoPageNumber);
+      });
+    }
+
+    $.ajax({
+      dataType: 'json',
+      url: opts.dataUrl,
+      success: function (response_json) {
+        data = $(response_json.records.page);
+        dataCount = data.length;
+
+        pageCount = Math.ceil(dataCount / opts.pageMax);
+
+        if (dataCount > opts.pageMax) {
+          paginate(1, pageCount);
+          posts = data.slice(0, opts.pageMax);
+        } else {
+          posts = data;
+        }
+        loadPosts(posts);
+      }
+    });
+
+  });
+
+</script>

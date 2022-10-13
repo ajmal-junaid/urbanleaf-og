@@ -1,0 +1,50 @@
+<div class="container">
+  <!-- Hoverable Table rows -->
+  <div class="mt-5 card">
+    <h5 class="card-header">User List</h5>
+    <div class="table-responsive text-nowrap">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Date of Joining</th>
+            <th>Name</th>
+            <th>E-mail</th>
+            <th>Mobile</th>
+            <th>Block/Unblock</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody class="table-border-bottom-0">
+          {{#each userData}}
+          <tr>
+            <td></td>
+            <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+              <strong>{{this.date}}</strong>
+            </td>
+            <td>{{this.name}}</td>
+            <td>
+              {{this.email}}
+            </td>
+            <td>{{this.mobile}}</td>
+            <td>
+              {{#if this.status}}
+              <a href="/admin/block?id={{this._id}}" class="badge bg-label-warning me-1">Block</a>
+              {{else}}
+              <a href="/admin/unblock?id={{this._id}}" class="badge bg-label-success me-1">Unblock</a>
+              {{/if}}
+            </td>
+            <td>
+              <a onclick="return confirm('Delete confirmation of {{this.name}} ?')" class="dropdown-item"
+                href="/admin/delete-user/{{this._id}}"><i class="bx bx-trash me-1"></i>
+                Delete</a>
+            </td>
+          </tr>
+          {{/each}}
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!--/ Hoverable Table rows -->
+</div>

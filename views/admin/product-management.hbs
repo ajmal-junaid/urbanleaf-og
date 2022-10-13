@@ -1,0 +1,53 @@
+<div class="container">
+  <!-- Hoverable Table rows -->
+  <div class="mt-5 card">
+    <span>
+      <h5 class="card-header">Product Management</h5>
+    </span>
+
+    <a href="/admin/add-product" type="button" class="text-white btn btn-success mt-1 ms-auto">Add Product</a>
+
+    <div class="table-responsive text-nowrap">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Product ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Selling Price</th>
+            <th>Market Price</th>
+            <th>Stocks</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody class="table-border-bottom-0">
+          {{#each products}}
+          <tr>
+            <td></td>
+            <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+              <strong>{{this.productID}}</strong>
+            </td>
+            <td>{{this.productName}}</td>
+            <td>{{this.category}}</td>
+            <td>{{this.OurPrice}}</td>
+            <td>{{this.marketPrice}}</td>
+            <td>{{this.stock}}</td>
+
+            <td>
+              {{!-- href="/admin/edit-product/{{this._id}}" --}}
+              <a class="dropdown-item" href="/admin/edit-product?id={{this._id}}"><i class="bx bx-edit-alt me-1"></i>
+                Edit</a>
+              <a onclick="return confirm('Delete confirmation of {{this.productName}} ?')" class="dropdown-item"
+                href="/admin/delete-product/{{this._id}}"><i class="bx bx-trash me-1"></i>
+                Delete</a>
+
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!--/ Hoverable Table rows -->
+</div>

@@ -1,0 +1,65 @@
+<div class="mt-5 container">
+  <div class="row">
+    <!-- Form controls -->
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <h5 class="card-header">Add product</h5>
+        <div class="card-body">
+          <form action="/admin/add-product" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+
+              <label class="form-label">Product
+                Code</label>
+              <input type="text" class="form-control" name="productID" required/>
+            </div>
+            <div class="mb-3">
+
+              <label class="form-label">Stock Quantity</label>
+              <input type="text" class="form-control" name="stock" required/>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Product
+                Name</label>
+              <input type="text" class="form-control" name="productName" required/>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Choose Category</label>
+              <select class="form-select" name="category" aria-label="Default select example"required >
+                {{!-- <option selected>Open this select menu</option> --}}
+                {{#each category}}
+                <option value={{this._id}}>{{this.category}}</option>
+                {{/each}}
+              </select>
+            </div>
+            <div class="row">
+              <div class="col">
+                <label class="form-label">Market Price</label>
+                <input type="text" class="form-control" name="marketPrice" required/>
+              </div>
+              <div class="col">
+                <label class="form-label">Our Price</label>
+                <input type="text" class="form-control" name="OurPrice" required/>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label mt-4">Product Image</label>
+              <input class="form-control" type="file" name="Image" required multiple />
+            </div>
+
+
+
+            <div class="mt-5 div">
+              <button type="submit" class="btn btn-outline-success">Submit</button>
+            </div>
+
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
