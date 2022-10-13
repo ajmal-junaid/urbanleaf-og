@@ -91,10 +91,8 @@ router.post('/verifyotp', (req, res) => {
         let otpsend = req.session.otpSended
         req.session.userLoginErr = "Invalid otp"
         res.render('user/login', { layout: 'admin', "loginErr": "Entered otp is invalid", otpsend })
-
       }
     })
-
 })
 
 router.get('/loginmail', (req, res) => {

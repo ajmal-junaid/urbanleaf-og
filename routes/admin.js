@@ -71,7 +71,9 @@ router.get('/product-management', verifyAdmin, (req, res, next) => {
 
 router.get('/category-management', verifyAdmin, (req, res, next) => {
   productHelper.getAllCategories().then((category) => {
-    res.render('admin/category-management', { admin: true, layout: 'admin', category });
+    let err=req.session.catErr
+    res.render('admin/category-management', { admin: true, layout: 'admin', category,err });
+    req.session.catErr=null
   })
 
 });
@@ -89,6 +91,7 @@ router.post('/add-product', (req, res) => {
     picId = id.insertedId
     image.mv('./public/product-images/' + picId + '.jpg', (err, done) => {
       if (!err) {
+        
         res.redirect('/admin/add-product')
       } else {
         console.log("error in image upload")
@@ -106,22 +109,31 @@ router.get('/logout', (req, res) => {
 })
 
 router.get('/add-category', verifyAdmin, (req, res, next) => {
-  res.render('admin/add-category', { admin: true, layout: 'admin' });
+  let msg=req.session.msg
+  res.render('admin/add-category', { admin: true, layout: 'admin' ,msg});
+  req.session.msg=null
 });
 
 router.post('/add-category', (req, res) => {
   if (req.body.category) {
-    productHelper.addCatogory(req.body, (data) => {
-      let image = req.files.Image
+    productHelper.addCatogory(req.body, (data,err) => {
+      if(err){
+        req.session.msg="Category Already E xists"
+      }else{
+        let image = req.files.Image
       picId = data.insertedId
       image.mv('./public/category-images/' + picId + '.jpg', (err, done) => {
         if (!err) {
+          req.session.msg="Category Added Succesfully"
           res.redirect('/admin/add-category')
         } else {
           res.send("image error")
           console.log("error in image upload");
         }
       })
+
+      }
+      
     })
   } else {
 
@@ -153,7 +165,14 @@ router.get('/delete-category/:id', verifyAdmin, (req, res) => {
   let catId = req.params.id
 
   adminhelper.deleteCategory(catId).then((response) => {
-    res.redirect('/admin/category-management')
+    if(response.status){
+      req.session.catErr="Category deleted sucessfully"
+      res.redirect('/admin/category-management')
+    }else{
+      req.session.catErr="Delete the products in this category to continue"
+      res.redirect('/admin/category-management')
+    }
+    req.session.catErr=null
 
   })
 

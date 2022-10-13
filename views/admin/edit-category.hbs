@@ -8,24 +8,41 @@
           <form action="/admin/edit-category?id={{category._id}}" method="post" enctype="multipart/form-data">
             <div class="mb-3">
               <label class="form-label">Category</label>
-              <input type="text" class="form-control" name="category" value="{{category.category}}"/>
+              <input type="text" class="form-control" name="category" value="{{category.category}}" />
             </div>
             <div>
               <label class="form-label">Description
               </label>
-              <textarea class="form-control" name="description" rows="3" value="{{category.description}}">{{category.description}}</textarea>
+              <textarea class="form-control" name="description" rows="3"
+                value="{{category.description}}">{{category.description}}</textarea>
             </div>
             <div class="mb-3">
               <label class="form-label mt-4">Category Image</label>
-              <img src="/category-images/{{category._id}}.jpg" style="width: 100px;height: auto">
-              <input class="form-control" type="file" name="Image" value="{{category.Image}}"/>
+
+              <input class="form-control" type="file" name="Image" onchange="viewImage(event)"
+                value="{{category.Image}}" />
             </div>
 
-            <div class="mt-5 div"><button onclick="return confirm('Are you sure to Changes in {{category.category}} ?')"type="submit" class="btn btn-outline-success">Submit</button></div>
+            <div class="mt-5 div"><button onclick="return confirm('Are you sure to Changes in {{category.category}} ?')"
+                type="submit" class="btn btn-outline-success">Submit</button></div>
           </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <h4 class="card-header text-center">Edit Category</h4>
+        <div class="card-body text-center">
+          <img src="/category-images/{{category._id}}.jpg" id="imgChange" style="width: 370px;height: auto">
         </div>
       </div>
     </div>
 
   </div>
 </div>
+<script>
+  function viewImage(event) {
+    document.getElementById('imgChange').src = URL.createObjectURL(event.target.files[0])
+  }
+</script>

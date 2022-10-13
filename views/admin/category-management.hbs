@@ -5,7 +5,9 @@
       <h5 class="card-header">Category Management</h5>
     </span>
     <a href="/admin/add-category" type="button" class="text-white btn btn-success mt-1 ms-auto">Add Category</a>
-
+    {{#if err}}
+<h4 class="text-nowrap text-danger" id="successMessage">{{err}}</h4>
+{{/if}}
     <div class="table-responsive text-nowrap">
       <table class="table table-hover">
         <thead>
@@ -36,7 +38,7 @@
                     Edit</a>
                  
                              <a onclick="return confirm('Delete confirmation of {{this.category}} ?')" class="dropdown-item"
-                href="/admin/delete-category/{{this._id}}"><i class="bx bx-trash me-1"></i>
+                href="/admin/delete-category/{{this.category}}"><i class="bx bx-trash me-1"></i>
                 Delete</a>
             </td>
           </tr>
@@ -48,3 +50,5 @@
   </div>
   <!--/ Hoverable Table rows -->
 </div>
+<script
+  type="text/javascript">window.setTimeout("document.getElementById('successMessage').style.display='none';", 3000); </script>

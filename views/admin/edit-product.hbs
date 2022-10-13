@@ -46,8 +46,8 @@
                         </div>
                         <div class="mb-3 mt-4">
                             <label class="form-label">Product Image</label>
-                            <img src="/product-images/{{product._id}}.jpg" style="width: 200px;height: auto"
-                                id="imgView">
+                            {{!-- <img src="/product-images/{{product._id}}.jpg" style="width: 200px;height: auto"
+                                id="imgView"> --}}
                             <input class="form-control" type="file" name="Image" onchange="viewImage(event)" multiple />
                         </div>
 
@@ -68,115 +68,11 @@
             <!-- Hoverable Table rows -->
             <div class="card mb-4">
                 <span>
-                    <h5 class="card-header">Show options</h5>
+                    <h4 class="card-header text-center">Product Image</h4>
                 </span>
 
-                <div class="table-responsive text-nowrap">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Type Name</th>
-                                <th>Status</th>
-                                <th>Show/Hide</th>
-                            </tr>
-                        </thead>
-                        <tbody class="table-border-bottom-0">
-
-                            <tr>
-                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
-                                    <strong>Featured</strong>
-                                </td>
-                                <td>{{product.featured}}</td>
-
-
-                                <td>
-                                    {{!-- href="/admin/edit-product/{{this._id}}" --}}
-
-                                    {{#if product.featured}}
-                                    <a href="/admin/hidefeature/{{this._id}}"
-                                        class="badge bg-label-warning me-1">Hide</a>
-                                    {{else}}
-                                    <a href="/admin/showfeature?id={{this._id}}"
-                                        class="badge bg-label-success me-1">Show</a>
-                                    {{/if}}
-
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
-                                    <strong>Sale</strong>
-                                </td>
-                                <td>{{product.sale}}</td>
-
-
-                                <td>
-                                    {{!-- href="/admin/edit-product/{{this._id}}" --}}
-
-                                    {{#if product.sale}}
-                                    <a href="/admin/hide?id={{this._id}}" class="badge bg-label-warning me-1">Hide</a>
-                                    {{else}}
-                                    <a href="/admin/show?id={{this._id}}" class="badge bg-label-success me-1">Show</a>
-                                    {{/if}}
-
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
-                                    <strong>Latest</strong>
-                                </td>
-                                <td>{{product.latest}}</td>
-
-
-                                <td>
-                                    {{!-- href="/admin/edit-product/{{this._id}}" --}}
-
-                                    {{#if product.latest}}
-                                    <a href="/admin/hide?id={{this._id}}" class="badge bg-label-warning me-1">Hide</a>
-                                    {{else}}
-                                    <a href="/admin/show?id={{this._id}}" class="badge bg-label-success me-1">Show</a>
-                                    {{/if}}
-
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
-                                    <strong>Top</strong>
-                                </td>
-                                <td>{{product.top}}</td>
-
-
-                                <td>
-                                    {{!-- href="/admin/edit-product/{{this._id}}" --}}
-
-                                    {{#if product.top}}
-                                    <a href="/admin/hide?id={{this._id}}" class="badge bg-label-warning me-1">Hide</a>
-                                    {{else}}
-                                    <a href="/admin/show?id={{this._id}}" class="badge bg-label-success me-1">Show</a>
-                                    {{/if}}
-
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
-                                    <strong>Review</strong>
-                                </td>
-                                <td>{{product.top}}</td>
-
-
-                                <td>
-                                    {{!-- href="/admin/edit-product/{{this._id}}" --}}
-
-                                    {{#if top.sale}}
-                                    <a href="/admin/hide?id={{this._id}}" class="badge bg-label-warning me-1">Hide</a>
-                                    {{else}}
-                                    <a href="/admin/show?id={{this._id}}" class="badge bg-label-success me-1">Show</a>
-                                    {{/if}}
-
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
+                <div class="table-responsive text-center m-5">
+                    <img src="/product-images/{{product._id}}.jpg" style="width: 400px;height: auto" id="imgView">
                 </div>
             </div>
         </div>
