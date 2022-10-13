@@ -1,4 +1,4 @@
-var NameError = document.getElementById("fname-error");
+var NameError = document.getElementById("fname-error");  //span id
 var mobileError = document.getElementById("mobile-error");
 var emailError = document.getElementById("email-error")
 var passwordError = document.getElementById("password-error")
@@ -8,7 +8,7 @@ var submitError = document.getElementById("submit-error");
 
 
 function validateName() {
-    var fname = document.getElementById("contact-fname").value;
+    var fname = document.getElementById("contact-fname").value; //input id
 
     if (fname.length == 0) {
         NameError.innerHTML = 'First Name required';
