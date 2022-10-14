@@ -222,6 +222,12 @@ router.get('/cart/', async (req, res) => {
 
 })
 
+router.post('/change-product-quantity',(req,res,next)=>{
+  userHelpers.changeProductQuantity(req.body).then((response)=>{
+    res.json(response)
+  })
+})
+
 router.get('/add-to-wishlist', (req, res) => {
   res.render('user/cart')
 })

@@ -6,7 +6,7 @@
                 <div class="breadcrumb__text">
                     <h2>Shopping Cart</h2>
                     <div class="breadcrumb__option">
-                        <a href="./index.html">Home</a>
+                        <a href="/">Home</a>
                         <span>Shopping Cart</span>
                     </div>
                 </div>
@@ -44,8 +44,12 @@
                                 </td>
                                 <td class="shoping__cart__quantity">
                                     <div class="quantity">
-                                        <div class="pro-qty">
-                                            <input type="text" value="{{this.quantity}}">
+                                        <div class="cart-item-count">
+                                            <button class="cart-item-count m-2"
+                                                onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1)">-</button>
+                                            <span id="{{this.product._id}}">{{this.quantity}}</span>
+                                            <button class="cart-item-count m-2"
+                                                onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1)">+</button>
                                         </div>
                                     </div>
                                 </td>
@@ -57,7 +61,7 @@
                                 </td>
                             </tr>
                             {{/each}}
-                           
+
                         </tbody>
                     </table>
                 </div>
@@ -95,3 +99,28 @@
         </div>
     </div>
 </section>
+<script>
+    function changeQuantity(cartId, proId, count) {
+        let quantity=parseInt(document.getElementById(proId).innerHTML)
+        count=parseInt(count)
+        $.ajax({
+            url: '/change-product-quantity',
+            data: {
+                cart: cartId,
+                product: proId,
+                count: count,
+                quantity:quantity
+            },
+            method: 'post',
+            success: (response) => {
+                if (response.removeProduct) {
+                   alert("product removed from the cart")
+                   location.reload()
+                }else{
+                    document.getElementById(proId).innerHTML=quantity+count
+                }
+
+            }
+        })
+    }
+</script>
