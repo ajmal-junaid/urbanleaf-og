@@ -19,18 +19,18 @@ const verifyLogin = (req, res, next) => {
 
 
 /* GET home page. */
-router.get('/', async(req, res, next) => {
+router.get('/', async (req, res, next) => {
   let cartCount = null
-  if(req.session.user){
-    cartCount=await userHelpers.getCartCount(req.session.user._id)
+  if (req.session.user) {
+    cartCount = await userHelpers.getCartCount(req.session.user._id)
   }
- 
+
   productHelpers.getAllCategories().then((category) => {
     productHelpers.getAllProducts().then((product) => {
       //let { user } = req.session.user
       let user = req.session.user
       const h = true;
-      res.render('user/home', { admin: false, user, category, product, h,cartCount });
+      res.render('user/home', { admin: false, user, category, product, h, cartCount });
     })
 
   })
@@ -161,11 +161,15 @@ router.get('/forgot', (req, res, next) => {
   res.render('user/forgot', { layout: 'admin' })
 })
 
-router.get('/get-products', (req, res, next) => {
+router.get('/get-products', async(req, res, next) => {
   let user = req.session.user
+  let cartCount = null
+  if (req.session.user) {
+    cartCount = await userHelpers.getCartCount(req.session.user._id)
+  }
   productHelpers.getAllCategories().then((category) => {
     productHelpers.getAllProducts().then((product) => {
-      res.render('user/list-products', { category, product, user })
+      res.render('user/list-products', { category, product, user,cartCount })
     })
 
 
@@ -173,31 +177,43 @@ router.get('/get-products', (req, res, next) => {
 
 })
 router.get('/product-details', async (req, res, next) => {
+  let cartCount = null
+  if (req.session.user) {
+    cartCount = await userHelpers.getCartCount(req.session.user._id)
+  }
   let category = await productHelpers.getAllCategories()
   console.log("cat", category);
   let product = await productHelpers.getProductDetails(req.query.id)
-  res.render('user/product-details', { product, category })
+  res.render('user/product-details', { product, category,cartCount })
 })
 
 router.get('/mantain', (req, res) => {
   res.render('maintainance', { layout: 'admin' })
 })
 
-router.get('/add-to-cart', (req, res, next) => {
+router.get('/add-to-cart/:id', (req, res, next) => {
+  console.log("apiiiiiiiii",req.params.id);
   let user = req.session.user
-  userHelpers.addToCart(req.query.id, user._id).then(() => {
-    res.redirect('/')
+  userHelpers.addToCart(req.params.id, user._id).then(() => {
+    res.json({status:true})
+    //res.redirect('/')
   })
 })
 
 router.get('/cart/', async (req, res) => {
-  let userid = req.session.user._id
-  let user =req.session.user
-  console.log("usercartid",user);
+  
+  let user = req.session.user
+  let userid
+  let cartCount = null
+  if (user) {
+    userid = req.session.user._id
+    cartCount = await userHelpers.getCartCount(req.session.user._id)
+  }
+  console.log("usercartid", user);
   if (userid) {
     let products = await userHelpers.getCartProducts(userid)
-    console.log("prooooooooo",products);
-    res.render('user/cart',{products,user})
+    console.log("prooooooooo", products);
+    res.render('user/cart', { products, user,cartCount })
   } else {
     res.redirect('/')
   }

@@ -117,7 +117,7 @@ router.get('/add-category', verifyAdmin, (req, res, next) => {
 router.post('/add-category', (req, res) => {
   if (req.body.category) {
     productHelper.addCatogory(req.body, (data,err) => {
-      if(err){
+      if(err  ){
         req.session.msg="Category Already E xists"
       }else{
         let image = req.files.Image
@@ -225,12 +225,7 @@ router.get('/unblock/', verifyAdmin, (req, res) => {
   })
 })
 
-router.get('/hidefeature/:id', (req, res) => {
-  let proid = req.params.id
-  console.log("kjhbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", proid);
-  productHelper.doHideFeature(proid).then(() => {
-    res.send("ffffffffff")
-  })
-})
+
+  
 
 module.exports = router;
