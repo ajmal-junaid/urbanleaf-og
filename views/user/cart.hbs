@@ -34,6 +34,7 @@
                         </thead>
                         <tbody>
                             {{#each products}}
+
                             <tr>
                                 <td class="shoping__cart__item">
                                     <img src="/product-images/{{this.product._id}}.jpg" alt="" style="width: 100px;">
@@ -41,15 +42,16 @@
                                 </td>
                                 <td class="shoping__cart__price">
                                     {{this.product.OurPrice}}
+
                                 </td>
                                 <td class="shoping__cart__quantity">
                                     <div class="quantity">
                                         <div class="cart-item-count">
                                             <button class="cart-item-count m-2"
-                                                onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1)">-</button>
+                                                onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user._id}}',-1)">-</button>
                                             <span id="{{this.product._id}}">{{this.quantity}}</span>
                                             <button class="cart-item-count m-2"
-                                                onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1)">+</button>
+                                                onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user._id}}',1)">+</button>
                                         </div>
                                     </div>
                                 </td>
@@ -57,13 +59,38 @@
                                     ${{this.total}}
                                 </td>
                                 <td class="shoping__cart__item__close">
-                                    <span class="icon_close"></span>
+                                    <a data-toggle="modal" data-target="#exampleModal"><span
+                                            class="icon_close"></span></a>
                                 </td>
                             </tr>
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Remove Product</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure to remove product from cart
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Close</button>
+                                            <button onclick="removeCartProduct('{{this.product._id}}','{{this._id}}')"
+                                                type="button" class="btn btn-primary">Continue</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             {{/each}}
 
                         </tbody>
                     </table>
+
                 </div>
             </div>
         </div>
@@ -90,36 +117,57 @@
                 <div class="shoping__checkout">
                     <h5>Cart Total</h5>
                     <ul>
-                        <li>Subtotal <span>$454.98</span></li>
-                        <li>Total <span>$454.98</span></li>
+                        
+                        <li>Grand Total <span>₹</span><span id="total">{{total}}</span></li>
                     </ul>
-                    <a href="#" class="primary-btn">PROCEED TO CHECKOUT</a>
+                    <a href="/proceed-page" class="primary-btn">PROCEED TO CHECKOUT</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
 <script>
-    function changeQuantity(cartId, proId, count) {
-        let quantity=parseInt(document.getElementById(proId).innerHTML)
-        count=parseInt(count)
+    function changeQuantity(cartId, proId, userId, count) {
+        let quantity = parseInt(document.getElementById(proId).innerHTML)
+        count = parseInt(count)
+        console.log(userId)
         $.ajax({
             url: '/change-product-quantity',
             data: {
+                user: userId,
                 cart: cartId,
                 product: proId,
                 count: count,
-                quantity:quantity
+                quantity: quantity
             },
             method: 'post',
             success: (response) => {
                 if (response.removeProduct) {
-                   alert("product removed from the cart")
-                   location.reload()
-                }else{
-                    document.getElementById(proId).innerHTML=quantity+count
+                    alert("product removed from the cart")
+                    location.reload()
+                } else {
+                    document.getElementById(proId).innerHTML = quantity + count
+                    document.getElementById('total').innerHTML = response.total
                 }
 
+            }
+        })
+    }
+
+    function removeCartProduct(proId, cartId) {
+        $.ajax({
+            url: '/remove-product-cart',
+            data: {
+                proId: proId,
+                cartId: cartId,
+            },
+            method: 'post',
+            success: (response) => {
+                if (response) {
+
+                    location.reload()
+
+                }
             }
         })
     }

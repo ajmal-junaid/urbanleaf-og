@@ -109,11 +109,9 @@ router.post('/loginmail', (req, res) => {
     if (response.status == 333) {
       res.render('user/login', { layout: 'admin', "loginErr": "Wrong Password...! Try Again" })
       req.session.userLoginErr = "Wrong Password...! Try Again"
-      //res.redirect('/login')
     } else if (response.status == 222) {
       res.render('user/login', { layout: 'admin', "loginErr": "Blocked Account..! Contact Admin" })
       req.session.userLoginErr = "Blocked Account..! Contact Admin"
-      //res.redirect('/login')
     } else if (response.status) {
       req.session.user = response.user
       req.session.userLoggedIn = true;
@@ -121,7 +119,6 @@ router.post('/loginmail', (req, res) => {
     } else {
       res.render('user/login', { layout: 'admin', "loginErr": "User not Found...!Please Signup" })
       req.session.userLoginErr = "User not Found...!Please Signup"
-      //res.redirect('/login')
     }
   })
 
@@ -138,7 +135,6 @@ router.get('/signup', (req, res) => {
 })
 
 router.post('/signup', (req, res) => {
-  console.log("conditions", req.body.terms);
   if (req.body.terms) {
     userHelpers.doSignup(req.body).then((response) => {
       if (response.status == "email") {
@@ -161,7 +157,7 @@ router.get('/forgot', (req, res, next) => {
   res.render('user/forgot', { layout: 'admin' })
 })
 
-router.get('/get-products', async(req, res, next) => {
+router.get('/get-products', async (req, res, next) => {
   let user = req.session.user
   let cartCount = null
   if (req.session.user) {
@@ -169,7 +165,7 @@ router.get('/get-products', async(req, res, next) => {
   }
   productHelpers.getAllCategories().then((category) => {
     productHelpers.getAllProducts().then((product) => {
-      res.render('user/list-products', { category, product, user,cartCount })
+      res.render('user/list-products', { category, product, user, cartCount })
     })
 
 
@@ -182,9 +178,8 @@ router.get('/product-details', async (req, res, next) => {
     cartCount = await userHelpers.getCartCount(req.session.user._id)
   }
   let category = await productHelpers.getAllCategories()
-  console.log("cat", category);
   let product = await productHelpers.getProductDetails(req.query.id)
-  res.render('user/product-details', { product, category,cartCount })
+  res.render('user/product-details', { product, category, cartCount })
 })
 
 router.get('/mantain', (req, res) => {
@@ -192,16 +187,15 @@ router.get('/mantain', (req, res) => {
 })
 
 router.get('/add-to-cart/:id', (req, res, next) => {
-  console.log("apiiiiiiiii",req.params.id);
   let user = req.session.user
   userHelpers.addToCart(req.params.id, user._id).then(() => {
-    res.json({status:true})
+    res.json({ status: true })
     //res.redirect('/')
   })
 })
 
 router.get('/cart/', async (req, res) => {
-  
+
   let user = req.session.user
   let userid
   let cartCount = null
@@ -209,11 +203,11 @@ router.get('/cart/', async (req, res) => {
     userid = req.session.user._id
     cartCount = await userHelpers.getCartCount(req.session.user._id)
   }
-  console.log("usercartid", user);
   if (userid) {
     let products = await userHelpers.getCartProducts(userid)
-    console.log("prooooooooo", products);
-    res.render('user/cart', { products, user,cartCount })
+    let total = await userHelpers.getTotalAmount(req.session.user._id)
+    console.log("yoyoyoyo", user);
+    res.render('user/cart', { products, user, cartCount, total })
   } else {
     res.redirect('/')
   }
@@ -222,10 +216,34 @@ router.get('/cart/', async (req, res) => {
 
 })
 
-router.post('/change-product-quantity',(req,res,next)=>{
-  userHelpers.changeProductQuantity(req.body).then((response)=>{
+router.post('/change-product-quantity', (req, res, next) => {
+  userHelpers.changeProductQuantity(req.body).then(async (response) => {
+    response.total = await userHelpers.getTotalAmount(req.body.user)
     res.json(response)
   })
+})
+
+router.post('/remove-product-cart', (req, res) => {
+
+  userHelpers.removeCartProduct(req.body).then((response) => {
+    res.json(response)
+  })
+})
+
+router.get('/proceed-page', async (req, res) => {
+  let total = await userHelpers.getTotalAmount(req.session.user._id)
+  let user = req.session.user
+  cartCount = await userHelpers.getCartCount(req.session.user._id)
+  res.render('user/proceed', { total, user, cartCount })
+})
+
+router.post('/proceed-page', async (req, res) => {
+  let products = await userHelpers.getCartProductList(req.body.userId)
+  let totalPrice = await userHelpers.getTotalAmount(req.body.userId)
+  userHelpers.placeOrder(req.body, products, totalPrice).then((response) => {
+    res.send("jjjjjjjjjjjjjjjjiiiiiiiiiii")
+  })
+  console.log("post submit", req.body);
 })
 
 router.get('/add-to-wishlist', (req, res) => {
