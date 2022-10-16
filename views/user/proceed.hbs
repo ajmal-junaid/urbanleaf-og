@@ -34,28 +34,28 @@
                             <div class="col-lg-6">
                                 <div class="checkout__input">
                                     <p>Fist Name<span>*</span></p>
-                                    <input type="text" name="fname">
+                                    <input type="text" name="fname" required>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="checkout__input">
                                     <p>Last Name<span>*</span></p>
-                                    <input type="text" name="lname">
+                                    <input type="text" name="lname" required>
                                 </div>
                             </div>
                         </div>
                         <div class="checkout__input">
                             <p>Country<span>*</span></p>
-                            <input type="text" name="country">
+                            <input type="text" name="country" required>
                         </div>
                         <div class="checkout__input">
                             <p>Address<span>*</span></p>
-                            <input type="text" placeholder="Street Address" class="checkout__input__add" name="address">
+                            <input type="text" placeholder="Street Address" class="checkout__input__add" name="address" required>
                             <input type="text" id="" name="userId" value="{{user._id}}" hidden>
                         </div>
                         <div class="checkout__input">
                             <p>Town/City<span>*</span></p>
-                            <input type="text" name="city">
+                            <input type="text" name="city" required>
                         </div>
                         <div class="checkout__input">
                             <p>State<span>*</span></p>
@@ -63,19 +63,19 @@
                         </div>
                         <div class="checkout__input">
                             <p>Postcode / ZIP<span>*</span></p>
-                            <input type="text" name="pincode">
+                            <input type="text" name="pincode" required>
                         </div>
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="checkout__input">
                                     <p>Phone<span>*</span></p>
-                                    <input type="text" name="mobile">
+                                    <input type="text" name="mobile" required>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="checkout__input">
                                     <p>Email<span>*</span></p>
-                                    <input type="text" name="email">
+                                    <input type="text" name="email" required>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +83,7 @@
                         <div class="checkout__input">
                             <p>Order notes<span>*</span></p>
                             <input type="text" placeholder="Notes about your order, e.g. special notes for delivery."
-                                name="notes">
+                                name="notes" required>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">

@@ -195,7 +195,7 @@ router.get('/add-to-cart/:id', (req, res, next) => {
   })
 })
 
-router.get('/cart/', async (req, res) => {
+router.get('/cart', async (req, res) => {
 
   let user = req.session.user
   let userid
@@ -207,7 +207,6 @@ router.get('/cart/', async (req, res) => {
   if (userid) {
     let products = await userHelpers.getCartProducts(userid)
     let total = await userHelpers.getTotalAmount(req.session.user._id)
-    console.log("yoyoyoyo", user);
     res.render('user/cart', { products, user, cartCount, total })
   } else {
     res.redirect('/')

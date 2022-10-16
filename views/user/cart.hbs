@@ -56,7 +56,7 @@
                                     </div>
                                 </td>
                                 <td class="shoping__cart__total">
-                                    ${{this.total}}
+                                    ₹{{this.total}}
                                 </td>
                                 <td class="shoping__cart__item__close">
                                     <a data-toggle="modal" data-target="#exampleModal"><span
@@ -159,7 +159,7 @@
             url: '/remove-product-cart',
             data: {
                 proId: proId,
-                cartId: cartId,
+                cartId: cartId
             },
             method: 'post',
             success: (response) => {
