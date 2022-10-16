@@ -1,0 +1,57 @@
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-section set-bg" data-setbg="img/breadcrumb.jpg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb__text">
+                    <h2>Order History</h2>
+                    <div class="breadcrumb__option">
+                        <a href="/">Home</a>
+                        <span>Orders</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+<!-- Borderless Table -->
+<div class="container my-5">
+    <div class="card">
+        <div class="table-responsive text-nowrap">
+            <table class="table table-borderless">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Address</th>
+                        <th>Pincode</th>
+                        <th>Amount</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each orders}}
+                    <tr class="mt-2">
+                        <td><i class="fab fa-react fa-lg text-info me-3"></i> {{this.date}}</td>
+                        <td>{{this.deliveryDetails.address}}</td>
+                        <td>
+                            {{this.deliveryDetails.pincode}}
+                        </td>
+                        <td>{{this.totalAmount}}</td>
+                        <td><span class="badge bg-label-success me-1">{{this.paymentMethod}}</span></td>
+                        <td>
+                           {{this.status}}
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-success" href="/view-detail?id={{this._id}}">View Products</a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!--/ Borderless Table -->

@@ -6,7 +6,7 @@
                 <div class="breadcrumb__text">
                     <h2>Checkout</h2>
                     <div class="breadcrumb__option">
-                        <a href="./index.html">Home</a>
+                        <a href="/">Home</a>
                         <span>Checkout</span>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                         <div class="checkout__input">
                             <p>Address<span>*</span></p>
                             <input type="text" placeholder="Street Address" class="checkout__input__add" name="address">
-
+                            <input type="text" id="" name="userId" value="{{user._id}}" hidden>
                         </div>
                         <div class="checkout__input">
                             <p>Town/City<span>*</span></p>
@@ -125,13 +125,17 @@
 <!-- Checkout Section End -->
 <script>
     $("#checkout-form").submit((e) => {
-       e.preventDefault()
+        e.preventDefault()
         $.ajax({
             url: '/proceed-page',
             method: 'post',
-            data:$('#checkout-form').serialize(),
+            data: $('#checkout-form').serialize(),
             success: (response) => {
-                alert(response)
+                if (response.status) {
+                    location.href = '/order-succesfull'
+                } else {
+                    alert("order Failed")
+                }
             }
         })
     })

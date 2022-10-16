@@ -1,3 +1,4 @@
+const { response } = require('express');
 var express = require('express');
 var router = express.Router();
 const productHelpers = require('../helpers/product-helpers')
@@ -238,15 +239,50 @@ router.get('/proceed-page', async (req, res) => {
 })
 
 router.post('/proceed-page', async (req, res) => {
+  console.log(req.body, "bodyyyy");
   let products = await userHelpers.getCartProductList(req.body.userId)
   let totalPrice = await userHelpers.getTotalAmount(req.body.userId)
   userHelpers.placeOrder(req.body, products, totalPrice).then((response) => {
-    res.send("jjjjjjjjjjjjjjjjiiiiiiiiiii")
+    res.json({ status: true })
   })
-  console.log("post submit", req.body);
 })
 
 router.get('/add-to-wishlist', (req, res) => {
   res.render('user/cart')
+})
+
+router.get('/order-succesfull', (req, res) => {
+  let user = req.session.user
+  res.render('user/order-placed', { user })
+})
+
+router.get('/get-order', async (req, res) => {
+  let user = req.session.user
+  let orders = await userHelpers.getUserOrders(user._id)
+  res.render('user/order-details', { user, orders })
+})
+
+router.get('/view-detail/', async (req, res) => {
+  let products = await userHelpers.getOrderProducts(req.query.id)
+  let total = await userHelpers.getTotalAmountOrder(req.query.id)
+  let user = req.session.user
+console.log("totall",total);
+  res.render('user/view-order-detail', { products, user ,total})
+})
+
+router.get('/contact-us', (req, res) => {
+  res.render('user/contact')
+})
+
+router.get('/get-category-products', (req, res) => {
+  productHelpers.getCategoryProducts(req.query.id).then((product) => {
+    productHelpers.getAllCategories().then((category) => {
+    
+      res.render('user/list-products', { product, category })
+    })
+
+
+  })
+
 })
 module.exports = router;

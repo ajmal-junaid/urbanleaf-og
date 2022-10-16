@@ -85,5 +85,12 @@ module.exports = {
                     resolve()
                 })
         })
+    },
+    getCategoryProducts:(catName) =>{
+        return new Promise((resolve,reject)=>{
+            let prods=db.get().collection(collection.PRODUCT_COLLECTION)
+            .find({category:catName}).toArray()
+            resolve(prods)
+        })
     }
 }

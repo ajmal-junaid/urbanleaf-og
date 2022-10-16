@@ -3,5 +3,6 @@ module.exports={
     ADMIN_COLLECTION:'admin',
     CATEGORY_COLLECTION:'category',
     PRODUCT_COLLECTION:'product',
-    CART_COLLECTION:'cart'
+    CART_COLLECTION:'cart',
+    ORDER_COLLECTION:'order'
 }

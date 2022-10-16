@@ -15,7 +15,7 @@
             <h2>Z Shopping</h2>
             <div class="breadcrumb__option">
               <a href="/">Home</a>
-              <span>Shop</span>
+              <span>{{category.category}}</span>
             </div>
           </div>
         </div>
@@ -31,10 +31,10 @@
         <div class="col-lg-3 col-md-5">
           <div class="sidebar">
             <div class="sidebar__item">
-              <h4>Department</h4>
+              <h4>Categories</h4>
               <ul>
                 {{#each category}}
-                <li><a href="#">{{this.category}}</a></li>
+                <li><a href="/get-category-products?id={{this.category}}">{{this.category}}</a></li>
                 {{/each}}
 
               </ul>
@@ -56,110 +56,9 @@
                 </div>
               </div>
             </div>
-            <div class="sidebar__item sidebar__item__color--option">
-              <h4>Colors</h4>
-              <div class="sidebar__item__color sidebar__item__color--white">
-                <label for="white">
-                  White
-                  <input type="radio" id="white" />
-                </label>
-              </div>
-              <div class="sidebar__item__color sidebar__item__color--gray">
-                <label for="gray">
-                  Gray
-                  <input type="radio" id="gray" />
-                </label>
-              </div>
-              <div class="sidebar__item__color sidebar__item__color--red">
-                <label for="red">
-                  Red
-                  <input type="radio" id="red" />
-                </label>
-              </div>
-              <div class="sidebar__item__color sidebar__item__color--black">
-                <label for="black">
-                  Black
-                  <input type="radio" id="black" />
-                </label>
-              </div>
-              <div class="sidebar__item__color sidebar__item__color--blue">
-                <label for="blue">
-                  Blue
-                  <input type="radio" id="blue" />
-                </label>
-              </div>
-              <div class="sidebar__item__color sidebar__item__color--green">
-                <label for="green">
-                  Green
-                  <input type="radio" id="green" />
-                </label>
-              </div>
-            </div>
-            <div class="sidebar__item">
-              <h4>Popular Size</h4>
-              <div class="sidebar__item__size">
-                <label for="large">
-                  Large
-                  <input type="radio" id="large" />
-                </label>
-              </div>
-              <div class="sidebar__item__size">
-                <label for="medium">
-                  Medium
-                  <input type="radio" id="medium" />
-                </label>
-              </div>
-              <div class="sidebar__item__size">
-                <label for="small">
-                  Small
-                  <input type="radio" id="small" />
-                </label>
-              </div>
-              <div class="sidebar__item__size">
-                <label for="tiny">
-                  Tiny
-                  <input type="radio" id="tiny" />
-                </label>
-              </div>
-            </div>
-            <div class="sidebar__item">
-              <div class="latest-product__text">
-                <h4>Latest Products</h4>
-                <div class="latest-product__slider owl-carousel">
-                  <div class="latest-prdouct__slider__item">
-                    {{#each product}}
-                    {{#if latest}}
-                    <a href="/product-details?id={{this._id}}" class="latest-product__item">
-                      <div class="latest-product__item__pic">
-                        <img src="/product-images/{{this._id}}.jpg" alt="image" />
-                      </div>
-                      <div class="latest-product__item__text">
-                        <h6>{{this.productName}}</h6>
-                        <span>₹{{this.OurPrice}}.00</span>
-                      </div>
-                    </a>
-                    {{/if}}
-                    {{/each}}
-                  </div>
-                  <div class="latest-prdouct__slider__item">
-                    {{#each product}}
-                    {{#if review}}
-                    <a href="/product-details?id={{this._id}}" class="latest-product__item">
-                      <div class="latest-product__item__pic">
-                        <img src="/product-images/{{this._id}}.jpg" alt="image" />
-                      </div>
-                      <div class="latest-product__item__text">
-                        <h6>{{this.productName}}</h6>
-                        <span>₹{{this.OurPrice}}.00</span>
-                      </div>
-                    </a>
-                    {{/if}}
-                    {{/each}}
-
-                  </div>
-                </div>
-              </div>
-            </div>
+           {{!-- color sort --}}
+            {{!-- latest loc --}}
+            
           </div>
         </div>
         <div class="col-lg-9 col-md-7">
