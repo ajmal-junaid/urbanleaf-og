@@ -1,5 +1,11 @@
 <div class="mt-5 container">
   <div class="row">
+    {{#if add}}
+    <div class="alert alert-success alert-dismissible" role="alert">
+                        Product Added Succesfully
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                      {{/if}}
     <!-- Form controls -->
     <div class="col-md-6">
       <div class="card mb-4">
@@ -38,8 +44,8 @@
                 <input type="text" class="form-control" name="marketPrice" required/>
               </div>
               <div class="col">
-                <label class="form-label">Our Price</label>
-                <input type="text" class="form-control" name="OurPrice" required/>
+                <label class="form-label">Discount in %</label>
+                <input type="text" class="form-control" name="percentage" required/>
               </div>
             </div>
             <div class="mb-3">

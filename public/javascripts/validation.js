@@ -113,3 +113,7 @@ function validateLoginMailForm() {
     }
 
 }
+
+$(document).ready( function () {
+    $('#tablejq').DataTable();
+} );

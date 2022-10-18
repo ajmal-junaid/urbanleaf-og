@@ -1,0 +1,77 @@
+<div class="container">
+  <!-- Hoverable Table rows -->
+  <div class="mt-5 card">
+    <span>
+      <h4 class="card-header m-3">Order Management</h4>
+    </span>
+
+    {{#if err}}
+    <div class="alert alert-danger" role="alert">{{err}}</div>
+
+    {{/if}}
+    <div class="table-responsive text-nowrap">
+      <table id="tablejq" class="table table-hover ">
+        <thead>
+
+          <tr>
+            <th>No</th>
+            <th>Mobile</th>
+            <th>Date</th>
+            <th>totalAmount</th>
+            <th>Order status</th>
+            <th>PaymentMethod</th>
+
+          </tr>
+        </thead>
+        <tbody class="table-border-bottom-0">
+          {{#each orders}}
+          <tr>
+            <td></td>
+            <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+              <strong>{{this.deliveryDetails.mobile}}</strong>
+            </td>
+            <td>{{this.date}}</td>
+            <td>{{this.totalAmount}}</td>
+            <td>
+              <div class="mb-3">
+                <select onchange="changestatus('{{this._id}}')" class="btn-sm btn-success-outline" name="status" id="{{this._id}}" autofocus required>
+                  {{!-- <option selected>Open this select menu</option> --}}
+                  <option value={{this.status}}> {{this.status}}</option>
+                  <option value="completed"> Completed</option>
+                  <option value="accepted"> Accepted</option>
+                  <option value="shipped">Shipped</option>
+                  <option value="pending"> Pending</option>
+                  <option value="canceled"> Canceled</option> 
+                </select>
+              </div>
+            </td>
+            <td>{{this.paymentMethod}}</td>
+          </tr>
+          {{/each}}
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!--/ Hoverable Table rows -->
+</div>
+<script
+  type="text/javascript">window.setTimeout("document.getElementById('successMessage').style.display='none';", 3000); 
+  
+  function changestatus(orderid,status){
+  let st=document.getElementById(orderid);
+  let stat=st.options[st.selectedIndex].text
+  $.ajax({
+   url:"/update-order-status",
+   data:{
+    cartid:orderid,
+    status:stat
+   },
+   method:"post",
+   success:(response)=>{
+    alert(response)
+    location.reload()
+   }
+  })
+}
+  </script>

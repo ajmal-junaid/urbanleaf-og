@@ -3,21 +3,17 @@ var express = require('express');
 var router = express.Router();
 const productHelpers = require('../helpers/product-helpers')
 const userHelpers = require('../helpers/user-helpers')
-
 const accountSid = process.env.TWILIO_ACCOUNT_SID
 const authToken = process.env.TWILIO_AUTH_TOKEN
 const serviceId = process.env.TWILIO_SERVICE_ID
 const client = require('twilio')(accountSid, authToken);
-
-
 const verifyLogin = (req, res, next) => {
-  if (req.session.userloggedIn) {
+  if (req.session.userLoggedIn == true) {
     next()
   } else {
-    res.redirect('/login')
+    res.redirect('/loginmail')
   }
 }
-
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
@@ -33,9 +29,7 @@ router.get('/', async (req, res, next) => {
       const h = true;
       res.render('user/home', { admin: false, user, category, product, h, cartCount });
     })
-
   })
-
 });
 
 router.get('/login', (req, res, next) => {
@@ -56,7 +50,6 @@ router.post('/login', (req, res, next) => {
     if (response.status == 222) {
       res.render('user/login', { layout: 'admin', "loginErr": "Blocked Account..! Contact Admin" })
       req.session.userLoginErr = "Blocked Account..! Contact Admin"
-      //res.redirect('/login')
     } else if (response.status) {
       let mobileNumber = (`+91${req.body.mobile}`)
       req.session.Phoneno = mobileNumber
@@ -68,12 +61,10 @@ router.post('/login', (req, res, next) => {
           req.session.userPre = response.user
           console.log(mobileNumber);
           res.render('user/login', { layout: 'admin', otpsend })
-          // res.redirect('/')
         })
     } else {
       res.render('user/login', { layout: 'admin', "loginErr": "User not Found...!Please Signup" })
       req.session.userLoginErr = "User not Found...!Please Signup"
-      //res.redirect('/login')
     }
   })
 
@@ -122,7 +113,6 @@ router.post('/loginmail', (req, res) => {
       req.session.userLoginErr = "User not Found...!Please Signup"
     }
   })
-
 })
 
 router.get('/logout', (req, res) => {
@@ -151,14 +141,13 @@ router.post('/signup', (req, res) => {
   } else {
     res.render('user/signup', { layout: 'admin', "termErr": "Please Agree Terms And Conditions" })
   }
-
 })
 
 router.get('/forgot', (req, res, next) => {
   res.render('user/forgot', { layout: 'admin' })
 })
 
-router.get('/get-products', async (req, res, next) => {
+router.get('/get-products', verifyLogin, async (req, res, next) => {
   let user = req.session.user
   let cartCount = null
   if (req.session.user) {
@@ -168,8 +157,6 @@ router.get('/get-products', async (req, res, next) => {
     productHelpers.getAllProducts().then((product) => {
       res.render('user/list-products', { category, product, user, cartCount })
     })
-
-
   })
 
 })
@@ -191,12 +178,10 @@ router.get('/add-to-cart/:id', (req, res, next) => {
   let user = req.session.user
   userHelpers.addToCart(req.params.id, user._id).then(() => {
     res.json({ status: true })
-    //res.redirect('/')
   })
 })
 
 router.get('/cart', async (req, res) => {
-
   let user = req.session.user
   let userid
   let cartCount = null
@@ -211,9 +196,6 @@ router.get('/cart', async (req, res) => {
   } else {
     res.redirect('/')
   }
-  //let products = await userHelpers.getCartDetails(user._id)
-  //console.log(products);
-
 })
 
 router.post('/change-product-quantity', (req, res, next) => {
@@ -226,6 +208,7 @@ router.post('/change-product-quantity', (req, res, next) => {
 router.post('/remove-product-cart', (req, res) => {
 
   userHelpers.removeCartProduct(req.body).then((response) => {
+    console.log(req.body,"cartttt");
     res.json(response)
   })
 })
@@ -255,7 +238,7 @@ router.get('/order-succesfull', (req, res) => {
   res.render('user/order-placed', { user })
 })
 
-router.get('/get-order', async (req, res) => {
+router.get('/get-order', verifyLogin, async (req, res) => {
   let user = req.session.user
   let orders = await userHelpers.getUserOrders(user._id)
   res.render('user/order-details', { user, orders })
@@ -265,8 +248,9 @@ router.get('/view-detail/', async (req, res) => {
   let products = await userHelpers.getOrderProducts(req.query.id)
   let total = await userHelpers.getTotalAmountOrder(req.query.id)
   let user = req.session.user
-console.log("totall",total);
-  res.render('user/view-order-detail', { products, user ,total})
+
+  console.log("totall", products);
+  res.render('user/view-order-detail', { products, user, total })
 })
 
 router.get('/contact-us', (req, res) => {
@@ -276,12 +260,8 @@ router.get('/contact-us', (req, res) => {
 router.get('/get-category-products', (req, res) => {
   productHelpers.getCategoryProducts(req.query.id).then((product) => {
     productHelpers.getAllCategories().then((category) => {
-    
       res.render('user/list-products', { product, category })
     })
-
-
   })
-
 })
 module.exports = router;

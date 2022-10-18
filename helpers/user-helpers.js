@@ -153,7 +153,6 @@ module.exports = {
                     }
                 }
             ]).toArray()
-            console.log("frm us hlp", cartItems);
             resolve(cartItems)
         })
     },
@@ -230,11 +229,13 @@ module.exports = {
     removeCartProduct: (details) => {
         let productId = details.proId
         let cartId = details.cartId
+console.log(cartId,"opopop");
+console.log(productId,"productId");
         return new Promise((resolve, reject) => {
             db.get().collection(collection.CART_COLLECTION).updateOne({ _id: objectId(cartId) },
                 {
                     $pull: {
-                        product: { item: objectId(productId) }
+                        product:{ item:objectId(productId)} 
                     }
                 }).then((response) => {
                     resolve({ status: true })
@@ -325,7 +326,6 @@ module.exports = {
     },
     getUserOrders: (userId) => {
         return new Promise(async (resolve, reject) => {
-            console.log("this is gtusrordr", userId);
             let orders = await db.get().collection(collection.ORDER_COLLECTION)
                 .find({ userId: objectId(userId) }).toArray()
 
@@ -409,7 +409,22 @@ module.exports = {
             }
 
         })
-    }
+    },
+    getAllUserOrders: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let orders = await db.get().collection(collection.ORDER_COLLECTION)
+                .find().toArray()
+
+            resolve(orders)
+        })
+    },changestatus:(details)=>{
+        return new Promise(async(resolve,reject)=>{
+          await db.get().collection(collection.ORDER_COLLECTION).updateOne({_id:objectId(details.cartid)},{$set:{status:(details.status)} }).then(()=>{
+            resolve("success")
+            
+          })
+        })
+       }
 
 
 }

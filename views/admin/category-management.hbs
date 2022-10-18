@@ -4,14 +4,15 @@
     <span>
       <h5 class="card-header">Category Management</h5>
     </span>
-    <a href="/admin/add-category" type="button" class="text-white btn btn-success mt-1 ms-auto">Add Category</a>
+    <a href="/admin/add-category" type="button" class="text-white btn btn-success m-3 ms-auto">Add Category</a>
     {{#if err}}
-<h4 class="text-nowrap text-danger" id="successMessage">{{err}}</h4>
-{{/if}}
+    <div class="alert alert-danger" role="alert">{{err}}</div>
+
+    {{/if}}
     <div class="table-responsive text-nowrap">
-      <table class="table table-hover">
+      <table id="tablejq" class="table table-hover">
         <thead>
-          
+
           <tr>
             <th>No</th>
             <th>Category Name</th>
@@ -28,22 +29,22 @@
               <strong>{{this.category}}</strong>
             </td>
             <td>{{this.description}}</td>
-            
+
             <td>
               <div class="dropdown">
-                
-          
-             
-                  <a class="dropdown-item" href="/admin/edit-category?id={{this._id}}"><i class="bx bx-edit-alt me-1"></i>
-                    Edit</a>
-                 
-                             <a onclick="return confirm('Delete confirmation of {{this.category}} ?')" class="dropdown-item"
-                href="/admin/delete-category/{{this.category}}"><i class="bx bx-trash me-1"></i>
-                Delete</a>
+
+
+
+                <a class="dropdown-item" href="/admin/edit-category?id={{this._id}}"><i class="bx bx-edit-alt me-1"></i>
+                  Edit</a>
+
+                <a onclick="return confirm('Delete confirmation of {{this.category}} ?')" class="dropdown-item"
+                  href="/admin/delete-category/{{this.category}}"><i class="bx bx-trash me-1"></i>
+                  Delete</a>
             </td>
           </tr>
           {{/each}}
-          
+
         </tbody>
       </table>
     </div>

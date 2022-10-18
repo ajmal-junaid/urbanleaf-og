@@ -11,7 +11,9 @@ module.exports = {
         product.top = false
         product.review = false
         product.date = new Date().toISOString()
-        product.percentage = parseInt(((product.marketPrice - product.OurPrice) / product.marketPrice) * 100)
+        // product.percentage = parseInt(((product.marketPrice - product.OurPrice) / product.marketPrice) * 100)
+        product.discountAmount=parseInt((product.percentage/100)*product.marketPrice)
+        product.OurPrice=parseInt(product.marketPrice-product.discountAmount)
         db.get().collection('product').insertOne(product).then((data) => {
             cb(data)
         }).catch()
