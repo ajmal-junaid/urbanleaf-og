@@ -4,7 +4,10 @@
     <span>
       <h5 class="card-header">Product Management</h5>
     </span>
+  {{#if err}}
+    <div class="alert alert-danger" role="alert">{{err}}</div>
 
+    {{/if}}
     <a href="/admin/add-product" type="button" class="text-white btn btn-success m-3 ms-auto">Add Product</a>
 
     <div class="table-responsive text-nowrap">

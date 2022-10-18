@@ -48,7 +48,7 @@
                             <label class="form-label">Product Image</label>
                             {{!-- <img src="/product-images/{{product._id}}.jpg" style="width: 200px;height: auto"
                                 id="imgView"> --}}
-                            <input class="form-control" type="file" name="Image" onchange="viewImage(event)" multiple />
+                            <input class="form-control" type="file" name="Image" value="/product-images/{{product._id}}.jpg" onchange="viewImage(event)" required/>
                         </div>
 
 

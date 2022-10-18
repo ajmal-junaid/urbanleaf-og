@@ -117,3 +117,22 @@ function validateLoginMailForm() {
 $(document).ready( function () {
     $('#tablejq').DataTable();
 } );
+
+
+function changestatus(orderid, status) {
+    let st = document.getElementById(orderid);
+    let stat = st.options[st.selectedIndex].text
+    console.log("sss",st,"statt",stat)
+    $.ajax({
+      url: "/admin/update-status",
+      data: {
+        cartid: orderid,
+        status: stat
+      },
+      method: "post",
+      success: (response) => {
+        alert(response)
+        location.reload()
+      }
+    })
+  }

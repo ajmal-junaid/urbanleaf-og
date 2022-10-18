@@ -6,27 +6,22 @@ module.exports = {
     addProduct: (product, cb) => {
         console.log(product);
         product.featured = false
-        product.sale = true
-        product.latest = false
-        product.top = false
-        product.review = false
         product.date = new Date().toISOString()
-        // product.percentage = parseInt(((product.marketPrice - product.OurPrice) / product.marketPrice) * 100)
-        product.discountAmount=parseInt((product.percentage/100)*product.marketPrice)
-        product.OurPrice=parseInt(product.marketPrice-product.discountAmount)
+        product.discountAmount = parseInt((product.percentage / 100) * product.marketPrice)
+        product.OurPrice = parseInt(product.marketPrice - product.discountAmount)
         db.get().collection('product').insertOne(product).then((data) => {
             cb(data)
         }).catch()
     },
-    addCatogory: async(category, cb) => {
+    addCatogory: async (category, cb) => {
         let cat = await db.get().collection(collection.CATEGORY_COLLECTION).findOne({ category: category.category })
-        if(cat){
+        if (cat) {
             cb(202)
-        }else{
-        db.get().collection(collection.CATEGORY_COLLECTION).insertOne(category).then((data) => {
-            cb(data)
-            
-        }).catch()
+        } else {
+            db.get().collection(collection.CATEGORY_COLLECTION).insertOne(category).then((data) => {
+                cb(data)
+
+            }).catch()
         }
     },
     getAllProducts: () => {
@@ -88,10 +83,10 @@ module.exports = {
                 })
         })
     },
-    getCategoryProducts:(catName) =>{
-        return new Promise((resolve,reject)=>{
-            let prods=db.get().collection(collection.PRODUCT_COLLECTION)
-            .find({category:catName}).toArray()
+    getCategoryProducts: (catName) => {
+        return new Promise((resolve, reject) => {
+            let prods = db.get().collection(collection.PRODUCT_COLLECTION)
+                .find({ category: catName }).toArray()
             resolve(prods)
         })
     }

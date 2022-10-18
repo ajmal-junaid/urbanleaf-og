@@ -63,24 +63,25 @@ router.get('/user-management', verifyAdmin, (req, res, next) => {
 
 router.get('/product-management', verifyAdmin, (req, res, next) => {
   productHelper.getAllProducts().then((products) => {
-    console.log(products);
-    res.render('admin/product-management', { admin: true, layout: 'admin', products });
+    let err = req.session.proErr
+    res.render('admin/product-management', { admin: true, layout: 'admin', products,err });
+    req.session.proErr=null
   })
 });
 
 router.get('/category-management', verifyAdmin, (req, res, next) => {
   productHelper.getAllCategories().then((category) => {
-    let err=req.session.catErr
-    res.render('admin/category-management', { admin: true, layout: 'admin', category,err });
-    req.session.catErr=null
+    let err = req.session.catErr
+    res.render('admin/category-management', { admin: true, layout: 'admin', category, err });
+    req.session.catErr = null
   })
 });
 
 router.get('/add-product', verifyAdmin, (req, res, next) => {
   productHelper.getAllCategories().then((category) => {
-    let add=req.session.addprod
-    res.render('admin/add-product', { admin: true, layout: 'admin', category,add });
-    req.session.addprod=null
+    let add = req.session.addprod
+    res.render('admin/add-product', { admin: true, layout: 'admin', category, add });
+    req.session.addprod = null
   })
 });
 
@@ -88,10 +89,14 @@ router.post('/add-product', (req, res) => {
   console.log(req.body);
   productHelper.addProduct(req.body, (id) => {
     let image = req.files.Image
+    let image2 = req.files.Image1
+    let image3 = req.files.Image2
     picId = id.insertedId
     image.mv('./public/product-images/' + picId + '.jpg', (err, done) => {
+      image2.mv('./public/product-images/' + picId + '(1).jpg')
+      image3.mv('./public/product-images/' + picId + '(2).jpg')
       if (!err) {
-        req.session.addprod=true;
+        req.session.addprod = true;
         res.redirect('/admin/add-product')
       } else {
         console.log("error in image upload")
@@ -107,28 +112,28 @@ router.get('/logout', (req, res) => {
 })
 
 router.get('/add-category', verifyAdmin, (req, res, next) => {
-  let msg=req.session.msg
-  res.render('admin/add-category', { admin: true, layout: 'admin' ,msg});
-  req.session.msg=null
+  let msg = req.session.msg
+  res.render('admin/add-category', { admin: true, layout: 'admin', msg });
+  req.session.msg = null
 });
 
 router.post('/add-category', (req, res) => {
   if (req.body.category) {
-    productHelper.addCatogory(req.body, (data,err) => {
-      if(err  ){
-        req.session.msg="Category Already E xists"
-      }else{
+    productHelper.addCatogory(req.body, (data, err) => {
+      if (err) {
+        req.session.msg = "Category Already E xists"
+      } else {
         let image = req.files.Image
-      picId = data.insertedId
-      image.mv('./public/category-images/' + picId + '.jpg', (err, done) => {
-        if (!err) {
-          req.session.msg="Category Added Succesfully"
-          res.redirect('/admin/add-category')
-        } else {
-          res.send("image error")
-          console.log("error in image upload");
-        }
-      })
+        picId = data.insertedId
+        image.mv('./public/category-images/' + picId + '.jpg', (err, done) => {
+          if (!err) {
+            req.session.msg = "Category Added Succesfully"
+            res.redirect('/admin/add-category')
+          } else {
+            res.send("image error")
+            console.log("error in image upload");
+          }
+        })
       }
     })
   } else {
@@ -141,7 +146,9 @@ router.get('/delete-product/:id', verifyAdmin, (req, res) => {
   let proId = req.params.id
   console.log(proId);
   productHelper.deleteProduct(proId).then((response) => {
+    req.session.proErr = "Product deleted sucessfully"
     res.redirect('/admin/product-management')
+    req.session.proErr = null
   })
 })
 
@@ -155,14 +162,14 @@ router.get('/delete-user/:id', verifyAdmin, (req, res) => {
 router.get('/delete-category/:id', verifyAdmin, (req, res) => {
   let catId = req.params.id
   adminhelper.deleteCategory(catId).then((response) => {
-    if(response.status){
-      req.session.catErr="Category deleted sucessfully"
+    if (response.status) {
+      req.session.catErr = "Category deleted sucessfully"
       res.redirect('/admin/category-management')
-    }else{
-      req.session.catErr="Delete the products in this category to continue"
+    } else {
+      req.session.catErr = "Delete the products in this category to continue"
       res.redirect('/admin/category-management')
     }
-    req.session.catErr=null
+    req.session.catErr = null
   })
 })
 
@@ -210,20 +217,18 @@ router.get('/unblock/', verifyAdmin, (req, res) => {
   })
 })
 
-router.get('/order-management', verifyAdmin, async(req, res, next) => {
-    let err=null
-    let orders = await userHelpers.getAllUserOrders()
-    console.log(orders)
-    res.render('admin/order-management', { admin: true, layout: 'admin',err,orders });
-    req.session.catErr=null
+router.get('/order-management', verifyAdmin, async (req, res, next) => {
+  let err = null
+  let orders = await userHelpers.getAllUserOrders()
+  res.render('admin/order-management', { admin: true, layout: 'admin', err, orders });
+  req.session.catErr = null
 });
 
-router.post('/update-order-status',(req,res)=>{
-  console.log(req.body,"hloooo");
-  userHelpers.changestatus(req.body).then(()=>{
+router.post('/update-status', (req, res) => {
+  userHelpers.changestatus(req.body).then(() => {
     res.json()
   })
 })
-  
+
 
 module.exports = router;
