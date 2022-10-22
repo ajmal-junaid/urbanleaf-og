@@ -7,6 +7,7 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID
 const authToken = process.env.TWILIO_AUTH_TOKEN
 const serviceId = process.env.TWILIO_SERVICE_ID
 const client = require('twilio')(accountSid, authToken);
+var uuid = require('uuid');
 const verifyLogin = (req, res, next) => {
   if (req.session.userLoggedIn == true) {
     next()
@@ -14,7 +15,6 @@ const verifyLogin = (req, res, next) => {
     res.redirect('/loginmail')
   }
 }
-
 /* GET home page. */
 router.get('/', async (req, res, next) => {
   let cartCount = null
@@ -191,8 +191,9 @@ router.get('/cart', async (req, res) => {
   }
   if (userid) {
     let products = await userHelpers.getCartProducts(userid)
+    let discount = await userHelpers.getTotalDiscount(req.session.user._id)
     let total = await userHelpers.getTotalAmount(req.session.user._id)
-    res.render('user/cart', { products, user, cartCount, total })
+    res.render('user/cart', { products, user, cartCount, total, discount })
   } else {
     res.redirect('/')
   }
@@ -206,26 +207,51 @@ router.post('/change-product-quantity', (req, res, next) => {
 })
 
 router.post('/remove-product-cart', (req, res) => {
-
   userHelpers.removeCartProduct(req.body).then((response) => {
-    console.log(req.body,"cartttt");
+
     res.json(response)
   })
 })
 
 router.get('/proceed-page', async (req, res) => {
   let total = await userHelpers.getTotalAmount(req.session.user._id)
+  let discount = await userHelpers.getTotalDiscount(req.session.user._id)
   let user = req.session.user
-  cartCount = await userHelpers.getCartCount(req.session.user._id)
-  res.render('user/proceed', { total, user, cartCount })
+  let cartCount = await userHelpers.getCartCount(req.session.user._id)
+  let products = await userHelpers.getCartProducts(req.session.user._id)
+  let address = await userHelpers.getAddresses(req.session.user._id)
+  let actual=discount+total
+  res.render('user/proceed', { total, user, cartCount, address, products, discount ,actual})
 })
 
 router.post('/proceed-page', async (req, res) => {
-  console.log(req.body, "bodyyyy");
-  let products = await userHelpers.getCartProductList(req.body.userId)
-  let totalPrice = await userHelpers.getTotalAmount(req.body.userId)
-  userHelpers.placeOrder(req.body, products, totalPrice).then((response) => {
-    res.json({ status: true })
+  let products = await userHelpers.getCartProductList(req.session.user._id)
+  let totalPrice = await userHelpers.getTotalAmount(req.session.user._id)
+  let address = await userHelpers.getAddressDetails(req.body.deliveryDetails, req.session.user._id)
+  let addrs = address.shift();
+  console.log(req.body);
+  addrs.paymentMethod = req.body.paymentMethod
+  userHelpers.placeOrder(addrs, products, totalPrice).then((orderId) => { 
+    if(req.body.paymentMethod=="COD"){
+      res.json({ codSuccess: true })
+    }else if(req.body.paymentMethod=="RAZOR"){
+      userHelpers.generateRazorpay(orderId,totalPrice).then((response)=>{
+        res.json(response)
+      })
+    }
+
+  })
+})
+
+router.post('/verify-payment',(req,res)=>{
+  console.log("verifypayment",req.body);
+  userHelpers.verifyPayment(req.body).then(()=>{
+    userHelpers.changePaymentStatus(req.body['receipt']).then(()=>{
+      res.json({status:true})
+    })
+  }).catch((err)=>{
+    console.log(err,"error");
+    res.json({status:false,errMsg:'Payment Failed'})
   })
 })
 
@@ -241,6 +267,7 @@ router.get('/order-succesfull', (req, res) => {
 router.get('/get-order', verifyLogin, async (req, res) => {
   let user = req.session.user
   let orders = await userHelpers.getUserOrders(user._id)
+  console.log("orders");
   res.render('user/order-details', { user, orders })
 })
 
@@ -248,8 +275,7 @@ router.get('/view-detail/', async (req, res) => {
   let products = await userHelpers.getOrderProducts(req.query.id)
   let total = await userHelpers.getTotalAmountOrder(req.query.id)
   let user = req.session.user
-
-  console.log("totall", products);
+  // console.log("totall", products);
   res.render('user/view-order-detail', { products, user, total })
 })
 
@@ -264,4 +290,17 @@ router.get('/get-category-products', (req, res) => {
     })
   })
 })
+
+router.get('/address', (req, res) => {
+  res.render('user/sample')
+})
+
+router.post('/address', (req, res) => {
+  userHelpers.addNewAddress(req.body).then((response) => {
+    // console.log(req.body, "address");
+    res.redirect('/proceed-page')
+  })
+})
+
+
 module.exports = router;

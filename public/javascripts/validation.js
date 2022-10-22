@@ -113,12 +113,6 @@ function validateLoginMailForm() {
     }
 
 }
-
-$(document).ready( function () {
-    $('#tablejq').DataTable();
-} );
-
-
 function changestatus(orderid, status) {
     let st = document.getElementById(orderid);
     let stat = st.options[st.selectedIndex].text

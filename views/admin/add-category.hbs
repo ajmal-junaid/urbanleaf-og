@@ -17,10 +17,11 @@
             </div>
             <div class="mb-3">
               <label class="form-label mt-4">Category Image</label>
-              <input class="form-control" type="file" name="Image" required/>
+              <input class="form-control" type="file" id="imgView" name="Image" onchange="viewImage(event)"
+                value="{{category.Image}}" required/>
             </div>
 
-            <div class="mt-5 div"><button type="submit" class="btn btn-outline-success">Submit</button></div>
+            <div class="mt-5"><button type="submit" class="btn btn-outline-success">Submit</button></div>
             {{#if msg}}
             <h4 class="text-warning">{{msg}}</h4>
             {{/if}}
@@ -28,6 +29,25 @@
         </div>
       </div>
     </div>
+    <div class="col-md-3">
+      <!-- Hoverable Table rows -->
+      <div class="card mb-4">
+        <span>
+          <h4 class="card-header text-center">Image</h4>
+        </span>
+
+        <div class="table-responsive m-5 d-flex">
+          <div class="row mt-3">
+            <img src="/category-images/{{category._id}}.jpg" id="imgChange" style="width: 370px;height: auto">
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 </div>
+<script>
+  function viewImage(event) {
+    document.getElementById('imgChange').src = URL.createObjectURL(event.target.files[0])
+  }
+</script>
