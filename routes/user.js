@@ -246,7 +246,7 @@ router.post('/proceed-page', async (req, res) => {
 router.post('/verify-payment',(req,res)=>{
   console.log("verifypayment",req.body);
   userHelpers.verifyPayment(req.body).then(()=>{
-    userHelpers.changePaymentStatus(req.body['receipt']).then(()=>{
+    userHelpers.changePaymentStatus(req.body['order[receipt]']).then(()=>{
       res.json({status:true})
     })
   }).catch((err)=>{
@@ -291,15 +291,15 @@ router.get('/get-category-products', (req, res) => {
   })
 })
 
-router.get('/address', (req, res) => {
-  res.render('user/sample')
-})
-
 router.post('/address', (req, res) => {
   userHelpers.addNewAddress(req.body).then((response) => {
     // console.log(req.body, "address");
     res.redirect('/proceed-page')
   })
+})
+
+router.get('/payment-failed',(req,res)=>{
+  res.render('user/paymentfailed')
 })
 
 

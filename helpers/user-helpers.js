@@ -572,8 +572,10 @@ module.exports = {
         })
     },
     verifyPayment:(details)=>{
-        return new Promise((resolve,reject)=>{
-            const crypto = require('crypto');
+        return new Promise(async(resolve,reject)=>{
+            
+
+            const { createHmac } = await import('node:crypto');
             let hmac = createHmac('sha256', 'b4wOGlQREVbeZxvsoXtT0tLo');
             hmac.update(details['payment[razorpay_order_id]']+'|'+details['payment[razorpay_payment_id]']);
             hmac=hmac.digest('hex')
@@ -582,7 +584,6 @@ module.exports = {
             }else{
                 reject()
             }
-            console.log(hmac.digest('hex'));
         })
     },
     changePaymentStatus:(orderId)=>{

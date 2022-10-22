@@ -30,14 +30,12 @@ $("#checkout-form").submit((e) => {
     },
     method: 'post',
     success: (response) => {
-      alert(response)
       if (response.codSuccess) {
         location.href = '/order-succesfull'
         console.log('order success')
       } else {
         razorpayPayment(response)
       }
-      console.log('hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
 
     }
   })
