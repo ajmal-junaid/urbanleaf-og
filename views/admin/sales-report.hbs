@@ -1,0 +1,50 @@
+<div class="container">
+    <!-- Hoverable Table rows -->
+    <div class="mt-5 card">
+        <span>
+            <h4 class="card-header m-3">Sales Report</h4>
+        </span>
+        <hr>
+
+        {{#if err}}
+        <div class="alert alert-danger" role="alert">{{err}}</div>
+
+        {{/if}}
+        <div class="table-responsive text-nowrap">
+            <form class="form" action="/admin/reports" method="post">
+                <label>From date</label>
+                <input type="date" name="fdate" id="date_timepicker_end" readonly>
+
+                <label>To date</label>
+                <input type="date" name="tdate" id="date_timepicker_end" max="2222-05-26">
+                <button type="submit">submit</button>
+            </form>
+        </div>
+    </div>
+    <!--/ Hoverable Table rows -->
+</div>
+<script type="text/javascript">
+    window.setTimeout("document.getElementById('successMessage').style.display='none';", 3000);
+
+    $("#date_timepicker_end").datepicker()
+    {
+        "dateFormat" : "dd-mm-yyyy" //any valid format that you want to have
+    };
+
+    function changestatus(orderid, status) {
+        let st = document.getElementById(orderid);
+        let stat = st.options[st.selectedIndex].text
+        $.ajax({
+            url: "/admin/update-status",
+            data: {
+                cartid: orderid,
+                status: stat
+            },
+            method: "post",
+            success: (response) => {
+                alert(response)
+                location.reload()
+            }
+        })
+    }
+</script>

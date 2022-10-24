@@ -7,7 +7,19 @@ function addToCart(proId) {
         let count = $('#cart-count').html()
         count = parseInt(count) + 1
         $("#cart-count").html(count)
+        document.getElementById('totalh').innerHTML = response.total
+        location.reload()
       }
+
+    }
+  })
+}
+function cancelOrder(ordId) {
+  $.ajax({
+    url: '/cancel-order/' + ordId,
+    method: 'get',
+    success: (response) => {
+      document.getElementById(ordId).innerHTML = "Canceled sucesfully"
 
     }
   })
@@ -33,14 +45,34 @@ $("#checkout-form").submit((e) => {
       if (response.codSuccess) {
         location.href = '/order-succesfull'
         console.log('order success')
-      } else {
+      } else if(response.razorSuccess){
         razorpayPayment(response)
+      }else{
+        createPay(response)
       }
 
     }
   })
   // }
 })
+ // call the create Pay method 
+        createPay(payment)
+            .then((transaction) => {
+                var id = transaction.id;
+                var links = transaction.links;
+                var counter = links.length;
+                while (counter--) {
+                    if (links[counter].method == 'REDIRECT') {
+                        // redirect to paypal where user approves the transaction 
+                        return res.redirect(links[counter].href)
+                    }
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                res.redirect('/err');
+            });
+
 
 function razorpayPayment(order) {
   var options = {
@@ -82,10 +114,10 @@ function verifyPayment(payment, order) {
       order
     },
     method: 'post',
-    success:(response)=>{
-      if(response.status){
+    success: (response) => {
+      if (response.status) {
         location.href = '/order-succesfull'
-      }else{
+      } else {
         location.href = '/payment-failed'
       }
     }

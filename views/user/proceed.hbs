@@ -40,25 +40,25 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body bg-secondary">
+                            <div class="modal-body border">
                                 <form action="/address" method="post" id="address-form">
                                     <div class="row ">
-                                        <div class="col-lg-12 col-md-12 bg-secondary">
+                                        <div class="col-lg-12 col-md-12">
                                             <div class="row">
                                                 <div class="col-lg-12">
                                                     <div class="checkout__input">
                                                         <p>Full Name<span>*</span></p>
-                                                        <input type="text" name="fname" required>
+                                                        <input type="text" class="form-control" name="fname" required>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="checkout__input">
                                                 <p>Country<span>*</span></p>
-                                                <input type="text" name="country" required>
+                                                <input type="text" class="form-control" name="country" required>
                                             </div>
                                             <div class="checkout__input">
                                                 <p>Address<span>*</span></p>
-                                                <input type="text" placeholder="Street Address"
+                                                <input type="text" class="form-control" placeholder="Street Address"
                                                     class="checkout__input__add" name="address" required>
                                                 <input type="text" id="" name="userId" value="{{user._id}}" hidden>
                                             </div>
@@ -66,27 +66,27 @@
                                                 <div class="col-lg-6">
                                                     <div class="checkout__input">
                                                         <p>Town/City<span>*</span></p>
-                                                        <input type="text" name="city" required>
+                                                        <input class="form-control" type="text" name="city" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <div class="checkout__input">
                                                         <p>State<span>*</span></p>
-                                                        <input type="text" name="state" required>
+                                                        <input class="form-control" type="text" name="state" required>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="checkout__input">
                                                 <p>Postcode / ZIP<span>*</span></p>
-                                                <input type="text" name="pincode" required>
+                                                <input class="form-control" type="text" name="pincode" required>
                                             </div>
                                             <div class="checkout__input">
                                                 <p>mobile<span>*</span></p>
-                                                <input type="text" name="mobile" required>
+                                                <input class="form-control" type="text" name="mobile" required>
                                             </div>
                                             <div class="checkout__input">
                                                 <p>E-mail<span>*</span></p>
-                                                <input type="email" name="email" required>
+                                                <input class="form-control" type="email" name="email" required>
                                             </div>
 
                                         </div>
@@ -122,7 +122,7 @@
                                         <div class="row ">
                                             <div class="col-2 mt-2">
                                                 <input class="form-chec ml-0" type="radio" name="address-method"
-                                                    id="flexRadioDefault1" value="{{this.address.no}}">
+                                                    id="flexRadioDefault1" value="{{this.address.no}}" checked>
                                             </div>
                                             <div class="col-8 m-1">
                                                 <strong>
@@ -174,6 +174,11 @@
 
 
                         <div class="checkout__input__checkbox">
+                            <div class="form-check row">
+                                <input class="form-check-input" type="radio" name="payment-method"
+                                    id="flexRadioDefault1" value="PAYPAL" />
+                                <label class="form-check-label" for="flexRadioDefault3"> Paypal </label>
+                            </div>
                             <div class="form-check row">
                                 <input class="form-check-input" type="radio" name="payment-method"
                                     id="flexRadioDefault1" value="RAZOR" />

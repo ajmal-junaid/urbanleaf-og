@@ -14,16 +14,21 @@
                 <div class="col-md-11">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="pull-right"><label class="label label-danger">{{this.status}}</label></div>
+                            <div class="pull-right"><label id="{{this._id}}"
+                                    class="text-dark w-25"><B>{{this.status}}</B></label>
+                            </div>
                             <span><strong>{{this._id}}</strong></span> <span class="label label-info">(
                                 {{this.paymentMethod}} )</span><br />
                             Quantity : 2, Total Amount: ${{this.totalAmount}} <br />
-                            <a data-placement="top" class="btn btn-success btn-xs glyphicon glyphicon-ok"
-                                href="/view-detail?id={{this._id}}">view order </a>
-                            <a data-placement="top" class="btn btn-danger btn-xs glyphicon glyphicon-trash" href="#"
-                                title="Danger"></a>
-                            <a data-placement="top" class="btn btn-info btn-xs glyphicon glyphicon-usd" href="#"
-                                title="Danger"></a>
+                            <a data-placement="top" class="btn btn-success btn-sm glyphicon glyphicon-ok"
+                                href="/view-detail?id={{this._id}}">View</a>
+
+                            {{#if this.cancel}}
+                            <H></H>
+                            {{else}}
+                            <a data-placement="top" class="btn btn-danger btn-sm glyphicon glyphicon-ok text-white"
+                                onclick="return cancelOrder('{{this._id}}')" title="Danger">Cancel</a>
+                            {{/if}}
                         </div>
                         <div class="col-md-12">order made on: {{this.date}}<br> Delivered to
                             {{this.deliveryDetails.address}}</div>
@@ -32,7 +37,7 @@
             </div>
             {{/each}}
         </div>
-        <div class="panel-footer">Thank you for shopping with us.....Keep Shopping</div>
+        <div class="panel-footer m-5">Thank you for shopping with us.....Keep Shopping</div>
     </div>
 </div>
 

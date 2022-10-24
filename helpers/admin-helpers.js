@@ -59,11 +59,20 @@ module.exports = {
                     })
                 }
             })
-            //let count =await db.get().collection(collection.PRODUCT_COLLECTION).find({category:catId}).count()
-
-
-
-
+        })
+    },
+    getAllorderCount: () => {
+        return new Promise(async (resolve, reject) => {
+            let count = await db.get().collection(collection.ORDER_COLLECTION)
+                .find().count()
+            resolve(count)
+        })
+    },
+    getCompletedCount: () => {
+        return new Promise(async (resolve, reject) => {
+            let count = await db.get().collection(collection.ORDER_COLLECTION)
+                .find({status:'completed'}).count()
+            resolve(count)
         })
     }
 }

@@ -20,7 +20,6 @@
             <th>totalAmount</th>
             <th>Order status</th>
             <th>PaymentMethod</th>
-
           </tr>
         </thead>
         <tbody class="table-border-bottom-0">
@@ -32,18 +31,17 @@
             </td>
             <td>{{this.date}}</td>
             <td>{{this.totalAmount}}</td>
-
             <td>
               <div class="mb-3">
                 <select onchange="changestatus('{{this._id}}')" class="btn-sm btn btn-success-outline" name="status"
                   id="{{this._id}}">
                   {{!-- <option selected>Open this select menu</option> --}}
                   <option selected value={{this.status}}> {{this.status}}</option>
-                  <option value="completed"> Completed</option>
-                  <option value="accepted"> Accepted</option>
-                  <option value="shipped">Shipped</option>
-                  <option value="pending"> Pending</option>
-                  <option value="canceled"> Canceled</option>
+                  <option value="completed">completed</option>
+                  <option value="accepted">accepted</option>
+                  <option value="shipped">shipped</option>
+                  <option value="pending">pending</option>
+                  <option value="canceled">canceled</option>
                 </select>
               </div>
             </td>
@@ -59,4 +57,21 @@
 </div>
 <script type="text/javascript">
   window.setTimeout("document.getElementById('successMessage').style.display='none';", 3000);
+
+  function changestatus(orderid, status) {
+    let st = document.getElementById(orderid);
+    let stat = st.options[st.selectedIndex].text
+    $.ajax({
+      url: "/admin/update-status",
+      data: {
+        cartid: orderid,
+        status: stat
+      },
+      method: "post",
+      success: (response) => {
+        alert(response)
+        location.reload()
+      }
+    })
+  }
 </script>

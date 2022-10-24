@@ -5,11 +5,18 @@ const { response } = require('express')
 let { uid } = require('uid')
 const { NewKeyInstance } = require('twilio/lib/rest/api/v2010/account/newKey')
 var objectId = require('mongodb').ObjectId
+const paypal = require('paypal-rest-sdk');
+paypal.configure({
+    'mode': 'sandbox', //sandbox or live 
+    'client_id': 'AWe8io06sh96342VhmFGyj06SI1F22dVRzwGdQDUd399Y3YegtHH4_EO1LCGuOC7GKbuzw2K_UcNxk_g', // please provide your client id here 
+    'client_secret': 'EGTqB02Zmpgg7NX5fR2Hb5YPgSSB6c_lGBnos_v8YgBJj9aBAB68YFRsby79lp2c2-wQmTwrqX-IC66Z' // provide your client secret here 
+  });
 const Razorpay = require('razorpay');
+const { resolve } = require('node:path')
 var instance = new Razorpay({
     key_id: 'rzp_test_RQe2RaERuutCC1',
     key_secret: 'b4wOGlQREVbeZxvsoXtT0tLo',
-  });
+});
 module.exports = {
     doSignup: (userData) => {
         return new Promise(async (resolve, reject) => {
@@ -287,7 +294,7 @@ module.exports = {
             if (total < 1) {
                 resolve(0)
             } else {
-               
+
                 resolve(total[0].total)
             }
 
@@ -297,7 +304,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let status = order.paymentMethod === 'COD' ? 'placed' : 'pending'
             var date = new Date();
-            var current_time = date.getDate() + "-" + date.getMonth() + "-" + date.getFullYear()
+            var current_time =date.getFullYear()+ "-" + date.getMonth()+ "-" +date.getDate()
             let orderObj = {
                 deliveryDetails: {
                     fname: order.fname,
@@ -323,23 +330,46 @@ module.exports = {
             })
         })
     },
-    generateRazorpay:(orderId,total)=>{
-        return new Promise((resolve,reject)=>{
+    generateRazorpay: (orderId, total) => {
+        return new Promise((resolve, reject) => {
             var options = {
-                amount: total*100,  // amount in the smallest currency unit
+                amount: total * 100,  // amount in the smallest currency unit
                 currency: "INR",
                 receipt: orderId.toHexString()
-              };
-              instance.orders.create(options, function(err, order) {
-                console.log(order,"otderrrrr");
-                if(err){
-                    console.log(err,"error occured");
-                }else{
+            };
+            instance.orders.create(options, function (err, order) {
+                console.log(order, "otderrrrr");
+                if (err) {
+                    console.log(err, "error occured");
+                } else {
                     resolve(order)
                 }
-                
-              });
+
+            });
         })
+
+    },
+    generatePaypal: (payment) => {
+        return new Promise((resolve,reject)=>{
+            var createPay = ( payment ) => {
+                return new Promise( ( resolve , reject ) => {
+                    paypal.payment.create( payment , function( err , payment ) {
+                     if ( err ) {
+                         reject(err); 
+                     }
+                    else {
+                        resolve(payment); 
+                    }
+                    }); 
+                });
+              }	
+
+            
+        })
+        
+        
+       
+            
 
     },
     getCartProductList: (userId) => {
@@ -444,8 +474,16 @@ module.exports = {
             resolve(orders)
         })
     }, changestatus: (details) => {
+
+        let val;
+        if (details.status == 'completed' || details.status == 'canceled') {
+            val = true;
+        } else {
+            val = false;
+        }
+        console.log(details, val);
         return new Promise(async (resolve, reject) => {
-            await db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectId(details.cartid) }, { $set: { status: (details.status) } }).then(() => {
+            await db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectId(details.cartid) }, { $set: { status: (details.status), cancel: val } }).then(() => {
                 resolve("success")
 
             })
@@ -538,7 +576,7 @@ module.exports = {
 
         })
     },
-    getAddressDetails: (adressId,uId) => {
+    getAddressDetails: (adressId, uId) => {
         return new Promise(async (resolve, reject) => {
             let orderItems = await db.get().collection(collection.ADDRESS_COLLECTION).aggregate([
                 {
@@ -549,54 +587,81 @@ module.exports = {
                 },
                 {
                     $project: {
-                        _id:0,
+                        _id: 0,
                         fname: '$address.fname',
                         country: '$address.country',
                         address: '$address.address',
-                        city:'$address.city',
-                        state:'$address.pincode',
-                        mobile:'$address.mobile',
-                        email:'$address.email',
-                        pincode:'$address.pincode',
-                        no:'$address.no',
-                        userId:'$address.userId',
-                        paymentMethod:null
+                        city: '$address.city',
+                        state: '$address.pincode',
+                        mobile: '$address.mobile',
+                        email: '$address.email',
+                        pincode: '$address.pincode',
+                        no: '$address.no',
+                        userId: '$address.userId',
+                        paymentMethod: null
                     }
                 },
                 {
-                    $match:{no:adressId}       
+                    $match: { no: adressId }
                 }
             ]).toArray()
 
             resolve(orderItems)
         })
     },
-    verifyPayment:(details)=>{
-        return new Promise(async(resolve,reject)=>{
-            
+    verifyPayment: (details) => {
+        return new Promise(async (resolve, reject) => {
+
 
             const { createHmac } = await import('node:crypto');
             let hmac = createHmac('sha256', 'b4wOGlQREVbeZxvsoXtT0tLo');
-            hmac.update(details['payment[razorpay_order_id]']+'|'+details['payment[razorpay_payment_id]']);
-            hmac=hmac.digest('hex')
-            if(hmac==details['payment[razorpay_signature]']){
+            hmac.update(details['payment[razorpay_order_id]'] + '|' + details['payment[razorpay_payment_id]']);
+            hmac = hmac.digest('hex')
+            if (hmac == details['payment[razorpay_signature]']) {
                 resolve()
-            }else{
+            } else {
                 reject()
             }
         })
     },
-    changePaymentStatus:(orderId)=>{
-        return new Promise((resolve,reject)=>{
+    changePaymentStatus: (orderId) => {
+        return new Promise((resolve, reject) => {
             db.get().collection(collection.ORDER_COLLECTION)
-            .updateOne({_id:objectId(orderId)},
-            {
-                $set:{
-                    status:'placed'
+                .updateOne({ _id: objectId(orderId) },
+                    {
+                        $set: {
+                            status: 'placed'
+                        }
+                    }
+                ).then(() => {
+                    resolve()
+                })
+        })
+    },
+    cancelOrder: (oId) => {
+        return new Promise(async (resolve, reject) => {
+            await db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectId(oId) }, { $set: { status: "canceled", cancel: true } }).then((response) => {
+                resolve({ status: true })
+
+            })
+        })
+    },
+    userProfile:(id)=>{
+        return new Promise(async(resolve,reject)=>{
+            let user = await db.get().collection(collection.USER_COLLECTION).findOne({ _id:objectId(id) })
+            resolve(user)
+        })
+    },
+    deleteAddress:(uId,aId)=>{
+        console.log(uId,aId);
+        return new Promise((resolve,reject)=>{
+            db.get().collection(collection.ADDRESS_COLLECTION)
+            .updateOne({ user: objectId(uId) },
+                {
+                    $pull:{ address:{ no:aId } }
                 }
-            }
-            ).then(()=>{
-                resolve()
+            ).then((response)=>{
+                resolve({status:true})
             })
         })
     }

@@ -64,8 +64,8 @@ router.get('/user-management', verifyAdmin, (req, res, next) => {
 router.get('/product-management', verifyAdmin, (req, res, next) => {
   productHelper.getAllProducts().then((products) => {
     let err = req.session.proErr
-    res.render('admin/product-management', { admin: true, layout: 'admin', products,err });
-    req.session.proErr=null
+    res.render('admin/product-management', { admin: true, layout: 'admin', products, err });
+    req.session.proErr = null
   })
 });
 
@@ -230,5 +230,15 @@ router.post('/update-status', (req, res) => {
   })
 })
 
+router.get('/reports', async (req, res) => {
+  let total = await adminhelper.getAllorderCount()
+  let completed = await adminhelper.getCompletedCount()
+  console.log(completed, "alllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll");
+  res.render('admin/sales-report', { layout: 'admin', admin: true })
+})
+
+router.post('/reports',(req,res)=>{
+  console.log(req.body,"kukuku");
+})
 
 module.exports = router;
