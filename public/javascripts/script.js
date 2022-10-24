@@ -44,34 +44,16 @@ $("#checkout-form").submit((e) => {
     success: (response) => {
       if (response.codSuccess) {
         location.href = '/order-succesfull'
-        console.log('order success')
-      } else if(response.razorSuccess){
+      } else if(response.razor){
         razorpayPayment(response)
-      }else{
-        createPay(response)
+      }else if(response.pay){
+        location.replace(response.linkto)
       }
 
     }
   })
   // }
 })
- // call the create Pay method 
-        createPay(payment)
-            .then((transaction) => {
-                var id = transaction.id;
-                var links = transaction.links;
-                var counter = links.length;
-                while (counter--) {
-                    if (links[counter].method == 'REDIRECT') {
-                        // redirect to paypal where user approves the transaction 
-                        return res.redirect(links[counter].href)
-                    }
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-                res.redirect('/err');
-            });
 
 
 function razorpayPayment(order) {
@@ -79,7 +61,7 @@ function razorpayPayment(order) {
     "key": "rzp_test_RQe2RaERuutCC1", // Enter the Key ID generated from the Dashboard
     "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
     "currency": "INR",
-    "name": "Acme Corp",
+    "name": "Urban Leaf",
     "description": "Test Transaction",
     "image": "https://example.com/your_logo",
     "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1

@@ -71,8 +71,27 @@ module.exports = {
     getCompletedCount: () => {
         return new Promise(async (resolve, reject) => {
             let count = await db.get().collection(collection.ORDER_COLLECTION)
-                .find({status:'completed'}).count()
+                .find({ status: 'completed' }).count()
             resolve(count)
         })
+    },
+    getTotalProfit: () => {
+        return new Promise(async (resolve, reject) => {
+            let total = await db.get().collection(collection.ORDER_COLLECTION)
+                .aggregate([
+                    {
+
+                        $match:{status:'completed'}
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            sum: { $sum: { $ifNull: ["$totalAmount", 0] } }
+                        }
+                    }
+                ]).toArray()
+            resolve(total[0].sum)
+        })
+
     }
 }

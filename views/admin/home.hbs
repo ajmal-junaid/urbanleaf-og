@@ -309,6 +309,8 @@
       <!--/ Order Statistics -->
 
       <!-- Expense Overview -->
+
+      {{!-- test --}}
       <div class="col-md-6 col-lg-4 order-1 mb-4">
         <div class="card h-100">
           <div class="card-header">
@@ -513,7 +515,40 @@
 </div>
 <!-- / Layout page -->
 </div>
-
+<div>
+  <canvas id="myChart" class="myChart "></canvas>
+</div>
 <!-- Overlay -->
 <div class="layout-overlay layout-menu-toggle"></div>
 </div>
+<script>
+  const labels = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+  ];
+  const data = {
+    labels: labels,
+    datasets: [{
+      label: 'My First dataset',
+      backgroundColor: 'rgb(255, 99, 132)',
+      borderColor: 'rgb(255, 99, 132)',
+      data: [0, 10, 5, 2, 20, 30, 45],
+    }]
+  };
+
+  const config = {
+    type: 'line',
+    data: data,
+    options: {}
+  };
+
+  const myChart = new Chart(
+    document.getElementById('myChart'),
+    config
+  );
+
+</script>

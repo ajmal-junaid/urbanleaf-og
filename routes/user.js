@@ -11,8 +11,8 @@ var uuid = require('uuid');
 var paypal = require('paypal-rest-sdk');
 paypal.configure({
   'mode': 'sandbox', //sandbox or live 
-  'client_id': 'AWe8io06sh96342VhmFGyj06SI1F22dVRzwGdQDUd399Y3YegtHH4_EO1LCGuOC7GKbuzw2K_UcNxk_g', // please provide your client id here 
-  'client_secret': 'EGTqB02Zmpgg7NX5fR2Hb5YPgSSB6c_lGBnos_v8YgBJj9aBAB68YFRsby79lp2c2-wQmTwrqX-IC66Z' // provide your client secret here 
+  'client_id': 'AfJs549ebqbB9hzZNAfPtD8Oi7GYwmzbEhFcxnyxrMFF_6j3H-F_Y_1AIgsqnLFnIWQRtFvpMlZ1BcVM', // please provide your client id here 
+  'client_secret': 'EHYmg-Hy7ojAvdGgNUR8tgjbSm6YlTUCI97BvwcIK-PaOMLdWklopX34anc7tJIPpKf9aYt7NWvj7Nwz' // provide your client secret here 
 });
 const verifyLogin = (req, res, next) => {
   if (req.session.userLoggedIn == true) {
@@ -227,9 +227,10 @@ router.post('/remove-product-cart', (req, res) => {
 })
 
 router.get('/proceed-page', async (req, res) => {
-  let total = await userHelpers.getTotalAmount(req.session.user._id)
-  let discount = await userHelpers.getTotalDiscount(req.session.user._id)
   let user = req.session.user
+  let total = await userHelpers.getTotalAmount(user._id)
+  let discount = await userHelpers.getTotalDiscount(req.session.user._id)
+  
   let cartCount = await userHelpers.getCartCount(req.session.user._id)
   let products = await userHelpers.getCartProducts(req.session.user._id)
   let address = await userHelpers.getAddresses(req.session.user._id)
@@ -245,34 +246,55 @@ router.post('/proceed-page', async (req, res) => {
   let addrs = address.shift();
   console.log(req.body);
   addrs.paymentMethod = req.body.paymentMethod
-  userHelpers.placeOrder(addrs, products, totalPrice).then((orderId) => {
+  userHelpers.placeOrder(addrs, products, totalPrice).then(async(orderId) => {
     if (req.body.paymentMethod == "COD") {
       res.json({ codSuccess: true })
     } else if (req.body.paymentMethod == "RAZOR") {
       userHelpers.generateRazorpay(orderId, totalPrice).then((response) => {
-        res.json({ razorSuccess: true })
+        response.razor=true
+        res.json(response)
       })
     } else if (req.body.paymentMethod == "PAYPAL") {
-      var payment = {
+       var payment = {
         "intent": "authorize",
         "payer": {
           "payment_method": "paypal"
         },
         "redirect_urls": {
-          "return_url": "/order-succesfull",
-          "cancel_url": "/payment-failed"
+          "return_url": "http://localhost:3000/order-succesfull",
+          "cancel_url": "http://localhost:3000/payment-failed"
         },
         "transactions": [{
           "amount": {
-            "total": totalPrice * 100,
+            "total": totalPrice,
             "currency": "USD"
           },
           "description": orderId
         }]
       }
-      userHelpers.generatePaypal(orderId, totalPrice).then((response => {
-        res.json(response)
-      }))
+        // call the create Pay method 
+        userHelpers.createPay(payment).then((transaction) => {
+                var id = transaction.id;
+                var links = transaction.links;
+                var counter = links.length;
+                while (counter--) {
+                    if (links[counter].rel === 'approval_url') {
+                        transaction.pay=true
+                        transaction.linkto=links[counter].href
+                        transaction.orderId=orderId
+                        userHelpers.changePaymentStatus(orderId).then(()=>{
+                          res.json(transaction)
+                        })
+                    }
+                }
+            })
+            .catch((err) => {
+                res.redirect('/err');
+            });
+       
+      
+    }else{
+      res.send("errrrrr")
     }
   })
 })

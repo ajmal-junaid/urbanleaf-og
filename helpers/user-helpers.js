@@ -6,11 +6,7 @@ let { uid } = require('uid')
 const { NewKeyInstance } = require('twilio/lib/rest/api/v2010/account/newKey')
 var objectId = require('mongodb').ObjectId
 const paypal = require('paypal-rest-sdk');
-paypal.configure({
-    'mode': 'sandbox', //sandbox or live 
-    'client_id': 'AWe8io06sh96342VhmFGyj06SI1F22dVRzwGdQDUd399Y3YegtHH4_EO1LCGuOC7GKbuzw2K_UcNxk_g', // please provide your client id here 
-    'client_secret': 'EGTqB02Zmpgg7NX5fR2Hb5YPgSSB6c_lGBnos_v8YgBJj9aBAB68YFRsby79lp2c2-wQmTwrqX-IC66Z' // provide your client secret here 
-  });
+
 const Razorpay = require('razorpay');
 const { resolve } = require('node:path')
 var instance = new Razorpay({
@@ -304,7 +300,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let status = order.paymentMethod === 'COD' ? 'placed' : 'pending'
             var date = new Date();
-            var current_time =date.getFullYear()+ "-" + date.getMonth()+ "-" +date.getDate()
+            var current_time = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate()
             let orderObj = {
                 deliveryDetails: {
                     fname: order.fname,
@@ -349,28 +345,17 @@ module.exports = {
         })
 
     },
-    generatePaypal: (payment) => {
-        return new Promise((resolve,reject)=>{
-            var createPay = ( payment ) => {
-                return new Promise( ( resolve , reject ) => {
-                    paypal.payment.create( payment , function( err , payment ) {
-                     if ( err ) {
-                         reject(err); 
-                     }
-                    else {
-                        resolve(payment); 
+    createPay: (payment) => {
+        return new Promise((resolve, reject) => {
+                paypal.payment.create(payment, function (err, payment) {
+                    if (err) {
+                        reject(err);
                     }
-                    }); 
+                    else {
+                        resolve(payment);
+                    }
                 });
-              }	
-
-            
         })
-        
-        
-       
-            
-
     },
     getCartProductList: (userId) => {
         return new Promise(async (resolve, reject) => {
@@ -646,23 +631,23 @@ module.exports = {
             })
         })
     },
-    userProfile:(id)=>{
-        return new Promise(async(resolve,reject)=>{
-            let user = await db.get().collection(collection.USER_COLLECTION).findOne({ _id:objectId(id) })
+    userProfile: (id) => {
+        return new Promise(async (resolve, reject) => {
+            let user = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: objectId(id) })
             resolve(user)
         })
     },
-    deleteAddress:(uId,aId)=>{
-        console.log(uId,aId);
-        return new Promise((resolve,reject)=>{
+    deleteAddress: (uId, aId) => {
+        console.log(uId, aId);
+        return new Promise((resolve, reject) => {
             db.get().collection(collection.ADDRESS_COLLECTION)
-            .updateOne({ user: objectId(uId) },
-                {
-                    $pull:{ address:{ no:aId } }
-                }
-            ).then((response)=>{
-                resolve({status:true})
-            })
+                .updateOne({ user: objectId(uId) },
+                    {
+                        $pull: { address: { no: aId } }
+                    }
+                ).then((response) => {
+                    resolve({ status: true })
+                })
         })
     }
 

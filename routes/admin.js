@@ -4,8 +4,6 @@ var router = express.Router();
 var productHelper = require('../helpers/product-helpers')
 var adminhelper = require('../helpers/admin-helpers');
 var userHelpers = require('../helpers/user-helpers');
-//for runnning without auth
-
 //end
 
 const verifyAdmin = (req, res, next) => {
@@ -233,7 +231,8 @@ router.post('/update-status', (req, res) => {
 router.get('/reports', async (req, res) => {
   let total = await adminhelper.getAllorderCount()
   let completed = await adminhelper.getCompletedCount()
-  console.log(completed, "alllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll");
+  let totalprofit=await adminhelper.getTotalProfit()
+  console.log(totalprofit, "alllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll");
   res.render('admin/sales-report', { layout: 'admin', admin: true })
 })
 
