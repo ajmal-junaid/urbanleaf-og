@@ -48,8 +48,20 @@ router.post('/login', (req, res) => {
   })
 });
 
-router.get('/home', verifyAdmin, (req, res, next) => {
-  res.render('admin/home', { admin: true, layout: 'admin' });
+router.get('/home', verifyAdmin, async (req, res, next) => {
+  let totalorder = await adminhelper.getAllorderCount()
+  let count = await adminhelper.getCountAll()
+  let prof = await adminhelper.getTotalProfit()
+  let obj = await adminhelper.getInsights()
+  let pay = await adminhelper.getCodOnline()
+  let onll=parseInt(pay.razor[0].sum) +parseInt( pay.paypal[0].sum)
+  let cod=pay.cod[0].sum
+  let totl=onll+cod
+  console.log(onll,cod, "payyyyyyyyyyy");
+  let { ...info } = obj
+
+
+  res.render('admin/home', { admin: true, layout: 'admin', totalorder, count, prof,onll,cod,totl, barData: 9 });
 });
 
 
@@ -230,14 +242,15 @@ router.post('/update-status', (req, res) => {
 
 router.get('/reports', async (req, res) => {
   let total = await adminhelper.getAllorderCount()
-  let completed = await adminhelper.getCompletedCount()
-  let totalprofit=await adminhelper.getTotalProfit()
-  console.log(totalprofit, "alllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll");
+
+  let totalprofit = await adminhelper.getTotalProfit()
   res.render('admin/sales-report', { layout: 'admin', admin: true })
 })
 
-router.post('/reports',(req,res)=>{
-  console.log(req.body,"kukuku");
+router.post('/reports', async (req, res) => {
+
+  console.log(req.body, "kukuku",);
+  res.send(rep)
 })
 
 module.exports = router;

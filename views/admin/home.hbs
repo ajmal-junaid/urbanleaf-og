@@ -53,12 +53,14 @@
                   </div>
                 </div>
                 <span class="fw-semibold d-block mb-1">Profit</span>
-                <h3 class="card-title mb-2">$12,628</h3>
+                <h3 class="card-title mb-2">₹{{prof}}</h3>
                 <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i>
                   +72.80%</small>
               </div>
             </div>
           </div>
+
+
           <div class="col-lg-6 col-md-12 col-6 mb-4">
             <div class="card">
               <div class="card-body">
@@ -77,8 +79,8 @@
                     </div>
                   </div>
                 </div>
-                <span>Sales</span>
-                <h3 class="card-title text-nowrap mb-1">$4,679</h3>
+                <span>Total Sales</span>
+                <h3 class="card-title text-nowrap mb-1">{{totalorder}} orders</h3>
                 <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i>
                   +28.42%</small>
               </div>
@@ -92,49 +94,11 @@
           <div class="row row-bordered g-0">
             <div class="col-md-8">
               <h5 class="card-header m-0 me-2 pb-3">Total Revenue</h5>
-              <div id="totalRevenueChart" class="px-2"></div>
+              {{!-- <div id="totalRevenueChart" class="px-2"></div> --}}
+              {{!-- <canvas id="myChart" style="width:100%;max-width:850px" class="p-3"></canvas> --}}
+              <canvas id="myChart" width="400" height="150"></canvas>
             </div>
-            <div class="col-md-4">
-              <div class="card-body">
-                <div class="text-center">
-                  <div class="dropdown">
-                    <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" id="growthReportId"
-                      data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      2022
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="growthReportId">
-                      <a class="dropdown-item" href="javascript:void(0);">2021</a>
-                      <a class="dropdown-item" href="javascript:void(0);">2020</a>
-                      <a class="dropdown-item" href="javascript:void(0);">2019</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div id="growthChart"></div>
-              <div class="text-center fw-semibold pt-3 mb-2">12% Company
-                Growth</div>
 
-              <div class="d-flex px-xxl-4 px-lg-2 p-4 gap-xxl-3 gap-lg-1 gap-3 justify-content-between">
-                <div class="d-flex">
-                  <div class="me-2">
-                    <span class="badge bg-label-primary p-2"><i class="bx bx-dollar text-primary"></i></span>
-                  </div>
-                  <div class="d-flex flex-column">
-                    <small>2022</small>
-                    <h6 class="mb-0">$32.5k</h6>
-                  </div>
-                </div>
-                <div class="d-flex">
-                  <div class="me-2">
-                    <span class="badge bg-label-info p-2"><i class="bx bx-wallet text-info"></i></span>
-                  </div>
-                  <div class="d-flex flex-column">
-                    <small>2021</small>
-                    <h6 class="mb-0">$41.2k</h6>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -159,8 +123,8 @@
                     </div>
                   </div>
                 </div>
-                <span class="d-block mb-1">Payments</span>
-                <h3 class="card-title text-nowrap mb-2">$2,456</h3>
+                <span class="d-block mb-1">Online Payments</span>
+                <h3 class="card-title text-nowrap mb-2">₹{{onll}}</h3>
                 <small class="text-danger fw-semibold"><i class="bx bx-down-arrow-alt"></i>
                   -14.82%</small>
               </div>
@@ -184,8 +148,8 @@
                     </div>
                   </div>
                 </div>
-                <span class="fw-semibold d-block mb-1">Transactions</span>
-                <h3 class="card-title mb-2">$14,857</h3>
+                <span class="fw-semibold d-block mb-1">COD Payments</span>
+                <h3 class="card-title mb-2">₹{{cod}}</h3>
                 <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i>
                   +28.14%</small>
               </div>
@@ -199,12 +163,12 @@
                 <div class="d-flex justify-content-between flex-sm-row flex-column gap-3">
                   <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
                     <div class="card-title">
-                      <h5 class="text-nowrap mb-2">Profile Report</h5>
+                      <h5 class="text-nowrap mb-2">Total Payments</h5>
                       <span class="badge bg-label-warning rounded-pill">Year 2021</span>
                     </div>
                     <div class="mt-sm-auto">
                       <small class="text-success text-nowrap fw-semibold"><i class="bx bx-chevron-up"></i> 68.2%</small>
-                      <h3 class="mb-0">$84,686k</h3>
+                      <h3 class="mb-0">₹{{totl}}</h3>
                     </div>
                   </div>
                   <div id="profileReportChart"></div>
@@ -222,7 +186,7 @@
           <div class="card-header d-flex align-items-center justify-content-between pb-0">
             <div class="card-title mb-0">
               <h5 class="m-0 me-2">Order Statistics</h5>
-              <small class="text-muted">42.82k Total Sales</small>
+              <small class="text-muted"> Sales Details</small>
             </div>
             <div class="dropdown">
               <button class="btn p-0" type="button" id="orederStatistics" data-bs-toggle="dropdown" aria-haspopup="true"
@@ -240,67 +204,68 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <div class="d-flex flex-column align-items-center gap-1">
-                <h2 class="mb-2">10,258</h2>
+                <h2 class="mb-2">{{totalorder}}</h2>
                 <span>Total Orders</span>
               </div>
               <div id="orderStatisticsChart"></div>
             </div>
             <ul class="p-0 m-0">
               <li class="d-flex mb-4 pb-1">
-                <div class="avatar flex-shrink-0 me-3">
+                {{!-- <div class="avatar flex-shrink-0 me-3">
                   <span class="avatar-initial rounded bg-label-primary"><i class="bx bx-mobile-alt"></i></span>
-                </div>
+                </div> --}}
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
-                    <h6 class="mb-0">Electronic</h6>
-                    <small class="text-muted">Mobile, Earbuds, TV</small>
+                    <h6 class="mb-0">Just Placed</h6>
+                    {{!-- <small class="text-muted">Mobile, Earbuds, TV</small> --}}
                   </div>
                   <div class="user-progress">
-                    <small class="fw-semibold">82.5k</small>
+                    <small class="fw-semibold">{{count.placed}}</small>
                   </div>
                 </div>
               </li>
               <li class="d-flex mb-4 pb-1">
-                <div class="avatar flex-shrink-0 me-3">
+                {{!-- <div class="avatar flex-shrink-0 me-3">
                   <span class="avatar-initial rounded bg-label-success"><i class="bx bx-closet"></i></span>
-                </div>
+                </div> --}}
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
-                    <h6 class="mb-0">Fashion</h6>
-                    <small class="text-muted">T-shirt, Jeans, Shoes</small>
+                    <h6 class="mb-0">Payment Pending</h6>
+                    {{!-- <small class="text-muted">T-shirt, Jeans, Shoes</small> --}}
                   </div>
                   <div class="user-progress">
-                    <small class="fw-semibold">23.8k</small>
+                    <small class="fw-semibold">{{count.pending}}</small>
                   </div>
                 </div>
               </li>
               <li class="d-flex mb-4 pb-1">
-                <div class="avatar flex-shrink-0 me-3">
+                {{!-- <div class="avatar flex-shrink-0 me-3">
                   <span class="avatar-initial rounded bg-label-info"><i class="bx bx-home-alt"></i></span>
-                </div>
+                </div> --}}
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
-                    <h6 class="mb-0">Decor</h6>
-                    <small class="text-muted">Fine Art, Dining</small>
+                    <h6 class="mb-0">Completed Orders</h6>
+                    {{!-- <small class="text-muted">Fine Art, Dining</small> --}}
                   </div>
                   <div class="user-progress">
-                    <small class="fw-semibold">849k</small>
+                    <small class="fw-semibold">{{count.completed}}</small>
                   </div>
                 </div>
               </li>
               <li class="d-flex">
-                <div class="avatar flex-shrink-0 me-3">
+                {{!-- <div class="avatar flex-shrink-0 me-3">
                   <span class="avatar-initial rounded bg-label-secondary"><i class="bx bx-football"></i></span>
-                </div>
+                </div> --}}
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
-                    <h6 class="mb-0">Sports</h6>
-                    <small class="text-muted">Football, Cricket Kit</small>
+                    <h6 class="mb-0">Canceled orders</h6>
+                    {{!-- <small class="text-muted">Football, Cricket Kit</small> --}}
                   </div>
                   <div class="user-progress">
-                    <small class="fw-semibold">99</small>
+                    <small class="fw-semibold">{{count.canceled}}</small>
                   </div>
                 </div>
+
               </li>
             </ul>
           </div>
@@ -335,7 +300,7 @@
               <div class="tab-pane fade show active" id="navs-tabs-line-card-income" role="tabpanel">
                 <div class="d-flex p-4 pt-3">
                   <div class="avatar flex-shrink-0 me-3">
-                    <img src="../assets/img/icons/unicons/wallet.png" alt="User" />
+                    <img src="../admassets/img/icons/unicons/wallet.png" alt="User" />
                   </div>
                   <div>
                     <small class="text-muted d-block">Total Balance</small>
@@ -389,7 +354,7 @@
             <ul class="p-0 m-0">
               <li class="d-flex mb-4 pb-1">
                 <div class="avatar flex-shrink-0 me-3">
-                  <img src="../assets/img/icons/unicons/paypal.png" alt="User" class="rounded" />
+                  <img src="../admassets/img/icons/unicons/paypal.png" alt="User" class="rounded" />
                 </div>
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
@@ -404,7 +369,7 @@
               </li>
               <li class="d-flex mb-4 pb-1">
                 <div class="avatar flex-shrink-0 me-3">
-                  <img src="../assets/img/icons/unicons/wallet.png" alt="User" class="rounded" />
+                  <img src="../admassets/img/icons/unicons/wallet.png" alt="User" class="rounded" />
                 </div>
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
@@ -419,7 +384,7 @@
               </li>
               <li class="d-flex mb-4 pb-1">
                 <div class="avatar flex-shrink-0 me-3">
-                  <img src="../assets/img/icons/unicons/chart.png" alt="User" class="rounded" />
+                  <img src="../admassets/img/icons/unicons/chart.png" alt="User" class="rounded" />
                 </div>
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
@@ -434,7 +399,7 @@
               </li>
               <li class="d-flex mb-4 pb-1">
                 <div class="avatar flex-shrink-0 me-3">
-                  <img src="../assets/img/icons/unicons/cc-success.png" alt="User" class="rounded" />
+                  <img src="../admassets/img/icons/unicons/cc-success.png" alt="User" class="rounded" />
                 </div>
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
@@ -449,7 +414,7 @@
               </li>
               <li class="d-flex mb-4 pb-1">
                 <div class="avatar flex-shrink-0 me-3">
-                  <img src="../assets/img/icons/unicons/wallet.png" alt="User" class="rounded" />
+                  <img src="../admassets/img/icons/unicons/wallet.png" alt="User" class="rounded" />
                 </div>
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
@@ -464,7 +429,7 @@
               </li>
               <li class="d-flex">
                 <div class="avatar flex-shrink-0 me-3">
-                  <img src="../assets/img/icons/unicons/cc-warning.png" alt="User" class="rounded" />
+                  <img src="../admassets/img/icons/unicons/cc-warning.png" alt="User" class="rounded" />
                 </div>
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
@@ -515,40 +480,47 @@
 </div>
 <!-- / Layout page -->
 </div>
-<div>
-  <canvas id="myChart" class="myChart "></canvas>
-</div>
+
 <!-- Overlay -->
 <div class="layout-overlay layout-menu-toggle"></div>
 </div>
 <script>
-  const labels = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-  ];
-  const data = {
-    labels: labels,
-    datasets: [{
-      label: 'My First dataset',
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgb(255, 99, 132)',
-      data: [0, 10, 5, 2, 20, 30, 45],
-    }]
-  };
+  //console.log({{ barData }})
 
-  const config = {
-    type: 'line',
-    data: data,
-    options: {}
-  };
+  const ctx = document.getElementById('myChart').getContext('2d');
+  const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Orders Placed', 'Orders Delivered', 'Orders Canceled'],
+      datasets: [{
+        label: '# In The Past Month',
 
-  const myChart = new Chart(
-    document.getElementById('myChart'),
-    config
-  );
-
+        data: [30, 27, 33],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
 </script>

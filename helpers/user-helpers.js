@@ -299,8 +299,8 @@ module.exports = {
     placeOrder: (order, product, total) => {
         return new Promise((resolve, reject) => {
             let status = order.paymentMethod === 'COD' ? 'placed' : 'pending'
-            var date = new Date();
-            var current_time = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate()
+            // var date = new Date();
+            // var current_time = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate()
             let orderObj = {
                 deliveryDetails: {
                     fname: order.fname,
@@ -318,7 +318,7 @@ module.exports = {
                 product: product,
                 totalAmount: total,
                 status: status,
-                date: current_time
+                date: new Date()
             }
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((response) => {
                 db.get().collection(collection.CART_COLLECTION).deleteOne({ user: objectId(order.userId) })

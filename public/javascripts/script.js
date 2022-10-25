@@ -29,7 +29,7 @@ $("#checkout-form").submit((e) => {
   //function placeorder() {
   addressSelect = document.querySelector('input[name="address-method"]:checked').value
   paymentMethodS = document.querySelector('input[name="payment-method"]:checked').value
-  var form = document.getElementById("checkout-form");
+  //var form = document.getElementById("checkout-form");
   //alert(form.elements["checkout-form"].value);
   e.preventDefault()
 
