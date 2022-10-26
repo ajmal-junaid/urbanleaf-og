@@ -14,6 +14,40 @@ function addToCart(proId) {
     }
   })
 }
+
+function addToCartt(proId) {
+  $.ajax({
+    url: '/add-to-cartt/' + proId,
+    method: 'get',
+    success: (response) => {
+      if (response.status) {
+        let count = $('#cart-count').html()
+        count = parseInt(count) + 1
+        $("#cart-count").html(count)
+        document.getElementById('totalh').innerHTML = response.total
+        location.reload()
+      }
+
+    }
+  })
+}
+
+function addToWishlist(proId) {
+  $.ajax({
+    url: '/add-to-wishlist/' + proId,
+    method: 'get',
+    success: (response) => {
+      if (response.status) {
+        //let count = $('#cart-count').html()
+        //count = parseInt(count) + 1
+       // $("#cart-count").html(count)
+        // document.getElementById('totalh').innerHTML = response.total
+        location.reload()
+      }
+
+    }
+  })
+}
 function cancelOrder(ordId) {
   $.ajax({
     url: '/cancel-order/' + ordId,

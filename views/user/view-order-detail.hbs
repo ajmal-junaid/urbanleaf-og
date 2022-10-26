@@ -5,7 +5,8 @@
                 <div class="col-lg-10 col-xl-8">
                     <div class="card" style="border-radius: 10px;">
                         <div class="card-header px-4 py-5">
-                            <h5 class="text-muted mb-0">Thanks for your Order, <span style="color: #a8729a;">{{user.name}}</span>!
+                            <h5 class="text-muted mb-0">Thanks for your Order, <span
+                                    style="color: #a8729a;">{{user.name}}</span>!
                             </h5>
                         </div>
                         <div class="card-body p-4">
@@ -76,7 +77,8 @@
 
                             <div class="d-flex justify-content-between pt-2">
                                 <p class="text-muted mb-0">Status : {{products.status}}</p>
-                                <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span> $19.00</p>
+                                <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span>
+                                    ${{products.product.discountAmount}}.00</p>
                             </div>
 
                             <div class="d-flex justify-content-between">

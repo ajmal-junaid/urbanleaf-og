@@ -6,7 +6,6 @@ const { get } = require('../app')
 var objectId = require('mongodb').ObjectId
 module.exports = {
     doAdminLogin: (adminData) => {
-
         return new Promise(async (resolve, reject) => {
             let loginStatus = false
             let response = {}
@@ -99,7 +98,6 @@ module.exports = {
             let total = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
                     {
-
                         $match: { status: 'completed' }
                     },
                     {
@@ -111,14 +109,12 @@ module.exports = {
                 ]).toArray()
             resolve(total[0].sum)
         })
-
     },
     getTotalCod: () => {
         return new Promise(async (resolve, reject) => {
             let total = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
                     {
-
                         $match: { paymentMethod: 'COD' }
                     }
                     ,
@@ -175,27 +171,26 @@ module.exports = {
             let cod = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
                     {
-
                         $match: { paymentMethod: 'COD' }
                     },
                     {
-                        $match:{status:'completed'}
+                        $match: { status: 'completed' }
                     },
-                    {                                                                                                         
+                    {
                         $group: {
                             _id: null,
                             sum: { $sum: { $ifNull: ["$totalAmount", 0] } }
                         }
                     }
                 ]).toArray()
-                let razor = await db.get().collection(collection.ORDER_COLLECTION)
+            let razor = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
                     {
 
                         $match: { paymentMethod: 'RAZOR' }
                     },
                     {
-                        $match:{status:'completed'}
+                        $match: { status: 'completed' }
                     },
                     {
                         $group: {
@@ -203,16 +198,14 @@ module.exports = {
                             sum: { $sum: { $ifNull: ["$totalAmount", 0] } }
                         }
                     }
-                    
                 ]).toArray()
-                let paypal = await db.get().collection(collection.ORDER_COLLECTION)
+            let paypal = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
                     {
-
                         $match: { paymentMethod: 'PAYPAL' }
                     },
                     {
-                        $match:{status:'completed'}
+                        $match: { status: 'completed' }
                     },
                     {
                         $group: {
@@ -220,15 +213,39 @@ module.exports = {
                             sum: { $sum: { $ifNull: ["$totalAmount", 0] } }
                         }
                     }
-                    
                 ]).toArray()
-                let obj={}
-                obj.razor=razor
-                obj.paypal=paypal
-                obj.cod=cod
+            let obj = {}
+            obj.razor = razor
+            obj.paypal = paypal
+            obj.cod = cod
             resolve(obj)
         })
 
+    },
+    getReport: () => {
+        return new Promise(async (resolve, reject) => {
+            let first = await db.get().collection(collection.ORDER_COLLECTION)
+                .aggregate([
+                    {
+                        $match: { status: 'completed' }
+                    },
+                    {
+                        $unwind: '$product'
+                    },
+                    {
+                        $project: {
+                            _id: 0, paymentMethod: 1, product: 1, totalAmount: 1, status: 1
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: '$product.item',
+                            totalquantity: { $sum: '$product.quantity' }
+                        }
+                    }
+                ]).toArray()
+            resolve(first)
+        })
     }
 
 }

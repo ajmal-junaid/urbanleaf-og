@@ -54,14 +54,16 @@ router.get('/home', verifyAdmin, async (req, res, next) => {
   let prof = await adminhelper.getTotalProfit()
   let obj = await adminhelper.getInsights()
   let pay = await adminhelper.getCodOnline()
-  let onll=parseInt(pay.razor[0].sum) +parseInt( pay.paypal[0].sum)
-  let cod=pay.cod[0].sum
-  let totl=onll+cod
-  console.log(onll,cod, "payyyyyyyyyyy");
+  let onll = parseInt(pay.razor[0].sum) + parseInt(pay.paypal[0].sum)
+  let cod = pay.cod[0].sum
+  let totl = onll + cod
   let { ...info } = obj
+  //obj.forEach(element => console.log(element));
+
+  console.log(obj, "payyyyyyyyyyy");
 
 
-  res.render('admin/home', { admin: true, layout: 'admin', totalorder, count, prof,onll,cod,totl, barData: 9 });
+  res.render('admin/home', { admin: true, layout: 'admin', totalorder, count, prof, onll, cod, totl, barData: obj });
 });
 
 
@@ -241,6 +243,8 @@ router.post('/update-status', (req, res) => {
 })
 
 router.get('/reports', async (req, res) => {
+  let rep = await adminhelper.getReport()
+  console.log(rep, 'report');
   let total = await adminhelper.getAllorderCount()
 
   let totalprofit = await adminhelper.getTotalProfit()

@@ -26,7 +26,10 @@ module.exports = {
     },
     getAllProducts: () => {
         return new Promise(async (resolve, reject) => {
-            let products = await db.get().collection(collection.PRODUCT_COLLECTION).find().toArray()
+            let products = await db.get().collection(collection.PRODUCT_COLLECTION).find().sort({
+                date
+                    : -1
+            }).toArray()
             resolve(products)
         })
     },
@@ -88,6 +91,15 @@ module.exports = {
             let prods = db.get().collection(collection.PRODUCT_COLLECTION)
                 .find({ category: catName }).toArray()
             resolve(prods)
+        })
+    },
+    getLatestProducts: () => {
+        return new Promise(async (resolve, reject) => {
+            let products = await db.get().collection(collection.PRODUCT_COLLECTION).find().sort({
+                date
+                    : -1
+            }).limit(8).toArray()
+            resolve(products)
         })
     }
 }

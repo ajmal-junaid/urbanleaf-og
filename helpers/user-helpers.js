@@ -6,7 +6,6 @@ let { uid } = require('uid')
 const { NewKeyInstance } = require('twilio/lib/rest/api/v2010/account/newKey')
 var objectId = require('mongodb').ObjectId
 const paypal = require('paypal-rest-sdk');
-
 const Razorpay = require('razorpay');
 const { resolve } = require('node:path')
 var instance = new Razorpay({
@@ -209,6 +208,17 @@ module.exports = {
             resolve(count)
         })
     },
+    getWishlistCount: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let count = 0
+            let cart = await db.get().collection(collection.WISHLIST_COLLECTION).findOne({ user: objectId(userId) })
+            if (cart) {
+                count = cart.product.length
+            }
+            resolve(count)
+        })
+    }
+    ,
     changeProductQuantity: (details) => {
         details.count = parseInt(details.count)
         details.quantity = parseInt(details.quantity)
@@ -347,14 +357,14 @@ module.exports = {
     },
     createPay: (payment) => {
         return new Promise((resolve, reject) => {
-                paypal.payment.create(payment, function (err, payment) {
-                    if (err) {
-                        reject(err);
-                    }
-                    else {
-                        resolve(payment);
-                    }
-                });
+            paypal.payment.create(payment, function (err, payment) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(payment);
+                }
+            });
         })
     },
     getCartProductList: (userId) => {
@@ -368,7 +378,7 @@ module.exports = {
     getUserOrders: (userId) => {
         return new Promise(async (resolve, reject) => {
             let orders = await db.get().collection(collection.ORDER_COLLECTION)
-                .find({ userId: objectId(userId) }).toArray()
+                .find({ userId: objectId(userId) }).sort({ date: -1 }).toArray()
 
             resolve(orders)
         })
@@ -454,7 +464,7 @@ module.exports = {
     getAllUserOrders: (userId) => {
         return new Promise(async (resolve, reject) => {
             let orders = await db.get().collection(collection.ORDER_COLLECTION)
-                .find().toArray()
+                .find().sort({ date: -1 }).toArray()
 
             resolve(orders)
         })
@@ -648,6 +658,131 @@ module.exports = {
                 ).then((response) => {
                     resolve({ status: true })
                 })
+        })
+    },
+    addToWishlist: (prodId, userId) => {
+        let proObj = {
+            item: objectId(prodId)
+        }
+        return new Promise(async (resolve, reject) => {
+            let userwishlist = await db.get().collection(collection.WISHLIST_COLLECTION).findOne({ user: objectId(userId) })
+            console.log("dgdgdgd", userwishlist);
+            if (userwishlist) {
+                db.get().collection(collection.WISHLIST_COLLECTION).updateOne({ user: objectId(userId) },
+                    {
+                        $addToSet: { product: proObj }
+
+                    }).then((response) => {
+                        resolve()
+                    })
+
+
+            } else {
+                console.log("new wishlist created");
+                let cartObj = {
+                    user: objectId(userId),
+                    product: [proObj]
+                }
+                db.get().collection(collection.WISHLIST_COLLECTION).insertOne(cartObj).then((response) => {
+                    resolve(response)
+                })
+            }
+        })
+    },
+    getWishlist: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let wishlist = await db.get().collection(collection.WISHLIST_COLLECTION).aggregate([
+                {
+                    $match: { user: objectId(userId) }
+                },
+                {
+                    $unwind: '$product'
+                },
+                {
+                    $project: {
+                        item: '$product.item',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: collection.PRODUCT_COLLECTION,
+                        localField: 'item',
+                        foreignField: '_id',
+                        as: 'product'
+                    }
+                },
+                {
+                    $project: {
+                        item: 1, product: { $arrayElemAt: ['$product', 0] }
+                    }
+                },
+                {
+                    $project: {
+                        item: 1, product: 1
+                    }
+                }
+            ]).toArray()
+            resolve(wishlist)
+        })
+    },
+    addToCartt: (prodId, userId) => {
+        let proObj = {
+            item: objectId(prodId),
+            quantity: 1
+        }
+        console.log("rockiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+        return new Promise(async (resolve, reject) => {
+            let userCart = await db.get().collection(collection.CART_COLLECTION).findOne({ user: objectId(userId) })
+            //console.log("dgdgdgd", userCart);
+            if (userCart) {
+                let proExist = userCart.product.findIndex(product => product.item == prodId)
+                if (proExist != -1) {
+                    console.log("not e -1");
+                    db.get().collection(collection.CART_COLLECTION)
+                        .updateOne({ user: objectId(userId), 'product.item': objectId(prodId) },
+                            {
+                                $inc: { 'product.$.quantity': 1 }
+                            }
+                        ).then(() => {
+                            db.get().collection(collection.WISHLIST_COLLECTION)
+                                .updateOne({ user: objectId(userId) },
+                                    {
+                                        $pull: { product: { item: objectId(prodId) } }
+                                    }).then(()=>{
+                                        resolve()
+                                    })
+                            
+                        })
+                } else {
+                    db.get().collection(collection.CART_COLLECTION).updateOne({ user: objectId(userId) },
+                        {
+                            $push: { product: proObj }
+
+                        }).then((response) => {
+                            db.get().collection(collection.WISHLIST_COLLECTION)
+                                .updateOne({ user: objectId(userId) },
+                                    {
+                                        $pull: { product: { item: objectId(prodId) } }
+                                    }).then(() => {
+                                        resolve()
+                                    })
+                        })
+                }
+            } else {
+                console.log("new cart created");
+                let cartObj = {
+                    user: objectId(userId),
+                    product: [proObj]
+                }
+                db.get().collection(collection.CART_COLLECTION).insertOne(cartObj).then((response) => {
+                    db.get().collection(collection.WISHLIST_COLLECTION)
+                        .updateOne({ _id: objectId(userId) },
+                            {
+                                $pull: { product: { item: objectId(prodId) } }
+                            })
+                    resolve(response)
+                })
+            }
         })
     }
 
