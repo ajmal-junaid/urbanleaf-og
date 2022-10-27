@@ -27,7 +27,9 @@
                             <tr>
                                 <th class="shoping__product">Products</th>
                                 <th>Price</th>
-                                <th></th>
+                                <th> &ensp; &ensp; &ensp;&ensp; &ensp; &ensp;&ensp; &ensp; &ensp;&ensp; &ensp; &ensp;
+                                </th>
+                                <th>s</th>
 
                             </tr>
                         </thead>
@@ -45,8 +47,12 @@
                                 </td>
 
                                 <td class="shoping__cart__total">
-                                    <li><a onclick="return addToCartt('{{this.product._id}}')"><i
+                                    <li><a class="btn btn-sm" onclick="return addToCartt('{{this.product._id}}')"><i
                                                 class="fa fa-shopping-cart">Add to Cart</i></a></li>
+                                </td>
+                                <td class="shoping__cart__item__close">
+                                    <a onclick="removeWishlistProduct('{{this.product._id}}','{{this._id}}')"><span
+                                            class="icon_close"></span></a>
                                 </td>
 
                             </tr>
@@ -79,43 +85,17 @@
     </div>
 </section>
 <div class="div text-center">
-        <a href="/" class="text-center btn btn-success btn-xs">Start Shopping</a>
-    </div>
+    <a href="/" class="text-center btn btn-success btn-xs">Start Shopping</a>
+</div>
 {{/if}}
 <script>
-    function changeQuantity(cartId, proId, userId, count) {
-        let quantity = parseInt(document.getElementById(proId).innerHTML)
-        count = parseInt(count)
-        console.log(userId)
-        $.ajax({
-            url: '/change-product-quantity',
-            data: {
-                user: userId,
-                cart: cartId,
-                product: proId,
-                count: count,
-                quantity: quantity
-            },
-            method: 'post',
-            success: (response) => {
-                if (response.removeProduct) {
-                    alert("product removed from the cart")
-                    location.reload()
-                } else {
-                    document.getElementById(proId).innerHTML = quantity + count
-                    document.getElementById('total').innerHTML = response.total
-                }
 
-            }
-        })
-    }
-
-    function removeCartProduct(proId, cartId) {
+    function removeWishlistProduct(proId, wishId) {
         $.ajax({
-            url: '/remove-product-cart',
+            url: '/remove-wishlist-cart',
             data: {
                 proId: proId,
-                cartId: cartId
+                wishId: wishId
             },
             method: 'post',
             success: (response) => {

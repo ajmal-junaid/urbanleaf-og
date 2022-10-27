@@ -57,13 +57,10 @@ router.get('/home', verifyAdmin, async (req, res, next) => {
   let onll = parseInt(pay.razor[0].sum) + parseInt(pay.paypal[0].sum)
   let cod = pay.cod[0].sum
   let totl = onll + cod
-  let { ...info } = obj
-  //obj.forEach(element => console.log(element));
-
-  console.log(obj, "payyyyyyyyyyy");
-
-
-  res.render('admin/home', { admin: true, layout: 'admin', totalorder, count, prof, onll, cod, totl, barData: obj });
+  let info = obj.canceled
+  console.log(obj.completed, obj.canceled, obj.placed);
+  obj.completed.forEach(month => console.log(month.count));
+  res.render('admin/home', { admin: true, layout: 'admin', totalorder, count, prof, onll, cod, totl });
 });
 
 
@@ -248,7 +245,14 @@ router.get('/reports', async (req, res) => {
   let total = await adminhelper.getAllorderCount()
 
   let totalprofit = await adminhelper.getTotalProfit()
-  res.render('admin/sales-report', { layout: 'admin', admin: true })
+  productHelper.getAllProducts().then((products) => {
+    //console.log(products);
+    if (rep._id == products._id) {
+      console.log(rep._id, products._id);
+    }
+    res.render('admin/sales-report', { layout: 'admin', admin: true, rep, products })
+  })
+
 })
 
 router.post('/reports', async (req, res) => {

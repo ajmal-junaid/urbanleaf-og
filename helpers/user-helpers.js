@@ -248,8 +248,6 @@ module.exports = {
     removeCartProduct: (details) => {
         let productId = details.proId
         let cartId = details.cartId
-        console.log(cartId, "opopop");
-        console.log(productId, "productId");
         return new Promise((resolve, reject) => {
             db.get().collection(collection.CART_COLLECTION).updateOne({ _id: objectId(cartId) },
                 {
@@ -783,6 +781,20 @@ module.exports = {
                     resolve(response)
                 })
             }
+        })
+    },
+    removeWishlistProduct: (details) => {
+        let productId = details.proId
+        let cartId = details.wishId
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.WISHLIST_COLLECTION).updateOne({ _id: objectId(cartId) },
+                {
+                    $pull: {
+                        product: { item: objectId(productId) }
+                    }
+                }).then((response) => {
+                    resolve({ status: true })
+                })
         })
     }
 

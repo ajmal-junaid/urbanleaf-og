@@ -240,6 +240,12 @@ router.post('/remove-product-cart', (req, res) => {
   })
 })
 
+router.post('/remove-wishlist-cart', (req, res) => {
+  userHelpers.removeWishlistProduct(req.body).then((response) => {
+    res.json(response)
+  })
+})
+
 router.get('/proceed-page', async (req, res) => {
   let user = req.session.user
   let total = await userHelpers.getTotalAmount(user._id)

@@ -5,7 +5,7 @@ var objectId = require('mongodb').ObjectId
 module.exports = {
     addProduct: (product, cb) => {
         console.log(product);
-        product.featured = false
+        // product.featured = false
         product.date = new Date().toISOString()
         product.discountAmount = parseInt((product.percentage / 100) * product.marketPrice)
         product.OurPrice = parseInt(product.marketPrice - product.discountAmount)

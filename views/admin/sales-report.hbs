@@ -5,6 +5,14 @@
             <h4 class="card-header m-3">Sales Report</h4>
         </span>
         <hr>
+        {{#each products}}
+        <p> {{this._id}}</p>
+        {{/each}}
+        {{#each rep}}
+        <h3>{{this._id}}</h3>
+
+        <h2>{{this.totalquantity}}</h2>
+        {{/each}}
 
         {{#if err}}
         <div class="alert alert-danger" role="alert">{{err}}</div>
