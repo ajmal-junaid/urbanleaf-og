@@ -59,6 +59,18 @@ function cancelOrder(ordId) {
   })
 }
 
+function returnOrder(ordId) {
+  $.ajax({
+    url: '/return-order/' + ordId,
+    method: 'get',
+    success: (response) => {
+      document.getElementById(ordId).innerHTML = "Return Requested"
+
+    }
+  })
+}
+
+
 $("#checkout-form").submit((e) => {
   //function placeorder() {
   addressSelect = document.querySelector('input[name="address-method"]:checked').value

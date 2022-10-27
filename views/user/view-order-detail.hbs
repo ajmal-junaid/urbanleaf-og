@@ -42,7 +42,7 @@
                                         </div>
                                         <div
                                             class="col-md-2 text-center d-flex justify-content-center align-items-center">
-                                            <p class="text-success mb-0 small ">OurPrice ${{this.product.OurPrice}}</p>
+                                            <p class="text-success mb-0 small ">OurPrice ₹{{this.product.OurPrice}}</p>
                                         </div>
                                     </div>
                                     <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
@@ -72,13 +72,13 @@
 
                             <div class="d-flex justify-content-between pt-2">
                                 <p class="fw-bold mb-0">Order Details</p>
-                                <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span> ${{total}}</p>
+                                <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span> ₹{{total}}</p>
                             </div>
 
                             <div class="d-flex justify-content-between pt-2">
                                 <p class="text-muted mb-0">Status : {{products.status}}</p>
                                 <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span>
-                                    ${{products.product.discountAmount}}.00</p>
+                                    ₹{{products.product.discountAmount}}.00</p>
                             </div>
 
                             <div class="d-flex justify-content-between">
@@ -95,7 +95,7 @@
                             style="background-color: #a8729a; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
                             <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">
                                 Total
-                                paid: <span class="h2 mb-0 ms-2">${{total}}</span></h5>
+                                paid: <span class="h2 mb-0 ms-2">₹{{total}}</span></h5>
                         </div>
                     </div>
                 </div>

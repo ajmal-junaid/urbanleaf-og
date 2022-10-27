@@ -44,16 +44,16 @@ module.exports = {
             if (user) {
                 let blck = user.status
                 if (blck) {
-                    console.log("success");
+                    //.log("success");
                     response.user = user
                     response.status = true
                     resolve(response)
                 } else {
-                    console.log("user blocked contact admn");
+                   // console.log("user blocked contact admn");
                     resolve({ status: 222 })
                 }
             } else {
-                console.log("user not found regi");
+               // console.log("user not found regi");
                 resolve({ status: false })
             }
         }).catch()
@@ -89,12 +89,9 @@ module.exports = {
         }
         return new Promise(async (resolve, reject) => {
             let userCart = await db.get().collection(collection.CART_COLLECTION).findOne({ user: objectId(userId) })
-            console.log("dgdgdgd", userCart);
             if (userCart) {
                 let proExist = userCart.product.findIndex(product => product.item == prodId)
-                console.log("prodexist", proExist);
                 if (proExist != -1) {
-                    console.log("not e -1");
                     db.get().collection(collection.CART_COLLECTION)
                         .updateOne({ user: objectId(userId), 'product.item': objectId(prodId) },
                             {
@@ -116,7 +113,6 @@ module.exports = {
 
 
             } else {
-                console.log("new cart created");
                 let cartObj = {
                     user: objectId(userId),
                     product: [proObj]
@@ -175,12 +171,12 @@ module.exports = {
                     if (status) {
                         let blck = user.status
                         if (blck) {
-                            console.log("success");
+                            //console.log("success");
                             response.user = user
                             response.status = true
                             resolve(response)
                         } else {
-                            console.log("user blocked contact admn");
+                            //console.log("user blocked contact admn");
                             resolve({ status: 222 })
                         }
 
@@ -469,14 +465,18 @@ module.exports = {
     }, changestatus: (details) => {
 
         let val;
+        let val2;
         if (details.status == 'completed' || details.status == 'canceled') {
+            if(details.status == 'completed'){
+                val2=true
+            }
             val = true;
         } else {
             val = false;
         }
         console.log(details, val);
         return new Promise(async (resolve, reject) => {
-            await db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectId(details.cartid) }, { $set: { status: (details.status), cancel: val } }).then(() => {
+            await db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectId(details.cartid) }, { $set: { status: (details.status), cancel: val ,completed:val2} }).then(() => {
                 resolve("success")
 
             })
@@ -639,6 +639,15 @@ module.exports = {
             })
         })
     },
+    returnOrder: (oId) => {
+        return new Promise(async (resolve, reject) => {
+            await db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectId(oId) }, { $set: { status: "return", return: true } }).then((response) => {
+                resolve({ status: true })
+
+            })
+        })
+    }
+    ,
     userProfile: (id) => {
         return new Promise(async (resolve, reject) => {
             let user = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: objectId(id) })

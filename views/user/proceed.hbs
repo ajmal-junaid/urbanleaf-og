@@ -162,15 +162,15 @@
                         <ul>
                             {{#each products}}
                             <li>{{this.product.productName}} X {{this.quantity}}<sub>({{this.product.percentage}}%
-                                    Off)</sub><span>${{this.total}}.00</span>
+                                    Off)</sub><span>₹{{this.total}}.00</span>
 
                             </li>
                             {{/each}}
                         </ul>
                         <input type="text" id="" name="userId" value="{{user._id}}" hidden>
-                        <div class="checkout__order__subtotal">Total <span>${{actual}}</span></div>
-                        <div class="checkout__order__subtotal">Total discount <span>${{discount}}</span></div>
-                        <div class="checkout__order__total">Grand Total <span>${{total}}</span></div>
+                        <div class="checkout__order__subtotal">Total <span>₹{{actual}}</span></div>
+                        <div class="checkout__order__subtotal">Total discount <span>₹{{discount}}</span></div>
+                        <div class="checkout__order__total">Grand Total <span>₹{{total}}</span></div>
 
 
                         <div class="checkout__input__checkbox">

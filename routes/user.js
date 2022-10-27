@@ -263,7 +263,7 @@ router.post('/proceed-page', async (req, res) => {
   let totalPrice = await userHelpers.getTotalAmount(req.session.user._id)
   let address = await userHelpers.getAddressDetails(req.body.deliveryDetails, req.session.user._id)
   let addrs = address.shift();
-  console.log(req.body);
+  //console.log(req.body);
   addrs.paymentMethod = req.body.paymentMethod
   userHelpers.placeOrder(addrs, products, totalPrice).then(async (orderId) => {
     if (req.body.paymentMethod == "COD") {
@@ -317,7 +317,7 @@ router.post('/proceed-page', async (req, res) => {
 })
 
 router.post('/verify-payment', (req, res) => {
-  console.log("verifypayment", req.body);
+  //console.log("verifypayment", req.body);
   userHelpers.verifyPayment(req.body).then(() => {
     userHelpers.changePaymentStatus(req.body['order[receipt]']).then(() => {
       res.json({ status: true })
@@ -404,6 +404,13 @@ router.post('/user-profile', (req, res) => {
 router.get('/cancel-order/:id', (req, res) => {
   console.log("paramss", req.params.id);
   userHelpers.cancelOrder(req.params.id).then(() => {
+    res.json({ status: true })
+  })
+})
+
+router.get('/return-order/:id', (req, res) => {
+  console.log("paramss", req.params.id);
+  userHelpers.returnOrder(req.params.id).then(() => {
     res.json({ status: true })
   })
 })
