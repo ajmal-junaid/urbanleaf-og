@@ -246,6 +246,34 @@ module.exports = {
                 ]).toArray()
             resolve(first)
         })
-    }
+    },
+    addCoupon: (coupon) => {
+        coupon.date=new Date()
+        console.log(coupon, "helperrrrrrrrrrrrrrrrrr");
+        return new Promise(async (resolve, reject) => {
+            let coupo = await db.get().collection(collection.COUPON_COLLECTION).findOne({ code: coupon.code })
+            if (coupo) {
+                resolve({ status: false })
+            } else {
+                db.get().collection(collection.COUPON_COLLECTION).insertOne(coupon).then((response) => {
+                    resolve({ status: true })
+                })
+            }
+        })
+    },
+    deleteCoupon: (coupon) => {
+        console.log(coupon, "dddd");
+        return new Promise(async (resolve, reject) => {
+            db.get().collection(collection.COUPON_COLLECTION).deleteOne({ _id:objectId(coupon) }).then((response) => {
+                resolve()
+            })
 
+        })
+    },
+    getAllCoupons: () => {
+        return new Promise(async (resolve, reject) => {
+            let coupons = await db.get().collection(collection.COUPON_COLLECTION).find().toArray()
+            resolve(coupons)
+        })
+    }
 }

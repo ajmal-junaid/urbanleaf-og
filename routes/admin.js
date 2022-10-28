@@ -239,6 +239,43 @@ router.post('/update-status', (req, res) => {
   })
 })
 
+
+router.get('/coupon-management', verifyAdmin, async (req, res, next) => {
+  // let err = null
+  // let orders = await userHelpers.getAllUserOrders()
+  couponErr = req.session.couponErr
+  productHelper.getAllCategories().then((category) => {
+    adminhelper.getAllCoupons().then((coupons) => {
+      console.log(coupons, "coupponnnn");
+      res.render('admin/coupon-management', { admin: true, layout: 'admin', category, coupons });
+    })
+  })
+});
+
+
+router.post('/add-coupon', (req, res) => {
+  adminhelper.addCoupon(req.body).then((response) => {
+    if (response.status) {
+      req.session.coupon = "added Succesfully"
+      res.redirect('/admin/coupon-management')
+    } else {
+      req.session.coupon = "Coupon Already Exists...!"
+      res.redirect('/admin/coupon-management')
+    }
+  })
+});
+
+
+router.get('/delete-coupon/:id', verifyAdmin, (req, res) => {
+  let cId = req.params.id
+  console.log(cId, "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
+  adminhelper.deleteCoupon(cId).then(() => {
+    req.session.couponErr = "coupon deleted sucessfully"
+    res.redirect('/admin/coupon-management')
+    req.session.couponErr = null
+  })
+})
+
 router.get('/reports', async (req, res) => {
   let rep = await adminhelper.getReport()
   console.log(rep, 'report');
@@ -260,5 +297,6 @@ router.post('/reports', async (req, res) => {
   console.log(req.body, "kukuku",);
   res.send(rep)
 })
+
 
 module.exports = router;

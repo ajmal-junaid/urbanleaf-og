@@ -1,0 +1,115 @@
+<div class="container">
+    <!-- Hoverable Table rows -->
+    <div class="mt-5 card">
+        <span>
+            <h5 class="card-header">Coupon Management</h5>
+        </span>
+        {{#if couponErr}}
+        <div class="alert alert-danger" role="alert">{{err}}</div>
+
+        {{/if}}
+        <a href="/admin/add-coupon" type="button" class="text-white btn btn-success m-3 ms-auto" data-bs-toggle="modal"
+            data-bs-target="#backDropModal">Add Coupon</a>
+        <!-- Button trigger modal -->
+        <!-- Modal -->
+        <div class="modal fade" id="backDropModal" data-bs-backdrop="static" tabindex="-1">
+            <div class="modal-dialog">
+                <form class="modal-content" method="post" action="/admin/add-coupon">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="backDropModalTitle">Add Coupon</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col mb-3">
+                                <label for="nameBackdrop" class="form-label">Title Of Coupon</label>
+                                <input type="text" class="form-control" name="name" placeholder="Enter Name" />
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col mb-0">
+                                <label for="emailBackdrop" class="form-label">Coupon Code</label>
+                                <input type="text" class="form-control" name="code" placeholder="FIRST5" />
+                            </div>
+                            <div class="col mb-0">
+                                <label for="dobBackdrop" class="form-label">Category</label>
+                                <select class="form-select" name="category" aria-label="Default select example">
+                                    {{!-- <option selected>Open this select menu</option> --}}
+                                    <option value="all">All Categories</option>
+                                    {{#each category}}
+                                    <option value={{this.category}}>{{this.category}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col mb-0">
+                                <label for="emailBackdrop" class="form-label">Discount Percentage</label>
+                                <input type="number" name="percentage" name="percentage" class="form-control" />
+                            </div>
+                            <div class="col mb-0">
+                                <label for="dobBackdrop" class="form-label">Max Discount</label>
+                                <input type="number" name="maxDiscount" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                        <button type="submit" class="btn btn-primary">Proceed</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!--/ Bootstrap modals -->
+
+        <!-- / Content -->
+
+        <div class="table-responsive text-nowrap">
+            <table id="tablejq" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Coupon Code</th>
+                        <th>Name Of The Offer</th>
+                        <th>Category</th>
+                        <th>Discount Percentage</th>
+                        <th>Max Discount</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    {{#each coupons}}
+                    <tr>
+                        <td></td>
+                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                            <strong>{{this.code}}</strong>
+                        </td>
+                        <td>{{this.name}}</td>
+                        
+                        <td>{{this.category}}</td>
+                        <td>{{this.percentage}}</td>
+                        <td>{{this.maxDiscount}}</td>
+
+                        <td>
+                            {{!-- href="/admin/edit-product/{{this._id}}" --}}
+                            <a class="dropdown-item" href="/admin/edit-product?id={{this._id}}"><i
+                                    class="bx bx-edit-alt me-1"></i>
+                                Edit</a>
+                            <a onclick="return confirm('Delete confirmation of {{this.name}} ?')"
+                                class="dropdown-item" href="/admin/delete-coupon/{{this._id}}"><i
+                                    class="bx bx-trash me-1"></i>
+                                Delete</a>
+
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--/ Hoverable Table rows -->
+</div>
