@@ -9,11 +9,20 @@
         <div class="alert alert-danger" role="alert">{{err}}</div>
 
         {{/if}}
-        <div class="table-responsive text-nowrap">
+        <div class="row my-4">
+
+            <div class="col d-flex">
+                <a onclick='return demoFromHTML()' class="button btn btn-outline-success me-3 ms-auto">Export as Pdf</a>
+                <button class="btn btn-outline-danger me-3" onclick="ExportToExcel('xlsx')">Export table to
+                    excel</button>
+            </div>
+        </div>
+
+        <div class="table-responsive text-nowrap" id="customerff">
             <table id="tbl_exporttable_to_xls" class="table table-hover display nowrap">
                 <thead>
                     <tr>
-                        <th>No</th>
+                        <th class="no_export">No</th>
                         <th>Name Of The Product</th>
                         <th>Quantity Sold</th>
                         <th>Revenue</th>
@@ -34,71 +43,60 @@
                     {{/each}}
                 </tbody>
             </table>
-            <button onclick="ExportToExcel('xlsx')">Export table to excel</button>
-            <button onclick="ExportToPdf('pdf')">Export table to PDF</button>
+            <h4 class="card-header text-danger">Total:{{totalprofit}}</h4>
+
         </div>
+
+        
     </div>
     <!--/ Hoverable Table rows -->
+    <div class="mt-5 card">
+        <span>
+            <h4 class="card-header m-3">Sales Report</h4>
+        </span>
+        <hr>
+        {{#if err}}
+        <div class="alert alert-danger" role="alert">{{err}}</div>
+
+        {{/if}}
+        <div class="row my-4">
+
+            <div class="col d-flex">
+                <a onclick='return demoFromHTML()' class="button btn btn-outline-success me-3 ms-auto">Export as Pdf</a>
+                <button class="btn btn-outline-danger me-3" onclick="ExportToExcel('xlsx')">Export table to
+                    excel</button>
+            </div>
+        </div>
+
+        <div class="table-responsive text-nowrap" id="customermonthly">
+            <table id="tbl_exporttable_to_xls" class="table table-hover display nowrap">
+                <thead>
+                    <tr>
+                        <th class="no_export">No</th>
+                        <th>Name Of The Product</th>
+                        <th>Quantity Sold</th>
+                        <th>Revenue</th>
+
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    {{#each rep}}
+                    <tr>
+                        <td></td>
+                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                            <strong>{{this.prod}}</strong>
+                        </td>
+                        <td>{{this.totalquantity}}</td>
+
+                        <td>{{this.total}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            <h4 class="card-header text-danger">Total:{{totalprofit}}</h4>
+
+        </div>
+
+        
+    </div>
 </div>
-<script type="text/javascript">
-    window.setTimeout("document.getElementById('successMessage').style.display='none';", 3000);
-
-    $("#date_timepicker_end").datepicker()
-    {
-        "dateFormat" : "dd-mm-yyyy" //any valid format that you want to have
-    };
-
-    function changestatus(orderid, status) {
-        let st = document.getElementById(orderid);
-        let stat = st.options[st.selectedIndex].text
-        $.ajax({
-            url: "/admin/update-status",
-            data: {
-                cartid: orderid,
-                status: stat
-            },
-            method: "post",
-            success: (response) => {
-                alert(response)
-                location.reload()
-            }
-        })
-    }
-
-    {
-        {
-            !-- function ExportToExcel(type, fn, dl) {
-                var elt = document.getElementById('tbl_exporttable_to_xls');
-                var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
-                return dl ?
-                    XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
-                    XLSX.writeFile(wb, fn || ('MySheetName.' + (type || 'xlsx')));
-            } --}
-    }
-
-    $('#tbl_exporttable_to_xls').dataTable({
-
-        dom: 'Bfrtip',
-        buttons: [
-            {
-                extend: 'excelHtml5',
-                title: 'Excel',
-                text: 'Export to excel'
-                //Columns to export
-                //exportOptions: {
-                //     columns: [0, 1, 2, 3,4,5,6]
-                // }
-            },
-            {
-                extend: 'pdfHtml5',
-                title: 'PDF',
-                text: 'Export to PDF'
-                //Columns to export
-                //exportOptions: {
-                //     columns: [0, 1, 2, 3, 4, 5, 6]
-                //  }
-            }
-        ]
-    });
-
-</script>

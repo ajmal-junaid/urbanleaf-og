@@ -57,7 +57,6 @@ router.get('/home', verifyAdmin, async (req, res, next) => {
   let onll = 0
   let cod = 0
   let totl = 0
-  console.log(pay.paypal[0].sum);
   if (pay.razor[0]) {
     onll = parseInt(pay.razor[0].sum) + parseInt(pay.paypal[0].sum)
   } else {
@@ -65,11 +64,6 @@ router.get('/home', verifyAdmin, async (req, res, next) => {
   }
   cod = pay.cod[0].sum
   totl = onll + cod
-  let { ...dail } = barData.daily
-  console.log(barData.daily);
-  // let info = obj.canceled
-  //console.log(obj.completed, obj.canceled, obj.placed);
-  //obj.completed.forEach(month => console.log(month.count));
   res.render('admin/home', { admin: true, layout: 'admin', totalorder, count, prof, onll, cod, totl, barData });
 });
 
@@ -292,13 +286,8 @@ router.get('/reports', async (req, res) => {
   let total = await adminhelper.getAllorderCount()
 
   let totalprofit = await adminhelper.getTotalProfit()
-  productHelper.getAllProducts().then((products) => {
-    //console.log(products);
-    if (rep._id == products._id) {
-      console.log(rep._id, products._id);
-    }
-    res.render('admin/sales-report', { layout: 'admin', admin: true, rep, products })
-  })
+ 
+    res.render('admin/sales-report', { layout: 'admin', admin: true, rep,totalprofit })
 
 })
 

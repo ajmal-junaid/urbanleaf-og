@@ -45,7 +45,6 @@ module.exports = {
             if (user) {
                 let blck = user.status
                 if (blck) {
-                    //.log("success");
                     response.user = user
                     response.status = true
                     resolve(response)

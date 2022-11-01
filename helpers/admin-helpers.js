@@ -168,26 +168,85 @@ module.exports = {
                         $sort: { '_id.month': -1 }
                     }
                 ]).toArray()
-            let daily = await db.get().collection(collection.ORDER_COLLECTION)
+            let yearly = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
                     {
                         $match: { status: "completed" }
                     },
                     {
-                        $group: { _id: { day: { $dayOfMonth: { $toDate: "$date" } } }, count: { $sum: 1 } }
+                        $group: {
+                            _id: { year: { $year: { $toDate: "$date" } } },
+                            count: { $sum: 1 }
+
+                        }
                     },
                     {
-                        $sort: { '_id.day': -1 }
+                        $sort: { '_id.year': -1 }
                     },
                     {
-                        $limit: 7
+                        $limit: 5
                     }
                 ]).toArray()
+            let daily = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { status: "completed" }
+                },
+                {
+                    $group: {
+                        _id: { day: { $dayOfMonth: { $toDate: "$date" } } },
+                        count: { $sum: 1 },
+                        date: { '$first': "$date" }
+
+                    }
+                },
+                {
+                    $project: {
+                        count: 1,
+                        year: { $year: "$date" },
+                        month: { $month: "$date" },
+                        day: { $dayOfMonth: "$date" },
+                    }
+                },
+                {
+                    $sort: { month: -1, day: -1 }
+                },
+                {
+                    $limit: 7
+                }
+            ]).toArray()
+            let monthly = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { status: "completed" }
+                },
+                {
+                    $group: {
+                        _id: { month: { $month: { $toDate: "$date" } } },
+                        count: { $sum: 1 },
+                        date: { '$first': "$date" }
+
+                    }
+                },
+                {
+                    $project: {
+                        count: 1,
+                        year: { $year: "$date" },
+                        month: { $month: "$date" },
+                    }
+                },
+                {
+                    $sort: { year: -1, month: -1 }
+                },
+                {
+                    $limit: 12
+                }
+            ]).toArray()
             let obj = {}
             obj.completed = completed[0]
             obj.canceled = canceled[0]
             obj.placed = placed[0]
             obj.daily = daily
+            obj.monthly = monthly
+            obj.yearly = yearly
             resolve(obj)
         })
     },

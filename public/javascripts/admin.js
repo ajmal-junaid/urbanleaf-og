@@ -10,12 +10,33 @@ function ExportToExcel(type, fn, dl) {
         XLSX.writeFile(wb, fn || ('MySheetName.' + (type || 'xlsx')));
 }
 
-function ExportToPdf(data) {
-    $("#tbl_exporttable_to_xls").tableHTMLExport({
 
-        type: 'pdf',
-        orientation: 'p',
-        filename: 'sample.pdf'
+function demoFromHTML() {
+    var pdf = new jsPDF('landscape', 'pt');
+    source = $('#customerff')[0];
+    specialElementHandlers = {
+        '#bypassme': function (element, renderer) {
+            return true
+        }
+    };
+    margins = {
+        top: 80,
+        bottom: 60,
+        left: 100,
+        width: 822,
+        height: 100
+    };
+    pdf.fromHTML(
+        source, // HTML string or DOM elem ref.
+        margins.left, // x coord
+        margins.top, { // y coord
+        'width': margins.width, // max width of content on PDF
+        'elementHandlers': specialElementHandlers
+    },
 
-    });
-}   
+        function (dispose) {
+            pdf.save('Report.pdf');
+        }, margins
+    );
+}
+
