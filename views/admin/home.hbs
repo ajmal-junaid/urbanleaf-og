@@ -1,5 +1,3 @@
-<!-- / Navbar -->
-{{#each info}}<p>{{this.count}}aaaljh</p>{{/each}}
 <!-- Content wrapper -->
 <div class="content-wrapper">
   <!-- Content -->
@@ -102,7 +100,10 @@
           </div>
         </div>
       </div>
+
       <!--/ Total Revenue -->
+
+
       <div class="col-12 col-md-8 col-lg-4 order-3 order-md-2">
         <div class="row">
           <div class="col-6 mb-4">
@@ -130,6 +131,7 @@
               </div>
             </div>
           </div>
+
           <div class="col-6 mb-4">
             <div class="card">
               <div class="card-body">
@@ -155,8 +157,10 @@
               </div>
             </div>
           </div>
+
           <!-- </div>
     <div class="row"> -->
+
           <div class="col-12 mb-4">
             <div class="card">
               <div class="card-body">
@@ -178,6 +182,21 @@
           </div>
         </div>
       </div>
+
+      <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
+        <div class="card">
+          <div class="row row-bordered g-0">
+            <div class="col-md-8">
+              <h5 class="card-header m-0 me-2 pb-3">Daily Sales</h5>
+              {{!-- <div id="totalRevenueChart" class="px-2"></div> --}}
+              {{!-- <canvas id="myChart" style="width:100%;max-width:850px" class="p-3"></canvas> --}}
+              <canvas id="DailySales" width="270" height="150" class="m-3"></canvas>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
     </div>
     <div class="row">
       <!-- Order Statistics -->
@@ -201,6 +220,8 @@
               </div>
             </div>
           </div>
+
+
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <div class="d-flex flex-column align-items-center gap-1">
@@ -270,6 +291,7 @@
             </ul>
           </div>
         </div>
+
       </div>
       <!--/ Order Statistics -->
 
@@ -485,18 +507,32 @@
 <!-- Overlay -->
 <div class="layout-overlay layout-menu-toggle"></div>
 </div>
+{{!-- {{#each barData.completed}}
+barData.unshift('{{this.count}}')
+{{/each}}
+{{#each barData.canceled}}
+barData.unshift('{{this.count}}')
+{{/each}}
+{{#each barData.placed}}
+barData.unshift('{{this.count}}')
+{{/each}} --}}
 <script>
-  //console.log({{ barData }})
+  barData = [0]
+  barData.unshift('{{barData.completed.count}}')
+  barData.unshift('{{barData.placed.count}}')
+  barData.unshift('{{barData.canceled.count}}')
+
+  //console.log({{ barData.completed }})
 
   const ctx = document.getElementById('myChart').getContext('2d');
   const myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['Orders Placed', 'Orders Delivered', 'Orders Canceled'],
+      labels: ['Orders Canceled', 'Just Placed', 'Orders Completed'],
       datasets: [{
         label: '# In The Past Month',
 
-        data: [56, 54, 87],
+        data: barData,
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
           'rgba(54, 162, 235, 0.2)',
@@ -522,6 +558,39 @@
           beginAtZero: true
         }
       }
+    }
+  });
+  let xdata=[]
+  let ydata=[]
+{{#each barData.daily}}
+  ydata.unshift('{{this.count}}')
+  xdata.unshift('{{this._id.day}}')
+  {{/each}}
+  console.log(xdata,ydata)
+  var xValues = xdata
+  var yValues = ydata;
+
+  new Chart("DailySales", {
+    type: "line",
+    data: {
+      labels: xValues,
+      datasets: [{
+        fill: false,
+        lineTension: 0,
+        backgroundColor: "rgba(0,0,255,1.0)",
+        borderColor: "rgba(0,0,255,0.1)",
+        data: yValues
+      }]
+    },
+    options: {
+      legend: { display: false },
+     scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true
+            }
+        }]
+    }
     }
   });
 </script>

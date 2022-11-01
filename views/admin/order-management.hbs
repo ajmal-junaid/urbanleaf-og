@@ -10,9 +10,8 @@
 
     {{/if}}
     <div class="table-responsive text-nowrap">
-      <table id="tablejq" class="table table-hover ">
+      <table id="tbl_exporttable_to_xls" class="table table-hover ">
         <thead>
-
           <tr>
             <th>No</th>
             <th>Mobile</th>
@@ -33,8 +32,8 @@
             <td>{{this.totalAmount}}</td>
             <td>
               <div class="mb-3">
-                <select onchange="changestatus('{{this._id}}')" class="btn-sm btn btn-success-outline" name="status"
-                  id="{{this._id}}">
+                <select onchange="changestatus('{{this._id}}','{{this.totalAmount}}','{{this.userId}}')"
+                  class="badge bg-label-primary me-1" name="status" id="{{this._id}}">
                   {{!-- <option selected>Open this select menu</option> --}}
                   <option selected value={{this.status}}> {{this.status}}</option>
                   <option value="completed">completed</option>
@@ -42,6 +41,7 @@
                   <option value="shipped">shipped</option>
                   <option value="pending">pending</option>
                   <option value="canceled">canceled</option>
+                  <option value="return-completed">return-completed</option>
                 </select>
               </div>
             </td>
@@ -58,14 +58,16 @@
 <script type="text/javascript">
   window.setTimeout("document.getElementById('successMessage').style.display='none';", 3000);
 
-  function changestatus(orderid, status) {
+  function changestatus(orderid, amount,userId) {
     let st = document.getElementById(orderid);
     let stat = st.options[st.selectedIndex].text
     $.ajax({
       url: "/admin/update-status",
       data: {
         cartid: orderid,
-        status: stat
+        status: stat,
+        refund: amount,
+        user:userId
       },
       method: "post",
       success: (response) => {

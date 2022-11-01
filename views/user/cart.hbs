@@ -86,17 +86,20 @@
                 <div class="shoping__continue">
                     <div class="shoping__discount">
                         <h5>Discount Codes</h5>
-                        <form action="#">
-                            <input type="text" placeholder="Enter your coupon code">
+                        <form action="" id="couponForm">
+                            <input type="text" name="code" placeholder="Enter your coupon code">
+                            <input type="text" value="{{user._id}}" name="userId" hidden>
+                            
                             <button type="submit" class="site-btn">APPLY COUPON</button>
                         </form>
                     </div>
+                    <span id="couponDescription" class="text-success"></span>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="shoping__checkout">
                     <h5>Cart Total</h5>
-                    <ul>
+                    <ul id="cartTotal">
                         <li>You saved <span>₹{{discount}}</span></li>
                         <li>Grand Total <span>₹</span><span id="total">{{total}}</span></li>
                     </ul>
@@ -120,11 +123,11 @@
                     </div>
                 </div>
                 <div class="div text-center">
-                     <a href="/" class="text-center btn btn-success">Back to Home</a>
+                    <a href="/" class="text-center btn btn-success">Back to Home</a>
                 </div>
-                
+
             </section>
-           
+
             {{/if}}
         </div>
     </div>

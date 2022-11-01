@@ -5,28 +5,37 @@
             <h4 class="card-header m-3">Sales Report</h4>
         </span>
         <hr>
-        {{#each products}}
-        <p> {{this._id}}</p>
-        {{/each}}
-        {{#each rep}}
-        <h3>{{this._id}}</h3>
-
-        <h2>{{this.totalquantity}}</h2>
-        {{/each}}
-
         {{#if err}}
         <div class="alert alert-danger" role="alert">{{err}}</div>
 
         {{/if}}
         <div class="table-responsive text-nowrap">
-            <form class="form" action="/admin/reports" method="post">
-                <label>From date</label>
-                <input type="date" name="StartDate" id="date_timepicker_end">
+            <table id="tbl_exporttable_to_xls" class="table table-hover display nowrap">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Name Of The Product</th>
+                        <th>Quantity Sold</th>
+                        <th>Revenue</th>
 
-                <label>To date</label>
-                <input type="date" name="EndDate" id="date_timepicker_end" max="2023-05-26">
-                <button type="submit">submit</button>
-            </form>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    {{#each rep}}
+                    <tr>
+                        <td></td>
+                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                            <strong>{{this.prod}}</strong>
+                        </td>
+                        <td>{{this.totalquantity}}</td>
+
+                        <td>{{this.total}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            <button onclick="ExportToExcel('xlsx')">Export table to excel</button>
+            <button onclick="ExportToPdf('pdf')">Export table to PDF</button>
         </div>
     </div>
     <!--/ Hoverable Table rows -->
@@ -55,4 +64,41 @@
             }
         })
     }
+
+    {
+        {
+            !-- function ExportToExcel(type, fn, dl) {
+                var elt = document.getElementById('tbl_exporttable_to_xls');
+                var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+                return dl ?
+                    XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+                    XLSX.writeFile(wb, fn || ('MySheetName.' + (type || 'xlsx')));
+            } --}
+    }
+
+    $('#tbl_exporttable_to_xls').dataTable({
+
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                title: 'Excel',
+                text: 'Export to excel'
+                //Columns to export
+                //exportOptions: {
+                //     columns: [0, 1, 2, 3,4,5,6]
+                // }
+            },
+            {
+                extend: 'pdfHtml5',
+                title: 'PDF',
+                text: 'Export to PDF'
+                //Columns to export
+                //exportOptions: {
+                //     columns: [0, 1, 2, 3, 4, 5, 6]
+                //  }
+            }
+        ]
+    });
+
 </script>

@@ -16,10 +16,21 @@
                         <div class="col-md-12">
                             <div class="pull-right"><label id="{{this._id}}"
                                     class="text-dark w-25"><B>{{this.status}}</B></label>
+
                             </div>
+                            {{#if this.return}}
+                            <div class="pull-right">
+                                <br>
+                                <p class="w-75 pull-right text-secondary">Refund of
+                                    <strong>{{this.totalAmount}}</strong>
+                                    Initiated,Please Check
+                                    Your Mail
+                                </p>
+                            </div>
+                            {{/if}}
                             <span><strong>{{this._id}}</strong></span> <span class="label label-info">(
                                 {{this.paymentMethod}} )</span><br />
-                            Quantity : 2, Total Amount: ₹{{this.totalAmount}} <br />
+                             Total Amount: ₹{{this.totalAmount}} <br />
                             <a data-placement="top" class="btn btn-success btn-sm glyphicon glyphicon-ok m-2 "
                                 href="/view-detail?id={{this._id}}">View</a>
 

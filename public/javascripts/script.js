@@ -40,7 +40,7 @@ function addToWishlist(proId) {
       if (response.status) {
         //let count = $('#cart-count').html()
         //count = parseInt(count) + 1
-       // $("#cart-count").html(count)
+        // $("#cart-count").html(count)
         // document.getElementById('totalh').innerHTML = response.total
         location.reload()
       }
@@ -72,11 +72,8 @@ function returnOrder(ordId) {
 
 
 $("#checkout-form").submit((e) => {
-  //function placeorder() {
   addressSelect = document.querySelector('input[name="address-method"]:checked').value
   paymentMethodS = document.querySelector('input[name="payment-method"]:checked').value
-  //var form = document.getElementById("checkout-form");
-  //alert(form.elements["checkout-form"].value);
   e.preventDefault()
 
   $.ajax({
@@ -90,15 +87,14 @@ $("#checkout-form").submit((e) => {
     success: (response) => {
       if (response.codSuccess) {
         location.href = '/order-succesfull'
-      } else if(response.razor){
+      } else if (response.razor) {
         razorpayPayment(response)
-      }else if(response.pay){
+      } else if (response.pay) {
         location.replace(response.linkto)
       }
 
     }
   })
-  // }
 })
 
 
@@ -151,3 +147,37 @@ function verifyPayment(payment, order) {
     }
   })
 }
+
+// coupon submit
+let visit = 1
+$("#couponForm").submit((e) => {
+  e.preventDefault()
+  $.ajax({
+    url: '/coupon-discounts',
+    method: 'post',
+    data: $('#couponForm').serialize(),
+
+    success: (response) => {
+      if (response.Price) {
+        if (visit >= 2) {
+          location.reload()
+        } else {
+          document.getElementById('couponDescription').innerHTML = response.code + " applied succesfully <br>" + response.percentage + "% Off Upto ₹" + response.maxDiscount
+          var newSpan = document.createElement('li');
+          var newSpan2 = document.createElement('li');
+          newSpan2.innerHTML = "Coupon Offer <span>₹</span><span id='total'><span>" + response.discAmount + "</span><sub>(" + response.percentage + "%)</sub></span>"
+          newSpan.innerHTML = "After Coupon Offer <span>₹</span><span id='total'>" + response.Price + "</span>"
+          document.getElementById('cartTotal').appendChild(newSpan2);
+          document.getElementById('cartTotal').appendChild(newSpan);
+          visit += 1
+        }
+        console.log(response)
+        // document.getElementById('total').innerHTML = response.Price
+
+      } else {
+        document.getElementById('couponDescription').innerHTML = " <P class='text-danger'>Coupon Not Valid<P> "
+      }
+
+    }
+  })
+})

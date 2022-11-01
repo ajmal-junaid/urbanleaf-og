@@ -52,15 +52,25 @@ router.get('/home', verifyAdmin, async (req, res, next) => {
   let totalorder = await adminhelper.getAllorderCount()
   let count = await adminhelper.getCountAll()
   let prof = await adminhelper.getTotalProfit()
-  let obj = await adminhelper.getInsights()
+  let barData = await adminhelper.getInsights()
   let pay = await adminhelper.getCodOnline()
-  let onll = parseInt(pay.razor[0].sum) + parseInt(pay.paypal[0].sum)
-  let cod = pay.cod[0].sum
-  let totl = onll + cod
-  let info = obj.canceled
-  console.log(obj.completed, obj.canceled, obj.placed);
-  obj.completed.forEach(month => console.log(month.count));
-  res.render('admin/home', { admin: true, layout: 'admin', totalorder, count, prof, onll, cod, totl });
+  let onll = 0
+  let cod = 0
+  let totl = 0
+  console.log(pay.paypal[0].sum);
+  if (pay.razor[0]) {
+    onll = parseInt(pay.razor[0].sum) + parseInt(pay.paypal[0].sum)
+  } else {
+    onll = parseInt(pay.paypal[0].sum)
+  }
+  cod = pay.cod[0].sum
+  totl = onll + cod
+  let { ...dail } = barData.daily
+  console.log(barData.daily);
+  // let info = obj.canceled
+  //console.log(obj.completed, obj.canceled, obj.placed);
+  //obj.completed.forEach(month => console.log(month.count));
+  res.render('admin/home', { admin: true, layout: 'admin', totalorder, count, prof, onll, cod, totl, barData });
 });
 
 

@@ -29,6 +29,7 @@ module.exports = {
                 userData.password = await bcrypt.hash(userData.password, 10)
                 userData.date = new Date().toISOString().split('T')[0]
                 userData.status = true
+                userData.wallet = 0.0
                 db.get().collection(collection.USER_COLLECTION).insertOne(userData).then((data) => {
                     resolve(userData)
                 })
@@ -49,11 +50,11 @@ module.exports = {
                     response.status = true
                     resolve(response)
                 } else {
-                   // console.log("user blocked contact admn");
+                    // console.log("user blocked contact admn");
                     resolve({ status: 222 })
                 }
             } else {
-               // console.log("user not found regi");
+                // console.log("user not found regi");
                 resolve({ status: false })
             }
         }).catch()
@@ -314,8 +315,7 @@ module.exports = {
                     city: order.city,
                     pincode: order.pincode,
                     state: order.state,
-                    country: order.country,
-                    notes: order.notes
+                    country: order.country
                 },
                 userId: objectId(order.userId),
                 paymentMethod: order.paymentMethod,
@@ -390,7 +390,8 @@ module.exports = {
                     $project: {
                         item: '$product.item',
                         quantity: '$product.quantity',
-                        total: '$product.totalAmount'
+                        total: '$product.totalAmount',
+                        totalAmount: '$totalAmount'
                     }
                 },
                 {
@@ -403,12 +404,23 @@ module.exports = {
                 },
                 {
                     $project: {
-                        total: 1, item: 1, quantity: 1, product: { $arrayElemAt: ['$product', 0] }
+                        totalAmount: 1, total: 1, item: 1, quantity: 1, product: { $arrayElemAt: ['$product', 0] }
                     }
                 }
             ]).toArray()
 
             resolve(orderItems)
+        })
+    },
+    getOrderTotal: (orderId) => {
+        return new Promise(async (resolve, reject) => {
+            let orderItems = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { _id: objectId(orderId) }
+                }
+            ]).toArray()
+
+            resolve(orderItems[0].totalAmount)
         })
     },
     getTotalAmountOrder: (userId) => {
@@ -462,24 +474,38 @@ module.exports = {
 
             resolve(orders)
         })
-    }, changestatus: (details) => {
-
-        let val;
-        let val2;
-        if (details.status == 'completed' || details.status == 'canceled') {
-            if(details.status == 'completed'){
-                val2=true
-            }
-            val = true;
-        } else {
-            val = false;
-        }
-        console.log(details, val);
+    },
+    changestatus: (details) => {
         return new Promise(async (resolve, reject) => {
-            await db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectId(details.cartid) }, { $set: { status: (details.status), cancel: val ,completed:val2} }).then(() => {
-                resolve("success")
+            if (details.status == 'return-completed') {
+                let amt = parseInt(details.refund)
+                await db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectId(details.cartid) }, { $set: { status: (details.status), cancel: true, completed: true, return: true } }).then(() => {
+                    db.get().collection(collection.USER_COLLECTION).updateOne({ _id: objectId(details.user) },
+                        {
+                            $inc: { wallet: amt }
+                        }
+                    )
+                    resolve("success")
+                    console.log(details.refund, details.user, "refund amount");
+                })
+            } else {
+                let val;
+                let val2;
+                if (details.status == 'completed' || details.status == 'canceled') {
+                    if (details.status == 'completed') {
+                        val2 = true
+                    }
+                    val = true;
+                } else {
+                    val = false;
+                }
+                console.log(details, val);
+                await db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectId(details.cartid) }, { $set: { status: (details.status), cancel: val, completed: val2 } }).then(() => {
+                    resolve("success")
 
-            })
+                })
+
+            }
         })
     },
     addNewAddress: (address) => {
@@ -556,7 +582,6 @@ module.exports = {
                 {
                     $group: {
                         _id: null,
-
                         discounts: { $sum: { $multiply: ['$quantity', { $convert: { input: '$product.discountAmount', to: 'int', onError: 0 } }] } }
                     }
                 }
@@ -755,10 +780,10 @@ module.exports = {
                                 .updateOne({ user: objectId(userId) },
                                     {
                                         $pull: { product: { item: objectId(prodId) } }
-                                    }).then(()=>{
+                                    }).then(() => {
                                         resolve()
                                     })
-                            
+
                         })
                 } else {
                     db.get().collection(collection.CART_COLLECTION).updateOne({ user: objectId(userId) },
@@ -804,6 +829,25 @@ module.exports = {
                 }).then((response) => {
                     resolve({ status: true })
                 })
+        })
+    },
+    applyCoupon: (userId, data, total) => {
+        return new Promise(async (resolve, reject) => {
+            let coupon = await db.get().collection(collection.COUPON_COLLECTION).findOne({ code: data.code })
+            if (coupon) {
+                let discAmount = total - (total * (parseInt(coupon.percentage) / 100))
+                if (discAmount >= parseInt(coupon.maxDiscount)) {
+                    coupon.Price = total - parseInt(coupon.maxDiscount)
+                    coupon.discAmount = parseInt(coupon.maxDiscount)
+                } else {
+                    coupon.Price = total - discAmount
+                    coupon.discAmount = discAmount
+                }
+                resolve(coupon)
+            } else {
+                resolve({ status: false })
+            }
+
         })
     }
 
