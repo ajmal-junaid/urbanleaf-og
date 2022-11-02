@@ -91,6 +91,11 @@ $("#checkout-form").submit((e) => {
         razorpayPayment(response)
       } else if (response.pay) {
         location.replace(response.linkto)
+      } else if (response.wallet) {
+        location.href = '/order-succesfull'
+      } else if (response.statusW) {
+        location.href = '/payment-failed'
+
       }
 
     }

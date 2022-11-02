@@ -176,6 +176,12 @@
                         <div class="checkout__input__checkbox">
                             <div class="form-check row">
                                 <input class="form-check-input" type="radio" name="payment-method"
+                                    id="flexRadioDefault1" value="WALLET" />
+                                <label class="form-check-label" for="flexRadioDefault3"> Wallet[₹{{user.wallet}}]
+                                </label>
+                            </div>
+                            <div class="form-check row">
+                                <input class="form-check-input" type="radio" name="payment-method"
                                     id="flexRadioDefault1" value="PAYPAL" />
                                 <label class="form-check-label" for="flexRadioDefault3"> Paypal </label>
                             </div>
@@ -221,7 +227,7 @@
 </style>
 <!-- Checkout Section End -->
 <script>
-    
+
 
     $("#address-form").submit((e) => {
         e.preventDefault()

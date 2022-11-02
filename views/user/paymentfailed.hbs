@@ -14,7 +14,9 @@
                     </div>
                     <div><a class="btn btn-outline-danger" href="/">Back to Home</a></div>
                 </div>
-
+                {{#if walletErr}}
+                <h4 class="text-danger">{{walletErr}}</h4>
+                {{/if}}
                 <span class="ui large teal submit fluid button">Try again</span>
 
             </form>

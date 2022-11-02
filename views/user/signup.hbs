@@ -62,13 +62,13 @@
             <div class="mb-3">
               <label class="form-label">Name</label>
               <input type="text" class="form-control" name="name" id="contact-fname" onkeyup="validateName()"
-                placeholder="Enter your Name" autofocus />
+                placeholder="Enter your Name" autofocus required />
               <span id="fname-error" class="text-danger"></span>
             </div>
             <div class="mb-3">
               <label class="form-label">Email</label>
               <input type="text" class="form-control" id="contact-email" onkeyup="validateEmail()" name="email"
-                placeholder="Enter your email" />
+                placeholder="Enter your email" required />
               <span id="email-error" class="text-danger"></span>
             </div>
             {{#if emailErr}}
@@ -79,7 +79,7 @@
             <div class="mb-3">
               <label class="form-label">Mobile Number</label>
               <input type="text" class="form-control" name="mobile" id="contact-mobile" onkeyup="validateMobile()"
-                placeholder="Enter your Mobile Number" />
+                placeholder="Enter your Mobile Number" required />
               <span id="mobile-error" class="text-danger"></span>
             </div>
             {{#if mobileErr}}
@@ -91,13 +91,22 @@
               <label class="form-label" for="password">Password</label>
               <div class="input-group input-group-merge">
                 <input type="password" class="form-control" name="password" id="contact-password"
-                  onkeyup="validatePassword()"
+                  onkeyup="validatePassword() " required
                   placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                   aria-describedby="password" />
-                
+
                 <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
               </div>
               <span id="password-error" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Referral Code</label>
+              <input type="text" class="form-control" name="referral" id="contact-refferal"
+                placeholder="Enter Code (If Any)" />
+              {{#if coupErr}}
+              <span id="successMessage" class="text-danger">{{coupErr}}</span>
+              {{/if}}
             </div>
 
             <div class="mb-3">
@@ -130,4 +139,4 @@
   </div>
 </div>
 <script
-  type="text/javascript">window.setTimeout("document.getElementById('successMessage').style.display='none';", 3000); </script>
+  type="text/javascript">window.setTimeout("document.getElementById('successMessage').style.display='none';", 4000); </script>

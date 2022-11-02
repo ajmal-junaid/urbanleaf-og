@@ -233,6 +233,7 @@ router.get('/unblock/', verifyAdmin, (req, res) => {
 router.get('/order-management', verifyAdmin, async (req, res, next) => {
   let err = null
   let orders = await userHelpers.getAllUserOrders()
+  console.log(orders[0],"ordersssssssss");
   res.render('admin/order-management', { admin: true, layout: 'admin', err, orders });
   req.session.catErr = null
 });
@@ -282,12 +283,13 @@ router.get('/delete-coupon/:id', verifyAdmin, (req, res) => {
 
 router.get('/reports', async (req, res) => {
   let rep = await adminhelper.getReport()
-  console.log(rep, 'report');
-  let total = await adminhelper.getAllorderCount()
+  let monthly = await adminhelper.getReportMonthly()
+  console.log(monthly, 'report');
 
+  let total = await adminhelper.getAllorderCount()
   let totalprofit = await adminhelper.getTotalProfit()
- 
-    res.render('admin/sales-report', { layout: 'admin', admin: true, rep,totalprofit })
+
+  res.render('admin ales-report', { layout: 'admin', admin: true, rep, totalprofit })
 
 })
 

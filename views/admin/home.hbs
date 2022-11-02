@@ -187,7 +187,7 @@
         <div class="card">
           <div class="row row-bordered g-0">
             <div class="col-md-8">
-              <h5 class="card-header m-0 me-2 pb-3">Daily Sales</h5>
+              <h5 class="card-header m-0 me-2 pb-3">Daily Sales(Last Week)</h5>
               {{!-- <div id="totalRevenueChart" class="px-2"></div> --}}
               {{!-- <canvas id="myChart" style="width:100%;max-width:850px" class="p-3"></canvas> --}}
               <canvas id="DailySales" width="270" height="150" class="m-3"></canvas>
@@ -583,9 +583,14 @@ barData.unshift('{{this.count}}')
       }]
     },
     options: {
-      legend: { display: false },
+      legend: { display: true },
      scales: {
         yAxes: [{
+            ticks: {
+                beginAtZero: true
+            }
+        }],
+        xAxes: [{
             ticks: {
                 beginAtZero: true
             }

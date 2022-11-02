@@ -15,7 +15,6 @@ var instance = new Razorpay({
 module.exports = {
     doSignup: (userData) => {
         return new Promise(async (resolve, reject) => {
-
             let user = await db.get().collection(collection.USER_COLLECTION).findOne({ email: userData.email })
             let mob = await db.get().collection(collection.USER_COLLECTION).findOne({ mobile: userData.mobile })
             if (user) {
@@ -26,11 +25,21 @@ module.exports = {
                 console.log("mobile number already exists");
             }
             else {
+                let referral = await db.get().collection(collection.USER_COLLECTION).findOne({ mobile: userData.referral })
+                console.log(referral, "refferal");
+                let balance
+                if (referral) {
+                    balance = 50
+                    await db.get().collection(collection.USER_COLLECTION).updateOne({ mobile: userData.referral }, { $inc: { wallet: 100 } })
+                } else {
+                    balance = 0
+                    resolve({ status: "coupon" })
+                }
                 userData.password = await bcrypt.hash(userData.password, 10)
                 userData.date = new Date().toISOString().split('T')[0]
                 userData.status = true
-                userData.wallet = 0.0
-                db.get().collection(collection.USER_COLLECTION).insertOne(userData).then((data) => {
+                userData.wallet = balance
+                db.get().collection("testtttt").insertOne(userData).then((data) => {
                     resolve(userData)
                 })
             }
@@ -348,6 +357,22 @@ module.exports = {
         })
 
     },
+    walletPayment: (userId, total) => {
+        return new Promise(async(resolve,reject)=>{
+            let user =await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectId(userId)})
+            if(user.wallet>=total){
+                db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectId(userId)},{$inc:{wallet:-total}}).then((response)=>{
+                    resolve({status:true})
+                })
+            }else{
+                resolve({status:false})
+            }
+            
+        })
+        
+        
+
+    },
     createPay: (payment) => {
         return new Promise((resolve, reject) => {
             paypal.payment.create(payment, function (err, payment) {
@@ -477,6 +502,7 @@ module.exports = {
     changestatus: (details) => {
         return new Promise(async (resolve, reject) => {
             if (details.status == 'return-completed') {
+                console.log(details, "details");
                 let amt = parseInt(details.refund)
                 await db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectId(details.cartid) }, { $set: { status: (details.status), cancel: true, completed: true, return: true } }).then(() => {
                     db.get().collection(collection.USER_COLLECTION).updateOne({ _id: objectId(details.user) },

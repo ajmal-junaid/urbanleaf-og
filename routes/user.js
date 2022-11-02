@@ -135,7 +135,9 @@ router.get('/logout', (req, res) => {
 })
 
 router.get('/signup', (req, res) => {
-  res.render('user/signup', { layout: 'admin' })
+  console.log(req.session.couponErr, "not valid");
+  res.render('user/signup', { layout: 'admin', 'coupErr': req.session.couponErr })
+  req.session.couponErr = null
 })
 
 router.post('/signup', (req, res) => {
@@ -146,9 +148,12 @@ router.post('/signup', (req, res) => {
         res.render('user/signup', { layout: 'admin', "emailErr": "email already exists" })
       } else if (response.status == "mobile") {
         res.render('user/signup', { layout: 'admin', "mobileErr": "mobile number already exists" })
+      } else if (response.status == "coupon") {
+        req.session.couponErr = "refferal code is not valid..!  Try with valid refferal code"
+        res.redirect('/signup')
       }
       else {
-        res.redirect('/login')
+        res.redirect('/loginmail')
       }
     })
   } else {
@@ -325,7 +330,21 @@ router.post('/proceed-page', async (req, res) => {
         .catch((err) => {
           res.redirect('/err');
         });
-    } else {
+    } else if (req.body.paymentMethod == "WALLET") {
+      userHelpers.walletPayment(req.session.user._id,totalPrice).then((response)=>{
+        if(response.status){
+          userHelpers.changePaymentStatus(orderId).then(() => {
+            response.wallet = response.status
+           res.json(response)
+          })
+        }else{
+          req.session.walletErr="Insufficient Balance ....Please try with another payment method"
+          res.json({statusW:true})
+        }
+        
+      })
+    }
+    else {
       res.send("errrrrr")
     }
   })
@@ -375,10 +394,10 @@ router.get('/view-detail/', async (req, res) => {
   console.log(total, "newwww");
   if (products.disc) {
     total = await products[0].totalAmount
-    
+
   }
   discount = totalh - total
-    console.log(discount, "disss");
+  console.log(discount, "disss");
 
   let cartCount = await userHelpers.getCartCount(req.session.user._id)
   res.render('user/view-order-detail', { products, user, total, cartCount, totalh, discount })
@@ -410,7 +429,7 @@ router.post('/address', (req, res) => {
 })
 
 router.get('/payment-failed', (req, res) => {
-  res.render('user/paymentfailed')
+  res.render('user/paymentfailed',{'walletErr':req.session.walletErr})
 })
 
 router.get('/userProfile', verifyLogin, async (req, res) => {

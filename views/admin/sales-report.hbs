@@ -47,26 +47,19 @@
 
         </div>
 
-        
+
     </div>
     <!--/ Hoverable Table rows -->
     <div class="mt-5 card">
         <span>
-            <h4 class="card-header m-3">Sales Report</h4>
+            <h4 class="card-header m-3">Sales Report Monthly</h4>
         </span>
         <hr>
         {{#if err}}
         <div class="alert alert-danger" role="alert">{{err}}</div>
 
         {{/if}}
-        <div class="row my-4">
 
-            <div class="col d-flex">
-                <a onclick='return demoFromHTML()' class="button btn btn-outline-success me-3 ms-auto">Export as Pdf</a>
-                <button class="btn btn-outline-danger me-3" onclick="ExportToExcel('xlsx')">Export table to
-                    excel</button>
-            </div>
-        </div>
 
         <div class="table-responsive text-nowrap" id="customermonthly">
             <table id="tbl_exporttable_to_xls" class="table table-hover display nowrap">
@@ -93,10 +86,9 @@
                     {{/each}}
                 </tbody>
             </table>
-            <h4 class="card-header text-danger">Total:{{totalprofit}}</h4>
 
         </div>
 
-        
+
     </div>
 </div>

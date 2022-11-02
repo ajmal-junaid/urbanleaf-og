@@ -362,7 +362,6 @@ module.exports = {
         })
     },
     deleteCoupon: (coupon) => {
-        console.log(coupon, "dddd");
         return new Promise(async (resolve, reject) => {
             db.get().collection(collection.COUPON_COLLECTION).deleteOne({ _id: objectId(coupon) }).then((response) => {
                 resolve()
@@ -374,6 +373,51 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             let coupons = await db.get().collection(collection.COUPON_COLLECTION).find().toArray()
             resolve(coupons)
+        })
+    },
+    getReportMonthly: () => {
+        return new Promise(async (resolve, reject) => {
+            let first = await db.get().collection(collection.ORDER_COLLECTION)
+                .aggregate([
+                    {
+                        $match: { status: 'completed' }
+                    },
+                    {
+                        $unwind: '$product'
+                    },
+                    {
+                        $project: {
+                            _id: 0, paymentMethod: 1, product: 1, totalAmount: 1, status: 1, date: 1
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: '$product.item',
+                            totalquantity: { $sum: '$product.quantity' },
+                            date: { '$first': "$date" },
+                            month: { '$first': { $month: { $toDate: "$date" } } }, count: { $sum: 1 }
+                        }
+                    },
+                    {
+                        $lookup: {
+                            from: collection.PRODUCT_COLLECTION,
+                            localField: '_id',
+                            foreignField: '_id',
+                            as: 'prodName'
+                        }
+                    },
+                    {
+                        $project: {
+                            month:1,
+                            date: 1,
+                            totalquantity: 1,
+                            prod: { $arrayElemAt: ['$prodName.productName', 0] },
+                            // prodAmount: { $arrayElemAt: ['$prodName.OurPrice', 0] } ,
+                            total: { $multiply: ['$totalquantity', { $convert: { input: { $arrayElemAt: ['$prodName.OurPrice', 0] }, to: 'int', onError: 0 } }] }
+                        }
+                    }
+                ]).toArray()
+            resolve(first)
         })
     }
 }
