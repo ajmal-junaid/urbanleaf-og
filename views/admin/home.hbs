@@ -90,11 +90,16 @@
       <div class="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
         <div class="card">
           <div class="row row-bordered g-0">
-            <div class="col-md-8">
+            <div class="col-md-8 d-flex">
+              <div class="row">
               <h5 class="card-header m-0 me-2 pb-3">Total Revenue</h5>
+              </div>
               {{!-- <div id="totalRevenueChart" class="px-2"></div> --}}
               {{!-- <canvas id="myChart" style="width:100%;max-width:850px" class="p-3"></canvas> --}}
-              <canvas id="myChart" width="270" height="150"></canvas>
+              
+              <canvas id="myChart" width="240" height="150"></canvas>
+              
+             
             </div>
 
           </div>
@@ -186,7 +191,7 @@
       <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
         <div class="card">
           <div class="row row-bordered g-0">
-            <div class="col-md-8">
+            <div class="col-md-8 d-flex">
               <h5 class="card-header m-0 me-2 pb-3">Daily Sales(Last Week)</h5>
               {{!-- <div id="totalRevenueChart" class="px-2"></div> --}}
               {{!-- <canvas id="myChart" style="width:100%;max-width:850px" class="p-3"></canvas> --}}
@@ -196,7 +201,33 @@
           </div>
         </div>
       </div>
+ <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
+        <div class="card">
+          <div class="row row-bordered g-0">
+            <div class="col-md-8 d-flex">
+              <h5 class="card-header m-0 me-2 pb-3">Monthly Sales(Last Year)</h5>
+              {{!-- <div id="totalRevenueChart" class="px-2"></div> --}}
+              {{!-- <canvas id="myChart" style="width:100%;max-width:850px" class="p-3"></canvas> --}}
+              <canvas id="MonthlySales" width="270" height="150" class="m-3"></canvas>
+            </div>
 
+          </div>
+        </div>
+      </div>
+
+       <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
+        <div class="card">
+          <div class="row row-bordered g-0">
+            <div class="col-md-8 d-flex">
+              <h5 class="card-header m-0 me-2 pb-3">Yearly Sales(Last Five Years)</h5>
+              {{!-- <div id="totalRevenueChart" class="px-2"></div> --}}
+              {{!-- <canvas id="myChart" style="width:100%;max-width:850px" class="p-3"></canvas> --}}
+              <canvas id="YearlySales" width="270" height="150" class="m-3"></canvas>
+            </div>
+
+          </div>
+        </div>
+      </div>
     </div>
     <div class="row">
       <!-- Order Statistics -->
@@ -566,9 +597,28 @@ barData.unshift('{{this.count}}')
   ydata.unshift('{{this.count}}')
   xdata.unshift('{{this._id.day}}')
   {{/each}}
-  console.log(xdata,ydata)
   var xValues = xdata
   var yValues = ydata;
+
+  let xmdata=[]
+  let ymdata=[]
+{{#each barData.monthly}}
+  ymdata.unshift('{{this.count}}')
+  xmdata.unshift('{{this.month}}')
+  {{/each}}
+  console.log(xmdata,ymdata)
+  var xmValues = xmdata
+  var ymValues = ymdata;
+
+  let xydata=[]
+  let yydata=[]
+{{#each barData.yearly}}
+  yydata.unshift('{{this.count}}')
+  xydata.unshift('{{this._id.year}}')
+  {{/each}}
+  console.log(xydata,yydata)
+  var xyValues = xydata
+  var yyValues = yydata;
 
   new Chart("DailySales", {
     type: "line",
@@ -580,6 +630,64 @@ barData.unshift('{{this.count}}')
         backgroundColor: "rgba(0,0,255,1.0)",
         borderColor: "rgba(0,0,255,0.1)",
         data: yValues
+      }]
+    },
+    options: {
+      legend: { display: true },
+     scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true
+            }
+        }],
+        xAxes: [{
+            ticks: {
+                beginAtZero: true
+            }
+        }]
+    }
+    }
+  });
+
+  new Chart("MonthlySales", {
+    type: "line",
+    data: {
+      labels: xmValues,
+      datasets: [{
+        fill: false,
+        lineTension: 0,
+        backgroundColor: "rgba(0,0,255,1.0)",
+        borderColor: "rgba(0,0,255,0.1)",
+        data: ymValues
+      }]
+    },
+    options: {
+      legend: { display: true },
+     scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true
+            }
+        }],
+        xAxes: [{
+            ticks: {
+                beginAtZero: true
+            }
+        }]
+    }
+    }
+  });
+
+  new Chart("YearlySales", {
+    type: "line",
+    data: {
+      labels: xyValues,
+      datasets: [{
+        fill: false,
+        lineTension: 0,
+        backgroundColor: "rgba(0,0,255,1.0)",
+        borderColor: "rgba(0,0,255,0.1)",
+        data: yyValues
       }]
     },
     options: {

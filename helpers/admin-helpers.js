@@ -408,7 +408,7 @@ module.exports = {
                     },
                     {
                         $project: {
-                            month:1,
+                            month: 1,
                             date: 1,
                             totalquantity: 1,
                             prod: { $arrayElemAt: ['$prodName.productName', 0] },

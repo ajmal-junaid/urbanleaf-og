@@ -39,7 +39,7 @@ module.exports = {
                 userData.date = new Date().toISOString().split('T')[0]
                 userData.status = true
                 userData.wallet = balance
-                db.get().collection("testtttt").insertOne(userData).then((data) => {
+                db.get().collection(collection.USER_COLLECTION).insertOne(userData).then((data) => {
                     resolve(userData)
                 })
             }

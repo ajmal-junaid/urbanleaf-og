@@ -57,6 +57,11 @@ router.get('/home', verifyAdmin, async (req, res, next) => {
   let onll = 0
   let cod = 0
   let totl = 0
+  console.log(barData.yearly,"yearly");
+  console.log(barData.monthly,"monthly");
+  console.log(barData.daily,"daily");
+  console.log("------------------------------------------------------");
+  console.log(barData);
   if (pay.razor[0]) {
     onll = parseInt(pay.razor[0].sum) + parseInt(pay.paypal[0].sum)
   } else {
@@ -289,7 +294,7 @@ router.get('/reports', async (req, res) => {
   let total = await adminhelper.getAllorderCount()
   let totalprofit = await adminhelper.getTotalProfit()
 
-  res.render('admin ales-report', { layout: 'admin', admin: true, rep, totalprofit })
+  res.render('admin/sales-report', { layout: 'admin', admin: true, rep, totalprofit })
 
 })
 
