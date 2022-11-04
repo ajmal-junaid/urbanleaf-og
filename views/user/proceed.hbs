@@ -226,26 +226,3 @@
     }
 </style>
 <!-- Checkout Section End -->
-<script>
-
-
-    $("#address-form").submit((e) => {
-        e.preventDefault()
-        $.ajax({
-            url: '/address',
-            method: 'post',
-            data: $('#address-form').serialize(),
-            success: (response) => {
-                if (response) {
-                    $("#address-form").trigger("reset");
-                    location.reload()
-                    alert("added succesfully")
-                } else {
-                    $("#address-form").trigger("reset");
-                    alert("added succesfully 1")
-                    location.reload()
-                }
-            }
-        })
-    })
-</script>

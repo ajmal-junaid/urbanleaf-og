@@ -238,7 +238,9 @@ router.get('/unblock/', verifyAdmin, (req, res) => {
 router.get('/order-management', verifyAdmin, async (req, res, next) => {
   let err = null
   let orders = await userHelpers.getAllUserOrders()
-  console.log(orders[0],"ordersssssssss");
+  orders.forEach(orders => {
+    orders.date=orders.date.toDateString()
+  });
   res.render('admin/order-management', { admin: true, layout: 'admin', err, orders });
   req.session.catErr = null
 });

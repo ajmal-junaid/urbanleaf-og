@@ -259,3 +259,32 @@ $("#couponForm").submit((e) => {
     }
   })
 })
+
+$("#address-form").submit((e) => {
+  e.preventDefault()
+  $.ajax({
+      url: '/address',
+      method: 'post',
+      data: $('#address-form').serialize(),
+      success: (response) => {
+          if (response) {
+              $("#address-form").trigger("reset");
+              Swal.fire({
+                  title: 'Address Added Succesfully',
+                  icon: 'success',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: 'Continue..'
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      Swal.fire(
+                          location.reload()
+                      )
+                  }
+              })
+              //setTimeout(location.reload(),1000)
+              //location.reload()
+          }
+      }
+  })
+})

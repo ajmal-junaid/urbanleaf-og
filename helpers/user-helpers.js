@@ -330,7 +330,8 @@ module.exports = {
                 product: product,
                 totalAmount: total,
                 status: status,
-                date: new Date()
+                date: new Date(),
+                invoiceNo: uid()
             }
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((response) => {
                 db.get().collection(collection.CART_COLLECTION).deleteOne({ user: objectId(order.userId) })
@@ -396,7 +397,7 @@ module.exports = {
     getUserOrders: (userId) => {
         return new Promise(async (resolve, reject) => {
             let orders = await db.get().collection(collection.ORDER_COLLECTION)
-                .find({ userId: objectId(userId) }).sort({ date: -1 }).toArray()
+                .find({ userId: objectId(userId) }).sort({ _id: -1 }).toArray()
 
             resolve(orders)
         })
@@ -415,7 +416,7 @@ module.exports = {
                         item: '$product.item',
                         quantity: '$product.quantity',
                         total: '$product.totalAmount',
-                        totalAmount: '$totalAmount'
+                        totalAmount: '$totalAmount',
                     }
                 },
                 {
@@ -436,6 +437,27 @@ module.exports = {
             resolve(orderItems)
         })
     },
+    getOneOrder:(orderId)=>{
+        return new Promise(async (resolve,reject)=>{
+            let order = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match:{_id:objectId(orderId)}
+                },
+                {
+                    $project:{
+                        _id:0,
+                        deliveryDetails:1,
+                        status:1,
+                        invoiceNo:1,
+                        totalAmount:1,
+                        date:1
+                    }
+                }
+            ]).toArray()
+            resolve(order[0])
+        })
+    }
+    ,
     getOrderTotal: (orderId) => {
         return new Promise(async (resolve, reject) => {
             let orderItems = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
@@ -494,7 +516,7 @@ module.exports = {
     getAllUserOrders: (userId) => {
         return new Promise(async (resolve, reject) => {
             let orders = await db.get().collection(collection.ORDER_COLLECTION)
-                .find().sort({ date: -1 }).toArray()
+                .find().sort({ _id: -1 }).toArray()
 
             resolve(orders)
         })

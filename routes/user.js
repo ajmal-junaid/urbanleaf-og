@@ -113,17 +113,21 @@ router.get('/loginmail', (req, res) => {
 router.post('/loginmail', (req, res) => {
   userHelpers.doLoginMail(req.body).then((response) => {
     if (response.status == 333) {
-      res.render('user/login', { layout: 'admin', "loginErr": "Wrong Password...! Try Again" })
+      res.json({wrongpassword:true})
+      //res.render('user/login', { layout: 'admin', "loginErr": "Wrong Password...! Try Again" })
       req.session.userLoginErr = "Wrong Password...! Try Again"
     } else if (response.status == 222) {
-      res.render('user/login', { layout: 'admin', "loginErr": "Blocked Account..! Contact Admin" })
+      res.json({block:true})
+      //res.render('user/login', { layout: 'admin', "loginErr": "Blocked Account..! Contact Admin" })
       req.session.userLoginErr = "Blocked Account..! Contact Admin"
     } else if (response.status) {
       req.session.user = response.user
       req.session.userLoggedIn = true;
-      res.redirect('/')
+      //res.redirect('/')
+      res.json(response)
     } else {
-      res.render('user/login', { layout: 'admin', "loginErr": "User not Found...!Please Signup" })
+      res.json({nouser:true})
+      //res.render('user/login', { layout: 'admin', "loginErr": "User not Found...!Please Signup" })
       req.session.userLoginErr = "User not Found...!Please Signup"
     }
   })
@@ -154,6 +158,7 @@ router.post('/signup', (req, res) => {
         res.redirect('/signup')
       }
       else {
+        req.session.couponErr=true
         res.redirect('/loginmail')
       }
     })
@@ -214,8 +219,8 @@ router.get('/add-to-cartt/:id', verifyLogin, (req, res, next) => {
 router.get('/add-to-wishlist/:id', verifyLogin, (req, res, next) => {
   let user = req.session.user
   userHelpers.addToWishlist(req.params.id, user._id).then((response) => {
-    console.log(response,"response");
-    res.json({ status: true,mod:response.modifiedCount })
+    console.log(response, "response");
+    res.json({ status: true, mod: response.modifiedCount })
   })
 })
 
@@ -242,7 +247,7 @@ router.get('/cart', async (req, res) => {
 router.post('/change-product-quantity', (req, res, next) => {
   userHelpers.changeProductQuantity(req.body).then(async (response) => {
     response.total = await userHelpers.getTotalAmount(req.body.user)
-    console.log(response,"respppp change quzN");
+    console.log(response, "respppp change quzN");
     res.json(response)
   })
 })
@@ -383,27 +388,29 @@ router.get('/order-succesfull', async (req, res) => {
 router.get('/get-order', verifyLogin, async (req, res) => {
   let user = req.session.user
   let orders = await userHelpers.getUserOrders(user._id)
+  orders.forEach(orders => {
+    orders.date=orders.date.toDateString()
+  });
   let cartCount = await userHelpers.getCartCount(req.session.user._id)
   res.render('user/order-details', { user, orders, cartCount })
 })
 
-router.get('/view-detail/', async (req, res) => {
+router.get('/view-detail/', verifyLogin, async (req, res) => {
   let products = await userHelpers.getOrderProducts(req.query.id)
+  let order = await userHelpers.getOneOrder(req.query.id)
   let totalh = await userHelpers.getTotalAmountOrder(req.query.id)
   //let totalh = await userHelpers.getTotalAmount(req.session.user._id)
-  let discount
+  order.date=order.date.toDateString()
+  let discount = 0
   let user = req.session.user
   let total = await userHelpers.getOrderTotal(req.query.id)
-  console.log(total, "newwww");
   if (products.disc) {
     total = await products[0].totalAmount
 
   }
   discount = totalh - total
-  console.log(discount, "disss");
-
   let cartCount = await userHelpers.getCartCount(req.session.user._id)
-  res.render('user/view-order-detail', { products, user, total, cartCount, totalh, discount })
+  res.render('user/view-order-detail', { products, user, total, cartCount, totalh, discount, order })
 })
 
 router.get('/contact-us', (req, res) => {
@@ -426,6 +433,14 @@ router.get('/get-category-products', async (req, res) => {
 })
 
 router.post('/address', (req, res) => {
+  console.log(req.body,"adddddddddddddddddddddddddddd");
+  userHelpers.addNewAddress(req.body).then((response) => {
+    res.redirect('/proceed-page')
+  })
+})
+
+router.post('/addressP', (req, res) => {
+  console.log(req.body,"adddddddddddddddddddddddddddd");
   userHelpers.addNewAddress(req.body).then((response) => {
     res.redirect('/proceed-page')
   })
@@ -438,7 +453,7 @@ router.get('/payment-failed', (req, res) => {
 router.get('/userProfile', verifyLogin, async (req, res) => {
   let address = await userHelpers.getAddresses(req.session.user._id)
   let userdata = await userHelpers.userProfile(req.session.user._id)
-  res.render('user/user-profile', { address, userdata, 'user': req.session.user._id })
+  res.render('user/user-profile', { address, userdata, 'user': req.session.user })
 })
 
 router.post('/user-profile', (req, res) => {

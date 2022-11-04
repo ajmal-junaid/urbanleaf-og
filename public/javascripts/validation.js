@@ -132,3 +132,63 @@ function changestatus(orderid, amount,userId) {
       }
     })
   }
+
+  $("#loginmail").submit((e) => {
+    e.preventDefault()
+    $.ajax({
+      url: '/loginmail',
+      method: 'post',
+      data: $('#loginmail').serialize(),
+      success: (response) => {
+        console.log(response)
+        if (response.user) {
+          //window.history.back()
+          window.location.replace(document.referrer);
+        } else if (response.nouser) {
+          Swal.fire({
+            title: '<strong>User Not Found Please Signup</strong>',
+            icon: 'info',
+            html:
+              'You can use, ' +
+              '<a href="/signup">This Link</a> ' +
+              'To create Account',
+            showCloseButton: true,
+            showCancelButton: false,
+            focusConfirm: false,
+            confirmButtonText:
+              '<i class="fa fa-thumbs-up"></i> Continue To Login..!'
+          })
+          //location.replace()
+        } else if (response.wrongpassword) {
+          let timerInterval
+          Swal.fire({
+            title: 'Wrong Password!',
+            html: 'Please Try Again',
+            timer: 3000,
+            timerProgressBar: true,
+
+            willClose: () => {
+              clearInterval(timerInterval)
+            }
+          }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+              console.log('I was closed by the timer')
+            }
+          })
+        }else if(response.block){
+          Swal.fire({
+  title: 'Account Disabled...Try With Another Account',
+  showClass: {
+    popup: 'animate__animated animate__fadeInDown'
+  },
+  hideClass: {
+    popup: 'animate__animated animate__fadeOutUp'
+  }
+})
+        }
+
+
+      }
+    })
+  })

@@ -58,7 +58,7 @@
           <h4 class="mb-2">Welcome to Urban Leaf 👋</h4>
           <p class="mb-4">Please sign-in to your account and start the adventure</p>
 
-          <form class="mb-3" action="/loginmail" method="post">
+          <form class="mb-3" action="" id="loginmail">
             <div class="mb-3">
               <label class="form-label">Email</label>
               <input type="email" class="form-control" name="email" placeholder="Enter your Registered Email"
@@ -89,7 +89,7 @@
               </div>
             </div>
             <div class="mb-3">
-              <button class="btn btn-primary d-grid w-100" type="submit" >Login
+              <button class="btn btn-primary d-grid w-100" type="submit">Login
               </button>
               <span id="submit-error" class="text-danger"></span>
               {{#if loginErr}}
@@ -112,5 +112,7 @@
     </div>
   </div>
 </div>
-<script
-  type="text/javascript">window.setTimeout("document.getElementById('successMessage').style.display='none';", 3000); </script>
+<script type="text/javascript">window.setTimeout("document.getElementById('successMessage').style.display='none';", 3000);
+
+  
+</script>

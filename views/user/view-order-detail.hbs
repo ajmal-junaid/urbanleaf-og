@@ -12,7 +12,7 @@
                         <div class="card-body p-4">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <p class="lead fw-normal mb-0" style="color: #a8729a;">Receipt</p>
-                                <p class="small text-muted mb-0">Receipt Voucher : 1KAU9-84UIL</p>
+                                <p class="small text-muted mb-0">Receipt Voucher : {{order.invoiceNo}}</p>
                             </div>
                             {{#each products}}
                             <div class="card shadow-0 border mb-4">
@@ -71,23 +71,24 @@
 
 
                             <div class="d-flex justify-content-between pt-2">
-                                <p class="fw-bold mb-0">Order Details</p>
+                                <p class="fw-bold mb-0">Delivered to: {{order.deliveryDetails.fname}},
+                                    {{order.deliveryDetails.address}},{{order.deliveryDetails.city}}</p>
                                 <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span> ₹{{totalh}}</p>
                             </div>
 
                             <div class="d-flex justify-content-between pt-2">
-                                <p class="text-muted mb-0">Status : {{products.status}}</p>
+                                <p class="text-muted mb-0">Status : {{order.status}}</p>
                                 <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span>
                                     ₹{{discount}}.00</p>
                             </div>
 
                             <div class="d-flex justify-content-between">
-                                <p class="text-muted mb-0">Invoice Date : {{products.date}}</p>
+                                <p class="text-muted mb-0">Invoice Date : {{order.date}}</p>
                                 <p class="text-muted mb-0"><span class="fw-bold me-4">GST 18%</span> 123</p>
                             </div>
 
                             <div class="d-flex justify-content-between mb-5">
-                                <p class="text-muted mb-0">Recepits Voucher : 18KU-62IIK</p>
+                                <p class="text-muted mb-0">Recepits Voucher : {{order.invoiceNo}}</p>
                                 <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span> Free</p>
                             </div>
                         </div>

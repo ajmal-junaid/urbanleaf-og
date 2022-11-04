@@ -28,7 +28,7 @@
                                 </div>
                                 <hr class="my-0" />
                                 <div class="card-body">
-                                    <form action="/user-profile" method="POST">
+                                   
                                         <div class="row">
                                             <div class="mb-3 col-md-6">
                                                 <label for="firstName" class="form-label">First Name</label>
@@ -187,7 +187,7 @@
                                                     class="btn btn-outline-secondary">Cancel</button> --}}
                                             </div>
                                         </div>
-                                    </form>
+                                    
                                 </div>
                                 <!-- /Account -->
                             </div>
@@ -233,26 +233,3 @@
                 </form>
             </div>
         </div>
-        <script>
-
-
-            $("#address-form").submit((e) => {
-                e.preventDefault()
-                $.ajax({
-                    url: '/address',
-                    method: 'post',
-                    data: $('#address-form').serialize(),
-                    success: (response) => {
-                        if (response) {
-                            $("#address-form").trigger("reset");
-                            location.reload()
-                            alert("added succesfully")
-                        } else {
-                            $("#address-form").trigger("reset");
-                            alert("added succesfully 1")
-                            location.reload()
-                        }
-                    }
-                })
-            })
-        </script>

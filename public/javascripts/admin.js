@@ -1,3 +1,4 @@
+
 $(document).ready(function () {
     $('#tbl_exporttable_to_xls').DataTable();
 });
@@ -39,3 +40,7 @@ function demoFromHTML() {
         }, margins
     );
 }
+// index number for td with class ajindex
+
+var divs = document.querySelectorAll('.ajindex'); for (var i = 0; i <
+    divs.length; ++i) { divs[i].innerHTML = i + 1; }
