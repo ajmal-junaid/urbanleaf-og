@@ -358,19 +358,19 @@ module.exports = {
 
     },
     walletPayment: (userId, total) => {
-        return new Promise(async(resolve,reject)=>{
-            let user =await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectId(userId)})
-            if(user.wallet>=total){
-                db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectId(userId)},{$inc:{wallet:-total}}).then((response)=>{
-                    resolve({status:true})
+        return new Promise(async (resolve, reject) => {
+            let user = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: objectId(userId) })
+            if (user.wallet >= total) {
+                db.get().collection(collection.USER_COLLECTION).updateOne({ _id: objectId(userId) }, { $inc: { wallet: -total } }).then((response) => {
+                    resolve({ status: true })
                 })
-            }else{
-                resolve({status:false})
+            } else {
+                resolve({ status: false })
             }
-            
+
         })
-        
-        
+
+
 
     },
     createPay: (payment) => {
@@ -723,14 +723,13 @@ module.exports = {
         }
         return new Promise(async (resolve, reject) => {
             let userwishlist = await db.get().collection(collection.WISHLIST_COLLECTION).findOne({ user: objectId(userId) })
-            console.log("dgdgdgd", userwishlist);
             if (userwishlist) {
                 db.get().collection(collection.WISHLIST_COLLECTION).updateOne({ user: objectId(userId) },
                     {
                         $addToSet: { product: proObj }
 
                     }).then((response) => {
-                        resolve()
+                        resolve(response)
                     })
 
 

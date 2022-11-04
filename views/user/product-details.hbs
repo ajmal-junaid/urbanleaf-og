@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-fluid">
 
     <!-- Breadcrumb Section Begin -->
     <section class="breadcrumb-section set-bg" data-setbg="img/breadcrumb.jpg">
@@ -9,11 +9,12 @@
                         <h2>{{product.category}}’s Package</h2>
                         <div class="breadcrumb__option">
                             <a href="/">Home</a>
-                            <a href="./index.html">{{product.category}}</a>
+                            <a href="/get-category-products?id={{product.category}}">{{product.category}}</a>
                             <span>{{product.category}}’s Package</span>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -23,24 +24,9 @@
     <section class="product-details spad">
         <div class="container">
             <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <div class="product__details__pic">
-                        <div class="product__details__pic__item bg-image zoom">
-                            <img class="product__details__pic__item--large" src="/product-images/{{product._id}}.jpg"
-                                alt="">
-                        </div>
-                        <div class="product__details__pic__slider owl-carousel">
-                            <img data-imgbigurl="/product-images/{{product._id}}(1).jpg"
-                                src="/product-images/{{product._id}}(1).jpg" alt="">
-                            <img data-imgbigurl="/product-images/{{product._id}}(2).jpg"
-                                src="/product-images/{{product._id}}(2).jpg" alt="">
-                            <img data-imgbigurl="/product-images/{{product._id}}.jpg"
-                                src="/product-images/{{product._id}}.jpg" alt="">
-                            <img data-imgbigurl="/product-images/{{product._id}}(1)"
-                                src="/product-images/{{product._id}}(1)" alt="">
-                        </div>
-                    </div>
-                </div>
+
+
+
                 <div class="col-lg-6 col-md-6">
                     <div class="product__details__text">
                         <h3>{{product.productName}}</h3>
@@ -61,9 +47,10 @@
                                 </div>
                             </div>
                         </div> --}}
-                       
+
                         <a onclick="return addToCart('{{product._id}}')" class="primary-btn">ADD TO CART</a>
-                        <a href="#" class="heart-icon"><span class="icon_heart_alt"></span></a>
+                        <a onclick="return addToWishlist('{{product._id}}')" class="heart-icon"><span class="icon_heart_alt"></span></a>
+            
                         <ul>
                             <li><b>Availability</b> <span>In Stock({{product.stock}} left)</span></li>
                             <li><b>Shipping</b> <span>01 day shipping. <samp>Free pickup today</samp></span></li>
@@ -77,6 +64,25 @@
                                 </div>
                             </li>
                         </ul>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-4 p-5">
+                    <div class="product__details__pic">
+                        <div class="product__details__pic__item" id="img-container">
+                            <img class="product__details__pic__item--large" src="/product-images/{{product._id}}.jpg"
+                                alt="">
+                        </div>
+
+                        <div class="product__details__pic__slider owl-carousel">
+                            <img data-imgbigurl="/product-images/{{product._id}}(1).jpg"
+                                src="/product-images/{{product._id}}(1).jpg" alt="">
+                            <img data-imgbigurl="/product-images/{{product._id}}(2).jpg"
+                                src="/product-images/{{product._id}}(2).jpg" alt="">
+                            <img data-imgbigurl="/product-images/{{product._id}}.jpg"
+                                src="/product-images/{{product._id}}.jpg" alt="">
+                            <img data-imgbigurl="/product-images/{{product._id}}(1).jpg"
+                                src="/product-images/{{product._id}}(1).jpg " alt="">
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-12">
@@ -162,8 +168,22 @@
             </div>
         </div>
     </section>
+    <script>
+
+        var options = {
+
+            width: 450, // required
+            zoomWidth: 100,
+            scale: 1,
+            offset: {
+                vertical: 0,
+                horizontal: 0
+            }
+        };
+        new ImageZoom(document.getElementById("img-container"), options);
+    </script>
     <!-- Product Details Section End -->
-    <style>
+    {{!-- <style>
         .zoom {
             transition: transform .2s;
             /* Animation */
@@ -176,4 +196,4 @@
             transform: scale(1.5);
             /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
         }
-    </style>
+    </style> --}}

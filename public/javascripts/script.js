@@ -1,14 +1,27 @@
 function addToCart(proId) {
+
   $.ajax({
     url: '/add-to-cart/' + proId,
     method: 'get',
     success: (response) => {
+
       if (response.status) {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Product Added to Cart',
+          showConfirmButton: false,
+          timer: 1500
+        })
         let count = $('#cart-count').html()
         count = parseInt(count) + 1
         $("#cart-count").html(count)
         document.getElementById('totalh').innerHTML = response.total
+
+
         location.reload()
+      } else {
+        location.href = '/loginmail'
       }
 
     }
@@ -20,6 +33,13 @@ function addToCartt(proId) {
     url: '/add-to-cartt/' + proId,
     method: 'get',
     success: (response) => {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Product Added to Cart',
+        showConfirmButton: false,
+        timer: 1500
+      })
       if (response.status) {
         let count = $('#cart-count').html()
         count = parseInt(count) + 1
@@ -37,12 +57,35 @@ function addToWishlist(proId) {
     url: '/add-to-wishlist/' + proId,
     method: 'get',
     success: (response) => {
-      if (response.status) {
+      if (response.mod == 1) {
         //let count = $('#cart-count').html()
         //count = parseInt(count) + 1
         // $("#cart-count").html(count)
         // document.getElementById('totalh').innerHTML = response.total
-        location.reload()
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Product Added to Wishlist',
+          showConfirmButton: false,
+          timer: 1500
+        })
+
+      } else if (response.mod == 0) {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'warning',
+          title: 'Product Already Exists In Wishlist',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      } else {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: 'Please Login to use Wishlist',
+          showConfirmButton: false,
+          timer: 1500
+        })
       }
 
     }
@@ -54,6 +97,13 @@ function cancelOrder(ordId) {
     method: 'get',
     success: (response) => {
       document.getElementById(ordId).innerHTML = "Canceled sucesfully"
+      Swal.fire({
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Order Canaceled',
+        showConfirmButton: false,
+        timer: 1000
+      })
 
     }
   })
@@ -65,6 +115,13 @@ function returnOrder(ordId) {
     method: 'get',
     success: (response) => {
       document.getElementById(ordId).innerHTML = "Return Requested"
+      Swal.fire({
+        position: 'top-end',
+        icon: 'info',
+        title: 'Return Requested',
+        showConfirmButton: false,
+        timer: 1500
+      })
 
     }
   })
@@ -165,7 +222,8 @@ $("#couponForm").submit((e) => {
     success: (response) => {
       if (response.Price) {
         if (visit >= 2) {
-          location.reload()
+          swal("Coupon " + response.code + " Already Applied", "One Coupon at a time", "error")
+          // location.reload()
         } else {
           document.getElementById('couponDescription').innerHTML = response.code + " applied succesfully <br>" + response.percentage + "% Off Upto ₹" + response.maxDiscount
           var newSpan = document.createElement('li');
@@ -175,11 +233,26 @@ $("#couponForm").submit((e) => {
           document.getElementById('cartTotal').appendChild(newSpan2);
           document.getElementById('cartTotal').appendChild(newSpan);
           visit += 1
+
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'You Saved ₹' + response.discAmount,
+            showConfirmButton: false,
+            timer: 1500
+          })
         }
         console.log(response)
         // document.getElementById('total').innerHTML = response.Price
 
       } else {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: 'Coupon is not Valid...! , Try Again with valid coupon',
+          showConfirmButton: false,
+          timer: 1500
+        })
         document.getElementById('couponDescription').innerHTML = " <P class='text-danger'>Coupon Not Valid<P> "
       }
 

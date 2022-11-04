@@ -60,8 +60,13 @@
                                     ₹{{this.total}}
                                 </td>
                                 <td class="shoping__cart__item__close">
-                                    <a onclick="removeCartProduct('{{this.product._id}}','{{this._id}}')"><span
-                                            class="icon_close"></span></a>
+                                    {{!-- <a onclick="removeCartProduct('{{this.product._id}}','{{this._id}}')"><span
+                                            class="icon_close"></span></a> --}}
+                                    <a onclick="return confirm('Delete confirmation of {{this.product.productName}} ?')"
+                                        class="dropdown-item"
+                                        href="javascript:removeCartProduct('{{this.product._id}}','{{this._id}}')"><i
+                                            class="icon_close"></i>
+                                        Delete</a>
                                 </td>
                             </tr>
                             <!-- Modal -->
@@ -89,7 +94,7 @@
                         <form action="" id="couponForm">
                             <input type="text" name="code" placeholder="Enter your coupon code">
                             <input type="text" value="{{user._id}}" name="userId" hidden>
-                            
+
                             <button type="submit" class="site-btn">APPLY COUPON</button>
                         </form>
                     </div>
@@ -161,6 +166,7 @@
     }
 
     function removeCartProduct(proId, cartId) {
+        console.log(proId, cartId)
         $.ajax({
             url: '/remove-product-cart',
             data: {

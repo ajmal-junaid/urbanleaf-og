@@ -23,6 +23,7 @@ const verifyLogin = (req, res, next) => {
 }
 /* GET home page. */
 router.get('/', async (req, res, next) => {
+
   let cartCount = null
   let totalh = null
   let wishlistCount = null
@@ -212,8 +213,9 @@ router.get('/add-to-cartt/:id', verifyLogin, (req, res, next) => {
 
 router.get('/add-to-wishlist/:id', verifyLogin, (req, res, next) => {
   let user = req.session.user
-  userHelpers.addToWishlist(req.params.id, user._id).then(() => {
-    res.json({ status: true })
+  userHelpers.addToWishlist(req.params.id, user._id).then((response) => {
+    console.log(response,"response");
+    res.json({ status: true,mod:response.modifiedCount })
   })
 })
 
@@ -240,6 +242,7 @@ router.get('/cart', async (req, res) => {
 router.post('/change-product-quantity', (req, res, next) => {
   userHelpers.changeProductQuantity(req.body).then(async (response) => {
     response.total = await userHelpers.getTotalAmount(req.body.user)
+    console.log(response,"respppp change quzN");
     res.json(response)
   })
 })
@@ -331,17 +334,17 @@ router.post('/proceed-page', async (req, res) => {
           res.redirect('/err');
         });
     } else if (req.body.paymentMethod == "WALLET") {
-      userHelpers.walletPayment(req.session.user._id,totalPrice).then((response)=>{
-        if(response.status){
+      userHelpers.walletPayment(req.session.user._id, totalPrice).then((response) => {
+        if (response.status) {
           userHelpers.changePaymentStatus(orderId).then(() => {
             response.wallet = response.status
-           res.json(response)
+            res.json(response)
           })
-        }else{
-          req.session.walletErr="Insufficient Balance ....Please try with another payment method"
-          res.json({statusW:true})
+        } else {
+          req.session.walletErr = "Insufficient Balance ....Please try with another payment method"
+          res.json({ statusW: true })
         }
-        
+
       })
     }
     else {
@@ -429,7 +432,7 @@ router.post('/address', (req, res) => {
 })
 
 router.get('/payment-failed', (req, res) => {
-  res.render('user/paymentfailed',{'walletErr':req.session.walletErr})
+  res.render('user/paymentfailed', { 'walletErr': req.session.walletErr })
 })
 
 router.get('/userProfile', verifyLogin, async (req, res) => {

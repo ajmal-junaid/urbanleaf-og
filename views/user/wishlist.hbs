@@ -29,7 +29,7 @@
                                 <th>Price</th>
                                 <th> &ensp; &ensp; &ensp;&ensp; &ensp; &ensp;&ensp; &ensp; &ensp;&ensp; &ensp; &ensp;
                                 </th>
-                                <th>s</th>
+                                <th></th>
 
                             </tr>
                         </thead>
@@ -51,8 +51,15 @@
                                                 class="fa fa-shopping-cart">Add to Cart</i></a></li>
                                 </td>
                                 <td class="shoping__cart__item__close">
-                                    <a onclick="removeWishlistProduct('{{this.product._id}}','{{this._id}}')"><span
-                                            class="icon_close"></span></a>
+                                    {{!-- <a
+                                        onclick="removeWishlistProduct('{{this.product._id}}','{{this._id}}')"><span
+                                            class="icon_close"></span></a> --}}
+
+                                    <a onclick="return confirm('Delete confirmation of {{this.product.productName}} ?')"
+                                        class="dropdown-item"
+                                        href="javascript:removeWishlistProduct('{{this.product._id}}','{{this._id}}')"><i
+                                            class="icon_close"></i>
+                                        Remove</a>
                                 </td>
 
                             </tr>

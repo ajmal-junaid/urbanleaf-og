@@ -6,17 +6,17 @@
 <!-- Humberger Begin -->
 {{#if add}}
 <div classs="container p-5">
-	<div class="row no-gutters">
-		<div class="col-lg-5 col-md-12 ml-auto">
-			<div class="alert alert-success fade show" role="alert">
-				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-			    	<span aria-hidden="True">&times;</span>
-			  	</button>
-			 	<h4 class="alert-heading">Well done!</h4>
-			  	<p>This is an alert within a column. The column can be made any size at different viewpoints.</p>
-			</div>
-		</div>
-	</div>
+  <div class="row no-gutters">
+    <div class="col-lg-5 col-md-12 ml-auto">
+      <div class="alert alert-success fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="True">&times;</span>
+        </button>
+        <h4 class="alert-heading">Well done!</h4>
+        <p>This is an alert within a column. The column can be made any size at different viewpoints.</p>
+      </div>
+    </div>
+  </div>
 </div>
 {{/if}}
 <!-- Categories Section Begin -->
@@ -27,7 +27,7 @@
         {{#each category}}
         <div class="col-lg-3">
           <div class="categories__item set-bg" data-setbg="/category-images/{{this._id}}.jpg">
-            <h5><a href="#">{{this.category}}</a></h5>
+            <h5><a href="/get-category-products?id={{this.category}}">{{this.category}}</a></h5>
           </div>
         </div>
         {{/each}}
@@ -48,29 +48,31 @@
         <div class="featured__controls">
           <ul>
             <li class="active" data-filter="*">All</li>
-            <li data-filter=".oranges">Oranges</li>
-            <li data-filter=".fresh-meat">Fresh Meat</li>
-            <li data-filter=".vegetables">Vegetables</li>
-            <li data-filter=".fastfood">Fastfood</li>
+            {{#each category}}
+            <li data-filter=".{{this.category}}">{{this.category}}</li>
+            {{/each}}
           </ul>
         </div>
       </div>
     </div>
     <div class="row featured__filter">
       {{#each product}}
-      
 
-      <div class="col-lg-3 col-md-4 col-sm-6 mix oranges fresh-meat">
+
+      <div class="col-lg-3 col-md-4 col-sm-6 mix {{this.category}} my-4">
         <div class="product__discount__item">
+
           <div class="product__discount__item__pic set-bg" data-setbg="/product-images/{{this._id}}.jpg">
+
             <div class="product__discount__percent">{{this.percentage}}%<a>Off</a>
             </div>
-            <ul class="product__item__pic__hover">
+            <ul class="product__item__pic__hover" style="cursor:pointer">
               <li><a onclick="return addToWishlist('{{this._id}}')"><i class="fa fa-heart"></i></a></li>
               <li><a href="#"><i class="fa fa-retweet"></i></a></li>
               <li><a onclick="return addToCart('{{this._id}}')"><i class="fa fa-shopping-cart"></i></a></li>
             </ul>
           </div>
+
           <div class="product__discount__item__text">
             <span>{{this.category}}</span>
             <h5><a href="/product-details?id={{this._id}}">{{this.productName}}</a></h5>
@@ -81,7 +83,7 @@
         </div>
       </div>
 
-      
+
       {{/each}}
 
 
