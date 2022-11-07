@@ -64,11 +64,11 @@
           {{#if user}}
           <ul>
             <li><a href="/wishlist"><i class="fa fa-heart"></i>
-                <span>{{wishlistCount}}</span></a></li>
+                <span>{{header.wishlist}}</span></a></li>
             <li><a href="/cart"><i class="fa fa-shopping-bag"></i>
-                <span id="cart-count">{{cartCount}}</span></a></li>
+                <span id="cart-count">{{header.cartCount}}</span></a></li>
           </ul>
-          <div class="header__cart__price">wallet:₹{{user.wallet}}.00</span></div>{{/if}}
+          <div class="header__cart__price">wallet:₹{{header.wallet}}.00</span></div>{{/if}}
           {{!-- <span id="totalh"></span> --}}
         </div>
       </div> 

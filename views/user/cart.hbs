@@ -38,11 +38,12 @@
 
                             <tr>
                                 <td class="shoping__cart__item">
-                                    <img src="/product-images/{{this.product._id}}.jpg" alt="" style="width: 100px;">
+                                    <img src="/product-images/{{this.product.Image.[1]}}" alt="" style="width: 100px;">
                                     <h5>{{this.product.productName}}</h5>
                                 </td>
                                 <td class="shoping__cart__price">
-                                    {{this.product.OurPrice}}
+
+                                    <span id="{{this.product._id}}price"> {{this.product.OurPrice}}</span>
 
                                 </td>
                                 <td class="shoping__cart__quantity">
@@ -57,7 +58,7 @@
                                     </div>
                                 </td>
                                 <td class="shoping__cart__total">
-                                    ₹{{this.total}}
+                                    ₹<span id="{{this.product._id}}eachtotal">{{this.total}}</span>
                                 </td>
                                 <td class="shoping__cart__item__close">
                                     {{!-- <a onclick="removeCartProduct('{{this.product._id}}','{{this._id}}')"><span
@@ -105,7 +106,7 @@
                 <div class="shoping__checkout">
                     <h5>Cart Total</h5>
                     <ul id="cartTotal">
-                        <li>You saved <span>₹{{discount}}</span></li>
+                        <li>You saved <span>₹</span><span id="discount">{{discount}}</span></li>
                         <li>Grand Total <span>₹</span><span id="total">{{total}}</span></li>
                     </ul>
                     <a href="/proceed-page" class="primary-btn">PROCEED TO CHECKOUT</a>
@@ -140,6 +141,7 @@
 <script>
     function changeQuantity(cartId, proId, userId, count) {
         let quantity = parseInt(document.getElementById(proId).innerHTML)
+        let ourprice = parseInt(document.getElementById(proId + 'price').innerHTML)
         count = parseInt(count)
         console.log(userId)
         $.ajax({
@@ -159,6 +161,8 @@
                 } else {
                     document.getElementById(proId).innerHTML = quantity + count
                     document.getElementById('total').innerHTML = response.total
+                    document.getElementById('discount').innerHTML = response.discount
+                    document.getElementById(proId + 'eachtotal').innerHTML = (quantity + count) * ourprice
                 }
 
             }

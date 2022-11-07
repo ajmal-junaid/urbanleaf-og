@@ -13,16 +13,20 @@ module.exports = {
             cb(data)
         }).catch()
     },
-    addCatogory: async (category, cb) => {
-        let cat = await db.get().collection(collection.CATEGORY_COLLECTION).findOne({ category: category.category })
-        if (cat) {
-            cb(202)
-        } else {
-            db.get().collection(collection.CATEGORY_COLLECTION).insertOne(category).then((data) => {
-                cb(data)
-
-            }).catch()
-        }
+    addCatogory:  (category) => {
+        return new Promise(async(resolve,reject)=>{
+            let cat = await db.get().collection(collection.CATEGORY_COLLECTION).findOne({ category: category.category })
+            if (cat) {
+                resolve({status:false})
+            } else {
+                db.get().collection(collection.CATEGORY_COLLECTION).insertOne(category).then((data) => {
+                    resolve(data)
+    
+                }).catch()
+            }
+        })
+        
+        
     },
     getAllProducts: () => {
         return new Promise(async (resolve, reject) => {
@@ -80,6 +84,7 @@ module.exports = {
                     $set: {
                         category: catDetails.category,
                         description: catDetails.description,
+                        Image:catDetails.Image
                     }
                 }).then((response) => {
                     resolve()
@@ -100,6 +105,20 @@ module.exports = {
                     : -1
             }).limit(8).toArray()
             resolve(products)
+        })
+    },
+    fetchImage:(catId)=>{
+        return new Promise(async(resolve,reject)=>{
+            let data= await db.get().collection(collection.CATEGORY_COLLECTION).findOne({_id:objectId(catId)})
+            console.log(data,"imagename");
+            resolve(data.Image)
+        })
+    },
+    fetchImages:(proId)=>{
+        return new Promise(async(resolve,reject)=>{
+            let data= await db.get().collection(collection.PRODUCT_COLLECTION).findOne({_id:objectId(proId)})
+            console.log(data,"imagename");
+            resolve(data.Image)
         })
     }
 }

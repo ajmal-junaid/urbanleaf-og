@@ -19,10 +19,15 @@
             <div class="mb-3">
               <label class="form-label mt-4">Category Image</label>
 
-              <input class="form-control" type="file" name="Image" onchange="viewImage(event)"
+              <input class="form-control" type="file" name="Image" id="imgFile" onchange="viewImage(event)"
                 value="{{category.Image}}" />
-            </div>
 
+              <img src="" id="image1" alt="" class="imggmi" style="height:100px">
+            </div>
+            <div style="display:flex">
+              <div id="screen1" class="imggmi image-container" style="height: auto; width: auto"></div> <br>
+            </div>
+            <button type="button" class=" btn btn-outline-info " id="crop-1">Crop</button>
             <div class="mt-5 div"><button onclick="return confirm('Are you sure to Changes in {{category.category}} ?')"
                 type="submit" class="btn btn-outline-success">Submit</button></div>
           </form>
@@ -30,19 +35,59 @@
       </div>
     </div>
 
-    <div class="col-md-6">
-      <div class="card mb-4">
-        <h4 class="card-header text-center">Edit Category</h4>
-        <div class="card-body text-center">
-          <img src="/category-images/{{category._id}}.jpg" id="imgChange" style="width: 370px;height: auto">
-        </div>
-      </div>
-    </div>
-
   </div>
 </div>
 <script>
-  function viewImage(event) {
-    document.getElementById('imgChange').src = URL.createObjectURL(event.target.files[0])
+  const imagebox1 = document.getElementById('screen1')
+  const crop_btn1 = document.getElementById('crop-1')
+  const input1 = document.getElementById('imgFile')
+  function viewImage1(event) {
+    var fileInput1 = document.getElementById('imgFile');
+    var filePath1 = fileInput1.value;
+    var allowedExtensions = /(\.jpg)$/i;
+    if (!allowedExtensions.exec(filePath1)) {
+      fileInput1.value = '';
+      swal("There is a problem!", "Please choose image file.");
+      return false;
+    } else {
+      document.getElementById('image1').src = URL.createObjectURL(event.target.files[0])
+    }
   }
+
+  input1.addEventListener('change', () => {
+    const img_data1 = input1.files[0]
+    const url1 = URL.createObjectURL(img_data1)
+    imagebox1.innerHTML = `<img src="${url1}" id="img1" style="width:100%;">`
+    const img1 = document.getElementById('img1')
+    document.getElementById('screen1').style.display = 'block'
+
+    document.getElementById('crop-1').style.display = 'block'
+    document.getElementById('image1').style.display = 'block'
+
+    const cropper1 = new Cropper(img1, {
+      autoCropArea: 1,
+      viewMode: 1,
+      scalable: false,
+      zoomable: false,
+      movable: false,
+      minCropBoxWidth: 50,
+      minCropBoxHeight: 50,
+      aspectRatio: 1 / 1,
+    })
+
+    crop_btn1.addEventListener('click', () => {
+
+      cropper1.getCroppedCanvas().toBlob((blob) => {
+        let fileInputElement1 = document.getElementById('imgFile');
+        let file1 = new File([blob], img_data1.name, { type: "image/*", lastModified: new Date().getTime() });
+        let container1 = new DataTransfer();
+        container1.items.add(file1);
+        fileInputElement1.files = container1.files;
+        document.getElementById('image1').src = URL.createObjectURL(fileInputElement1.files[0])
+        document.getElementById('screen1').style.display = 'none'
+        document.getElementById('crop-1').style.display = 'none'
+      })
+    })
+
+  })
 </script>

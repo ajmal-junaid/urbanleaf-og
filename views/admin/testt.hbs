@@ -1,0 +1,25 @@
+updateOne({ _id: objectId(details.cartid) }, { $set: { status: (details.status), cancel: true, completed: true, return:
+true, } })
+
+let abc = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+{
+$match: { _id: objectId(details.cartid) }
+},
+{
+$unwind: '$product'
+},
+{
+$project: {
+_id: '$product.item'
+}
+},
+{
+$match: { _id: objectId(details.productId) }
+},
+{
+$update:{
+$set:{
+'product.status':(details.status), cancel: true, completed: true, return: true,
+}}
+}
+]).toArray()

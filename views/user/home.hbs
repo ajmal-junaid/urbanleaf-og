@@ -26,7 +26,7 @@
       <div class="categories__slider owl-carousel">
         {{#each category}}
         <div class="col-lg-3">
-          <div class="categories__item set-bg" data-setbg="/category-images/{{this._id}}.jpg">
+          <div class="categories__item set-bg" data-setbg="/category-images/{{this.Image}}">
             <h5><a href="/get-category-products?id={{this.category}}">{{this.category}}</a></h5>
           </div>
         </div>
@@ -62,7 +62,7 @@
       <div class="col-lg-3 col-md-4 col-sm-6 mix {{this.category}} my-4">
         <div class="product__discount__item">
 
-          <div class="product__discount__item__pic set-bg" data-setbg="/product-images/{{this._id}}.jpg">
+          <div class="product__discount__item__pic set-bg" data-setbg="/product-images/{{this.Image.[1]}}" style='background-image: url("/product-images/{{this.Image.[1]}}");'>
 
             <div class="product__discount__percent">{{this.percentage}}%<a>Off</a>
             </div>

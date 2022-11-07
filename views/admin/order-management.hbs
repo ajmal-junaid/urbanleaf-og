@@ -32,7 +32,7 @@
             <td>{{this.totalAmount}}</td>
             <td>
               <div class="mb-3">
-                <select onchange="changestatus('{{this._id}}','{{this.totalAmount}}','{{this.userId}}')"
+                <select onchange="changestatus('{{this._id}}','{{this.totalAmount}}','{{this.userId}}','{{this.product.item}}')"
                   class="badge bg-label-primary me-1" name="status" id="{{this._id}}">
                   {{!-- <option selected>Open this select menu</option> --}}
                   <option selected value={{this.status}}> {{this.status}}</option>
@@ -57,4 +57,25 @@
 </div>
 <script type="text/javascript">
   window.setTimeout("document.getElementById('successMessage').style.display='none';", 3000);
+  function changestatus(orderid, amount,userId,prodId) {
+    let st = document.getElementById(orderid);
+    let stat = st.options[st.selectedIndex].text
+    console.log(orderid,amount,userId,"testttttttttttttttttt",prodId)
+    $.ajax({
+      url: "/admin/update-status",
+      data: {
+        cartid: orderid,
+        status: stat,
+        refund: amount,
+        user:userId,
+        productId:prodId
+      },
+      method: "post",
+      success: (response) => {
+        alert(response)
+        location.reload()
+      }
+    })
+  }
+
 </script>

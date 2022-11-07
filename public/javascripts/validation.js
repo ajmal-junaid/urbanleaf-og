@@ -113,25 +113,6 @@ function validateLoginMailForm() {
     }
 
 }
-function changestatus(orderid, amount,userId) {
-    let st = document.getElementById(orderid);
-    let stat = st.options[st.selectedIndex].text
-    console.log(orderid,amount,userId,"testttttttttttttttttt")
-    $.ajax({
-      url: "/admin/update-status",
-      data: {
-        cartid: orderid,
-        status: stat,
-        refund: amount,
-        user:userId
-      },
-      method: "post",
-      success: (response) => {
-        alert(response)
-        location.reload()
-      }
-    })
-  }
 
   $("#loginmail").submit((e) => {
     e.preventDefault()

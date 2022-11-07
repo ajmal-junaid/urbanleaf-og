@@ -25,7 +25,20 @@
         <div class="container">
             <div class="row">
 
+                <div class="col-lg-5 col-md-4 p-5">
+                    <div class="product__details__pic">
+                        <div class="product__details__pic__item" id="img-container" style="width: 350; height:300px;">
+                            <img class="product__details__pic__item--large" src="/product-images/{{images.[1]}}"
+                                alt="">
+                        </div>
 
+                        <div class="product__details__pic__slider owl-carousel">
+                            {{#each images}}
+                            <img data-imgbigurl="/product-images/{{this}}" src="/product-images/{{this}}" alt="">
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
 
                 <div class="col-lg-6 col-md-6">
                     <div class="product__details__text">
@@ -48,9 +61,11 @@
                             </div>
                         </div> --}}
 
-                        <a onclick="return addToCart('{{product._id}}')" class="primary-btn">ADD TO CART</a>
-                        <a onclick="return addToWishlist('{{product._id}}')" class="heart-icon"><span class="icon_heart_alt"></span></a>
-            
+                        <a onclick="return addToCart('{{product._id}}')" class="primary-btn" style="cursor:pointer">ADD
+                            TO CART </a>
+                        <a onclick="return addToWishlist('{{product._id}}')" class="heart-icon"
+                            style="cursor:pointer"><span class="icon_heart_alt"></span></a>
+
                         <ul>
                             <li><b>Availability</b> <span>In Stock({{product.stock}} left)</span></li>
                             <li><b>Shipping</b> <span>01 day shipping. <samp>Free pickup today</samp></span></li>
@@ -66,25 +81,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-lg-5 col-md-4 p-5">
-                    <div class="product__details__pic">
-                        <div class="product__details__pic__item" id="img-container">
-                            <img class="product__details__pic__item--large" src="/product-images/{{product._id}}.jpg"
-                                alt="">
-                        </div>
 
-                        <div class="product__details__pic__slider owl-carousel">
-                            <img data-imgbigurl="/product-images/{{product._id}}(1).jpg"
-                                src="/product-images/{{product._id}}(1).jpg" alt="">
-                            <img data-imgbigurl="/product-images/{{product._id}}(2).jpg"
-                                src="/product-images/{{product._id}}(2).jpg" alt="">
-                            <img data-imgbigurl="/product-images/{{product._id}}.jpg"
-                                src="/product-images/{{product._id}}.jpg" alt="">
-                            <img data-imgbigurl="/product-images/{{product._id}}(1).jpg"
-                                src="/product-images/{{product._id}}(1).jpg " alt="">
-                        </div>
-                    </div>
-                </div>
                 <div class="col-lg-12">
                     <div class="product__details__tab">
                         <ul class="nav nav-tabs" role="tablist">
@@ -175,12 +172,26 @@
             width: 450, // required
             zoomWidth: 100,
             scale: 1,
+            fillContainer: true,
             offset: {
-                vertical: 0,
-                horizontal: 0
+                vertical: -75,
+                horizontal: -450
             }
         };
+        var options1 = {
+            width: 400,
+            zoomWidth: 500,
+            offset: { vertical: 0, horizontal: 10 }
+        };
+
+        // If the width and height of the image are not known or to adjust the image to the container of it
+        var options2 = {
+            fillContainer: true,
+            offset: { vertical: 0, horizontal: 10 }
+        };
         new ImageZoom(document.getElementById("img-container"), options);
+
+        //new ImageZoom(document.getElementById("img-container"), options);
     </script>
     <!-- Product Details Section End -->
     {{!-- <style>
