@@ -14,7 +14,10 @@ function addToCart(proId) {
           timer: 1500
         })
         let count = $('#cart-count').html()
-        count = parseInt(count) + 1
+        if (!response.stat) {
+          count = parseInt(count) + 1
+        }
+
         $("#cart-count").html(count)
         document.getElementById('totalh').innerHTML = response.total
 
@@ -40,6 +43,10 @@ function addToCartt(proId) {
         showConfirmButton: false,
         timer: 1500
       })
+      setTimeout(() => {
+        location.reload()
+      }, 1500);
+
       if (response.status) {
         let count = $('#cart-count').html()
         count = parseInt(count) + 1
@@ -58,9 +65,9 @@ function addToWishlist(proId) {
     method: 'get',
     success: (response) => {
       if (response.mod == 1) {
-        //let count = $('#cart-count').html()
-        //count = parseInt(count) + 1
-        // $("#cart-count").html(count)
+        let count = $('#wishlist-count').html()
+        count = parseInt(count) + 1
+        $("#wishlist-count").html(count)
         // document.getElementById('totalh').innerHTML = response.total
         Swal.fire({
           position: 'top-end',
@@ -91,10 +98,16 @@ function addToWishlist(proId) {
     }
   })
 }
-function cancelOrder(ordId) {
+function cancelOrder(ordId, proId) {
+  console.log(proId, "=============", ordId)
   $.ajax({
-    url: '/cancel-order/' + ordId,
-    method: 'get',
+    url: '/cancel-order',
+
+    data: {
+      orderId: ordId,
+      productId: proId
+    },
+    method: 'post',
     success: (response) => {
       document.getElementById(ordId).innerHTML = "Canceled sucesfully"
       Swal.fire({
@@ -109,10 +122,14 @@ function cancelOrder(ordId) {
   })
 }
 
-function returnOrder(ordId) {
+function returnOrder(ordId, proId) {
   $.ajax({
-    url: '/return-order/' + ordId,
-    method: 'get',
+    url: '/return-order/',
+    data: {
+      orderId: ordId,
+      productId: proId
+    },
+    method: 'post',
     success: (response) => {
       document.getElementById(ordId).innerHTML = "Return Requested"
       Swal.fire({
@@ -245,7 +262,17 @@ $("#couponForm").submit((e) => {
         console.log(response)
         // document.getElementById('total').innerHTML = response.Price
 
-      } else {
+      } else if (response.statu) {
+        console.log(response,"respooooooo")
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: 'Coupon is Not Applicable for This Order....! ',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }
+      else {
         Swal.fire({
           position: 'top-end',
           icon: 'error',

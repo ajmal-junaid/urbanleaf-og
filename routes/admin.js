@@ -273,6 +273,7 @@ router.get('/order-management', verifyAdmin, async (req, res, next) => {
   orders.forEach(orders => {
     orders.date = orders.date.toDateString()
   });
+  console.log(orders, "0000000000000000000000000");
   res.render('admin/order-management', { admin: true, layout: 'admin', err, orders });
   req.session.catErr = null
 });
@@ -332,9 +333,9 @@ router.get('/reports', async (req, res) => {
 })
 
 router.post('/reports', async (req, res) => {
-  
+
   let rep = await adminhelper.getReportWithDate(req.body.from, req.body.to)
-  res.render('admin/sales-report', { layout: 'admin', admin: true, rep,'date':req.body })
+  res.render('admin/sales-report', { layout: 'admin', admin: true, rep, 'date': req.body })
 })
 
 

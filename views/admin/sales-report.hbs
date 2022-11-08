@@ -51,8 +51,7 @@
             </div>
             {{!-- model ends --}}
             <div class="row my-4">
-                <span>From : {{date.from}} {{#unless date}}Beggning {{/unless}}</span>
-                <span>To : {{date.to}} {{#unless date}}End {{/unless}}</span>
+
                 <div class="col d-flex">
                     <a onclick='return demoFromHTML()' class="button btn btn-outline-success me-3 ms-auto">Export as
                         Pdf</a>
@@ -63,6 +62,8 @@
 
             <div class="table-responsive text-nowrap" id="customerff">
                 <table id="tbl_exporttable_to_xls" class="table table-hover display nowrap">
+                    <span><b>From : {{date.from}} {{#unless date}}Beggning {{/unless}}</b>&nbsp;</span>
+                    <span><b>To : {{date.to}} {{#unless date}}End {{/unless}}</b></span>
                     <thead>
                         <tr>
                             <th class="no_export">No</th>
@@ -73,7 +74,7 @@
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                        {{#each rep}}
+                        {{#each rep.data}}
                         <tr>
                             <td class="ajindex"></td>
                             <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
@@ -85,12 +86,15 @@
                         </tr>
                         {{/each}}
                     </tbody>
+                    <h4 class="card-header fab fa-angular fa-lg text-primary">Total Revenue : {{rep.total.totalPrice}}
+                       
+                    </h4>
                 </table>
-                <h4 class="card-header text-danger">Total:{{totalprofit}}</h4>
+
 
             </div>
 
 
         </div>
-        
+
     </div>

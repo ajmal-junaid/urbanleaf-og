@@ -349,12 +349,24 @@ module.exports = {
                         }
                     }
                 ]).toArray()
-            console.log(first);
-            resolve(first)
+            let total = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { status: 'completed' }
+                },
+                {
+                    $group: {
+                        _id: 0,
+                        totalPrice: { $sum: '$totalAmount' }
+                    }
+                }
+            ]).toArray()
+            let obj = {}
+            obj.data = first
+            obj.total = total[0]
+            resolve(obj)
         })
     },
     getReportWithDate: (fromDate, ToDate) => {
-        console.log(fromDate, "dategott", ToDate);
         return new Promise(async (resolve, reject) => {
             let first = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
@@ -383,7 +395,32 @@ module.exports = {
                         }
                     }
                 ]).toArray()
-            resolve(first)
+            let total = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { status: 'completed' }
+                },
+                {
+                    $project: {
+                        date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+                        prod: '$product.productName',
+                        total: '$totalAmount'
+                    }
+                },
+                {
+                    $match: { $and: [{ date: { $gte: fromDate } }, { date: { $lte: ToDate } }] }
+                },
+                {
+                    $group: {
+                        _id: 0,
+                        totalPrice: { $sum: '$total' }
+                    }
+                }
+            ]).toArray()
+            let obj = {}
+            obj.data = first
+            obj.total = total[0]
+            console.log(obj.total, "fooooo");
+            resolve(obj)
         })
     },
     addCoupon: (coupon) => {

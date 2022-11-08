@@ -114,7 +114,7 @@ module.exports = {
                                 $inc: { 'product.$.quantity': 1 }
                             }
                         ).then(() => {
-                            resolve()
+                            resolve({ stat: true })
                         })
                 } else {
                     db.get().collection(collection.CART_COLLECTION).updateOne({ user: objectId(userId) },
@@ -122,7 +122,7 @@ module.exports = {
                             $push: { product: proObj }
 
                         }).then((response) => {
-                            resolve()
+                            resolve({ status: true })
                         })
 
                 }
@@ -339,11 +339,11 @@ module.exports = {
     },
     placeOrder: (order, product, total) => {
         return new Promise((resolve, reject) => {
-            let status = order.paymentMethod === 'COD' ? 'placed' : 'pending'
+            let status = order.paymentMethod === 'COD' || 'WALLET' ? 'placed' : 'pending'
             product.forEach(product => {
-                product.status = "placed"
+                product.status = status,
+                    product.placed = true
             });
-            console.log(product, "orderproddd");
             // var date = new Date();
             // var current_time = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate()
             let orderObj = {
@@ -422,8 +422,12 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
 
             let cart = await db.get().collection(collection.CART_COLLECTION).findOne({ user: objectId(userId) })
+            if (cart) {
+                resolve(cart.product)
+            } else {
+                resolve(0)
+            }
 
-            resolve(cart.product)
         })
     },
     getUserOrders: (userId) => {
@@ -442,30 +446,9 @@ module.exports = {
                 },
                 {
                     $unwind: '$product'
-                },
-                {
-                    $project: {
-                        item: '$product.item',
-                        quantity: '$product.quantity',
-                        total: '$product.totalAmount',
-                        totalAmount: '$totalAmount',
-                    }
-                },
-                {
-                    $lookup: {
-                        from: collection.PRODUCT_COLLECTION,
-                        localField: 'item',
-                        foreignField: '_id',
-                        as: 'product'
-                    }
-                },
-                {
-                    $project: {
-                        totalAmount: 1, total: 1, item: 1, quantity: 1, product: { $arrayElemAt: ['$product', 0] }
-                    }
                 }
             ]).toArray()
-
+            console.log(orderItems, "loooooooooooooooooooooooooooooo");
             resolve(orderItems)
         })
     },
@@ -561,35 +544,47 @@ module.exports = {
     },
     changestatus: (details) => {
         return new Promise(async (resolve, reject) => {
-            if (details.status == 'return-completed') {
+            if (details.status == 'return-completed' || details.status == 'canceled') {
                 console.log(details, "details");
                 let amt = parseInt(details.refund)
                 await db.get().collection(collection.ORDER_COLLECTION).
-                updateOne({ _id: objectId(details.cartid) }, { $set: { status: (details.status), cancel: true, completed: true, return: true, } }).then(() => {
-                    db.get().collection(collection.USER_COLLECTION).updateOne({ _id: objectId(details.user) },
+                    updateOne({ _id: objectId(details.cartid), product: { $elemMatch: { item: objectId(details.productId) } } },
                         {
-                            $inc: { wallet: amt }
+                            $set: { 'product.$.status': details.status, "product.$.cancel": true, "product.$.ended": true }
+                        }
+                    ).then(() => {
+                        db.get().collection(collection.USER_COLLECTION).updateOne({ _id: objectId(details.user) },
+                            {
+                                $inc: { wallet: amt }
+                            }
+                        )
+                        resolve("success")
+                        console.log(details.refund, details.user, "refund amount");
+                    })
+            } else {
+                let completed = false;
+                let shipped = false;
+                if (details.status == 'shipped') {
+                    shipped = true
+                } else if (details.status == 'completed') {
+
+                    completed = true
+
+                }
+                else {
+                    completed = false;
+                }
+
+                await db.get().collection(collection.ORDER_COLLECTION)
+                    .updateOne({ _id: objectId(details.cartid), product: { $elemMatch: { item: objectId(details.productId) } } },
+                        {
+                            $set: { 'product.$.status': details.status, 'product.$.cancel': true, 'product.$.completed': completed, 'product.$.shipped': shipped }
                         }
                     )
-                    resolve("success")
-                    console.log(details.refund, details.user, "refund amount");
-                })
-            } else {
-                let val;
-                let val2;
-                if (details.status == 'completed' || details.status == 'canceled') {
-                    if (details.status == 'completed') {
-                        val2 = true
-                    }
-                    val = true;
-                } else {
-                    val = false;
-                }
-                console.log(details, val);
-                await db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectId(details.cartid) }, { $set: { status: (details.status), cancel: val, completed: val2 } }).then(() => {
-                    resolve("success")
+                    .then(() => {
+                        resolve("success")
 
-                })
+                    })
 
             }
         })
@@ -742,20 +737,31 @@ module.exports = {
                 })
         })
     },
-    cancelOrder: (oId) => {
+    cancelOrder: (data) => {
         return new Promise(async (resolve, reject) => {
-            await db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectId(oId) }, { $set: { status: "canceled", cancel: true } }).then((response) => {
-                resolve({ status: true })
+            await db.get().collection(collection.ORDER_COLLECTION)
+                .updateOne({ _id: objectId(data.orderId), product: { $elemMatch: { item: objectId(data.productId) } } },
+                    {
+                        $set: { 'product.$.status': "canceled", "product.$.cancel": true, "product.$.completed": false, "product.$.ended": true }
+                    }
+                ).then((response) => {
+                    resolve({ status: true })
 
-            })
+                })
         })
     },
-    returnOrder: (oId) => {
+    returnOrder: (data) => {
         return new Promise(async (resolve, reject) => {
-            await db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectId(oId) }, { $set: { status: "return", return: true } }).then((response) => {
-                resolve({ status: true })
+            await db.get().collection(collection.ORDER_COLLECTION)
+                .updateOne({ _id: objectId(data.orderId), product: { $elemMatch: { item: objectId(data.productId) } } },
+                    {
+                        $set: { 'product.$.status': "return", "product.$.cancel": false, "product.$.return": true, "product.$.ended": false }
+                    }
 
-            })
+                ).then((response) => {
+                    resolve({ status: true })
+
+                })
         })
     }
     ,
@@ -930,23 +936,41 @@ module.exports = {
                 })
         })
     },
+    deleteOrder: (ordId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.ORDER_COLLECTION).deleteOne({ _id: objectId(ordId) })
+            resolve({ status: true })
+        })
+    },
     applyCoupon: (userId, data, total) => {
         return new Promise(async (resolve, reject) => {
             let coupon = await db.get().collection(collection.COUPON_COLLECTION).findOne({ code: data.code })
             if (coupon) {
-                let discAmount = total - (total * (parseInt(coupon.percentage) / 100))
-                if (discAmount >= parseInt(coupon.maxDiscount)) {
+                let discAmount = total * (parseInt(coupon.percentage) / 100)
+                console.log(coupon, "coup detailsss")
+                if (total < coupon.minPurchase) {
+                    resolve({ statu: true })
+                }
+                if (discAmount > parseInt(coupon.maxDiscount)) {
                     coupon.Price = total - parseInt(coupon.maxDiscount)
                     coupon.discAmount = parseInt(coupon.maxDiscount)
+                    console.log("settin max to disccccc");
                 } else {
                     coupon.Price = total - discAmount
                     coupon.discAmount = discAmount
+                    console.log("setting priceee");
                 }
                 resolve(coupon)
             } else {
                 resolve({ status: false })
             }
 
+        })
+    },
+    getAllCoupons: () => {
+        return new Promise(async (resolve, reject) => {
+            let coupons = await db.get().collection(collection.COUPON_COLLECTION).find().toArray()
+            resolve(coupons)
         })
     }
 

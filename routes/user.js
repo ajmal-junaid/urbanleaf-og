@@ -16,7 +16,7 @@ paypal.configure({
 });
 const verifyLogin = (req, res, next) => {
   if (req.session.userLoggedIn == true) {
-      next()
+    next()
   } else {
     res.redirect('/loginmail')
   }
@@ -205,8 +205,10 @@ router.get('/mantain', (req, res) => {
 
 router.get('/add-to-cart/:id', verifyLogin, (req, res, next) => {
   let user = req.session.user
-  userHelpers.addToCart(req.params.id, user._id).then(() => {
-    res.json({ status: true })
+  userHelpers.addToCart(req.params.id, user._id).then((response) => {
+    response.status = true
+    console.log(response, "res cartttt");
+    res.json(response)
   })
 })
 
@@ -230,16 +232,19 @@ router.get('/cart', async (req, res) => {
   let user = req.session.user
   let userid
   let header = null
+  let coupons = await userHelpers.getAllCoupons()
+  console.log(coupons, "couponssss");
   if (user) {
     userid = req.session.user._id
     header = await userHelpers.getHeaderDetails(req.session.user._id)
+
   }
   if (userid) {
     let products = await userHelpers.getCartProducts(userid)
     let discount = await userHelpers.getTotalDiscount(req.session.user._id)
     let total = await userHelpers.getTotalAmount(req.session.user._id)
 
-    res.render('user/cart', { products, user, header, total, discount })
+    res.render('user/cart', { products, user, header, total, discount, coupons })
   } else {
     res.redirect('/')
   }
@@ -300,6 +305,7 @@ router.post('/proceed-page', async (req, res) => {
     } else if (req.body.paymentMethod == "RAZOR") {
       userHelpers.generateRazorpay(orderId, totalPrice).then((response) => {
         response.razor = true
+        console.log(response, "resp rezor");
         res.json(response)
       })
     } else if (req.body.paymentMethod == "PAYPAL") {
@@ -347,8 +353,11 @@ router.post('/proceed-page', async (req, res) => {
             res.json(response)
           })
         } else {
-          req.session.walletErr = "Insufficient Balance ....Please try with another payment method"
-          res.json({ statusW: true })
+          userHelpers.deleteOrder(orderId).then(() => {
+            req.session.walletErr = "Insufficient Balance ....Please try with another payment method"
+            res.json({ statusW: true })
+          })
+
         }
 
       })
@@ -366,7 +375,7 @@ router.post('/verify-payment', (req, res) => {
       res.json({ status: true })
     })
   }).catch((err) => {
-    console.log(err, "error");
+    console.log(err, "error"); z
     res.json({ status: false, errMsg: 'Payment Failed' })
   })
 })
@@ -468,16 +477,15 @@ router.post('/user-profile', (req, res) => {
   res.redirect('/userProfile')
 })
 
-router.get('/cancel-order/:id', (req, res) => {
-  console.log("paramss", req.params.id);
-  userHelpers.cancelOrder(req.params.id).then(() => {
+router.post('/cancel-order', (req, res) => {
+  userHelpers.cancelOrder(req.body).then(() => {
     res.json({ status: true })
   })
 })
 
-router.get('/return-order/:id', (req, res) => {
-  console.log("paramss", req.params.id);
-  userHelpers.returnOrder(req.params.id).then(() => {
+router.post('/return-order', (req, res) => {
+  console.log("paramss", req.body);
+  userHelpers.returnOrder(req.body).then(() => {
     res.json({ status: true })
   })
 })

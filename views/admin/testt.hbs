@@ -22,4 +22,22 @@ $set:{
 'product.status':(details.status), cancel: true, completed: true, return: true,
 }}
 }
-]).toArray()
+]).toArray()\\
+
+updateOne({ _id: objectId(details.cartid), product.item: objectId(productId) },
+ { $set: { status: (details.status), cancel: true, completed: true, return: true, } })
+ 
+ .then(() => {
+                        db.get().collection(collection.USER_COLLECTION).updateOne({ _id: objectId(details.user) },
+                            {
+                                $inc: { wallet: amt }
+                            }
+                        )
+                        resolve("success")
+                        console.log(details.refund, details.user, "refund amount");
+                    })
+
+
+                    { $set: { status: (details.status), cancel: val, completed: val2 } }
+
+                    product: { $elemMatch: { item: objectId(details.productId) } }
