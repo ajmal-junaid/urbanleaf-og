@@ -86,9 +86,18 @@
                         </tr>
                         {{/each}}
                     </tbody>
-                    <h4 class="card-header fab fa-angular fa-lg text-primary">Total Revenue : {{rep.total.totalPrice}}
-                       
-                    </h4>
+                    <div class="row">
+
+                        <div class="col-4">
+
+                            <h4 class="card-header fab fa-angular fa-lg text-primary my-3">Total Revenue : {{rep.total}}
+                            </h4>
+                        </div>
+                        <div class="col-4">
+                            <h5 class="card-header fab fa-angular fa-lg text-primary my-3">Total Quantity Sold :
+                                {{rep.quantity}}</h5>
+                        </div>
+                    </div>
                 </table>
 
 

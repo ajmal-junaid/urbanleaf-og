@@ -2,7 +2,9 @@
     <section class="h-100 gradient-custom">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
+
                 <div class="col-lg-10 col-xl-8">
+
                     <div class="card" style="border-radius: 10px;">
                         <div class="card-header px-4 py-5">
                             <h5 class="text-muted mb-0">Thanks for your Order, <span
@@ -16,6 +18,7 @@
                             </div>
                             {{#each products}}
                             <div class="card shadow-0 border mb-4">
+
                                 <div class="card-body">
 
                                     <div class="row">
@@ -53,12 +56,13 @@
                                         </div>
                                         <div
                                             class="col-md-2 text-center d-flex justify-content-center align-items-center">
-                                            <p class="text-danger mb-0 small">Market
-                                                Price:<strike>{{this.product.marketPrice}}</strike></p>
+                                            {{!-- <p class="text-danger mb-0 small">Market
+                                                Price:<strike>{{this.product.marketPrice}}</strike></p> --}}
+                                            <p class="text-success mb-0 small ">OurPrice ₹{{this.product.Price}}</p>
                                         </div>
                                         <div
                                             class="col-md-2 text-center d-flex justify-content-center align-items-center">
-                                            <p class="text-success mb-0 small ">OurPrice ₹{{this.product.Price}}</p>
+
                                         </div>
                                     </div>
                                     <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
@@ -70,12 +74,21 @@
                                         <div class="col-md-10">
                                             <div class="progress" style="height: 6px; border-radius: 16px;">
                                                 <div class="progress-bar" role="progressbar"
-                                                    style="width: 65%; border-radius: 16px; background-color: #a8729a;"
+                                                    style="width: {{this.product.stepper}}%; border-radius: 16px; background-color: #a8729a;"
                                                     aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
                                             </div>
                                             <div class="d-flex justify-content-around mb-1">
-                                                <p class="text-muted mt-1 mb-0 small ms-xl-5">Out for delivary</p>
+                                                <p class="text-muted mt-1 mb-0 small ms-xl-5">Placed</p>
+                                                <p class="text-muted mt-1 mb-0 small ms-xl-5">Shipped</p>
+                                                {{#if this.product.completed}}
                                                 <p class="text-muted mt-1 mb-0 small ms-xl-5">Delivered</p>
+                                                {{#if this.product.ended}}
+                                                <p class="text-muted mt-1 mb-0 small ms-xl-5">Return completed</p>
+                                                {{/if}}
+                                                {{/if}}
+                                                {{#if this.product.cancel}}
+                                                <p class="text-muted mt-1 mb-0 small ms-xl-5">Canceled</p>
+                                                {{/if}}
                                             </div>
                                         </div>
                                     </div>
@@ -93,13 +106,13 @@
                             </div>
 
                             <div class="d-flex justify-content-between pt-2">
-                                <p class="text-muted mb-0">Status : {{order.status}}</p>
+                                <p class="text-muted mb-0">Invoice Date : {{order.date}}</p>
                                 <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span>
                                     ₹{{discount}}.00</p>
                             </div>
 
                             <div class="d-flex justify-content-between">
-                                <p class="text-muted mb-0">Invoice Date : {{order.date}}</p>
+                                <p class="text-muted mb-0"></p>
 
                             </div>
 

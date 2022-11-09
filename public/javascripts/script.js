@@ -144,36 +144,46 @@ function returnOrder(ordId, proId) {
   })
 }
 
-
+let count=0
 $("#checkout-form").submit((e) => {
-  addressSelect = document.querySelector('input[name="address-method"]:checked').value
-  paymentMethodS = document.querySelector('input[name="payment-method"]:checked').value
+ 
   e.preventDefault()
+  if(count==0){
+    count++
+    addressSelect = document.querySelector('input[name="address-method"]:checked').value
+    paymentMethodS = document.querySelector('input[name="payment-method"]:checked').value
 
-  $.ajax({
-    url: '/proceed-page',
-
-    data: {
-      deliveryDetails: addressSelect,
-      paymentMethod: paymentMethodS
-    },
-    method: 'post',
-    success: (response) => {
-      if (response.codSuccess) {
-        location.href = '/order-succesfull'
-      } else if (response.razor) {
-        razorpayPayment(response)
-      } else if (response.pay) {
-        location.replace(response.linkto)
-      } else if (response.wallet) {
-        location.href = '/order-succesfull'
-      } else if (response.statusW) {
-        location.href = '/payment-failed'
-
+    $.ajax({
+      url: '/proceed-page',
+  
+      data: {
+        deliveryDetails: addressSelect,
+        paymentMethod: paymentMethodS
+      },
+      method: 'post',
+      success: (response) => {
+       
+        if (response.codSuccess) {
+          location.href = '/order-succesfull'
+        } else if (response.razor) {
+          razorpayPayment(response)
+        } else if (response.pay) {
+          location.replace(response.linkto)
+        } else if (response.wallet) {
+          location.href = '/order-succesfull'
+        } else if (response.statusW) {
+          location.href = '/payment-failed'
+  
+        }
+  
       }
-
-    }
-  })
+    })
+  }else{
+    location.href = '/payment-failed'
+    count=0;
+  }
+  
+ 
 })
 
 

@@ -300,6 +300,7 @@ router.post('/proceed-page', async (req, res) => {
   let addrs = address.shift();
   addrs.paymentMethod = req.body.paymentMethod
   userHelpers.placeOrder(addrs, products, totalPrice).then(async (orderId) => {
+    req.session.user.orderId=orderId
     if (req.body.paymentMethod == "COD") {
       res.json({ codSuccess: true })
     } else if (req.body.paymentMethod == "RAZOR") {
@@ -462,6 +463,10 @@ router.post('/addressP', (req, res) => {
 
 router.get('/payment-failed', async (req, res) => {
   let header = await userHelpers.getHeaderDetails(req.session.user._id)
+  if(req.session.user.orderId){
+    await userHelpers.deleteOrder(req.session.user.orderId)
+    req.session.user.orderId=null
+  }
   res.render('user/paymentfailed', { 'walletErr': req.session.walletErr, 'user': req.session.user, header })
 })
 

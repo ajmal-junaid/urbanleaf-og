@@ -98,7 +98,10 @@ module.exports = {
             let total = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
                     {
-                        $match: { status: 'completed' }
+                        $unwind: '$product'
+                    },
+                    {
+                        $match: { 'product.status': 'completed' }
                     },
                     {
                         $group: {
@@ -140,7 +143,10 @@ module.exports = {
             let completed = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
                     {
-                        $match: { status: "completed" }
+                        $unwind: "$product"
+                    },
+                    {
+                        $match: { 'product.status': "completed" }
                     },
                     {
                         $group: { _id: { month: { $month: { $toDate: "$date" } } }, count: { $sum: 1 } }
@@ -149,10 +155,14 @@ module.exports = {
                         $sort: { '_id.month': -1 }
                     }
                 ]).toArray()
+
             let placed = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
                     {
-                        $match: { status: "placed" }
+                        $unwind: "$product"
+                    },
+                    {
+                        $match: { 'product.status': "placed" }
                     },
                     {
                         $group: { _id: { month: { $month: { $toDate: "$date" } } }, count: { $sum: 1 } }
@@ -161,10 +171,14 @@ module.exports = {
                         $sort: { '_id.month': -1 }
                     }
                 ]).toArray()
+
             let canceled = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
                     {
-                        $match: { status: "canceled" }
+                        $unwind: "$product"
+                    },
+                    {
+                        $match: { 'product.status': "canceled" }
                     },
                     {
                         $group: { _id: { month: { $month: { $toDate: "$date" } } }, count: { $sum: 1 } }
@@ -176,7 +190,10 @@ module.exports = {
             let yearly = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
                     {
-                        $match: { status: "completed" }
+                        $unwind: "$product"
+                    },
+                    {
+                        $match: { 'product.status': "completed" }
                     },
                     {
                         $group: {
@@ -192,9 +209,13 @@ module.exports = {
                         $limit: 5
                     }
                 ]).toArray()
+
             let daily = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
                 {
-                    $match: { status: "completed" }
+                    $unwind: "$product"
+                },
+                {
+                    $match: { 'product.status': "completed" }
                 },
                 {
                     $group: {
@@ -221,7 +242,10 @@ module.exports = {
             ]).toArray()
             let monthly = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
                 {
-                    $match: { status: "completed" }
+                    $unwind: "$product"
+                },
+                {
+                    $match: { 'product.status': "completed" }
                 },
                 {
                     $group: {
@@ -263,35 +287,61 @@ module.exports = {
                         $match: { paymentMethod: 'COD' }
                     },
                     {
-                        $match: { status: 'completed' }
+                        $unwind: "$product"
+                    },
+                    {
+                        $match: { 'product.status': 'completed' }
                     },
                     {
                         $group: {
                             _id: null,
-                            sum: { $sum: { $ifNull: ["$totalAmount", 0] } }
+                            sum: { $sum: { $ifNull: ["$product.Price", 0] } }
                         }
                     }
                 ]).toArray()
             let razor = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
                     {
-
+                        $unwind: "$product"
+                    },
+                    {
                         $match: { paymentMethod: 'RAZOR' }
                     },
                     {
-                        $match: { status: 'completed' }
+                        $match: { 'product.status': 'completed' }
                     },
                     {
                         $group: {
                             _id: null,
-                            sum: { $sum: { $ifNull: ["$totalAmount", 0] } }
+                            sum: { $sum: { $ifNull: ["$product.Price", 0] } }
                         }
                     }
                 ]).toArray()
             let paypal = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
                     {
+                        $unwind: "$product"
+                    },
+                    {
                         $match: { paymentMethod: 'PAYPAL' }
+                    },
+                    {
+                        $match: { 'product.status': 'completed' }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            sum: { $sum: { $ifNull: ["$product.Price", 0] } }
+                        }
+                    }
+                ]).toArray()
+            let wallet = await db.get().collection(collection.ORDER_COLLECTION)
+                .aggregate([
+                    {
+                        $unwind: "$product"
+                    },
+                    {
+                        $match: { paymentMethod: 'WALLET' }
                     },
                     {
                         $match: { status: 'completed' }
@@ -299,7 +349,7 @@ module.exports = {
                     {
                         $group: {
                             _id: null,
-                            sum: { $sum: { $ifNull: ["$totalAmount", 0] } }
+                            sum: { $sum: { $ifNull: ["$product.Price", 0] } }
                         }
                     }
                 ]).toArray()
@@ -307,6 +357,7 @@ module.exports = {
             obj.razor = razor
             obj.paypal = paypal
             obj.cod = cod
+            obj.wallet = wallet
             resolve(obj)
         })
 
@@ -316,53 +367,30 @@ module.exports = {
             let first = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
                     {
-                        $match: { status: 'completed' }
-                    },
-                    {
                         $unwind: '$product'
                     },
                     {
-                        $project: {
-                            _id: 0, paymentMethod: 1, product: 1, totalAmount: 1, status: 1, date: 1
-                        }
+                        $match: { 'product.status': 'completed' }
                     },
                     {
                         $group: {
                             _id: '$product.item',
+                            total: { $sum: '$product.Price' },
                             totalquantity: { $sum: '$product.quantity' }
-                        }
-                    },
-                    {
-                        $lookup: {
-                            from: collection.PRODUCT_COLLECTION,
-                            localField: '_id',
-                            foreignField: '_id',
-                            as: 'prodName'
-                        }
-                    },
-                    {
-                        $project: {
-                            totalquantity: 1,
-                            _id: { $arrayElemAt: ['$prodName.productName', 0] },
-                            // prodAmount: { $arrayElemAt: ['$prodName.OurPrice', 0] } ,
-                            total: { $multiply: ['$totalquantity', { $convert: { input: { $arrayElemAt: ['$prodName.OurPrice', 0] }, to: 'int', onError: 0 } }] }
                         }
                     }
                 ]).toArray()
-            let total = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
-                {
-                    $match: { status: 'completed' }
-                },
-                {
-                    $group: {
-                        _id: 0,
-                        totalPrice: { $sum: '$totalAmount' }
-                    }
-                }
-            ]).toArray()
+            console.log(first, "firsttttttttt");
+            let total = 0
+            let quantity = 0
+            first.forEach(first => {
+                total = total + first.total
+                quantity = quantity + first.totalquantity
+            });
             let obj = {}
             obj.data = first
-            obj.total = total[0]
+            obj.total = total
+            obj.quantity = quantity
             resolve(obj)
         })
     },
@@ -371,10 +399,10 @@ module.exports = {
             let first = await db.get().collection(collection.ORDER_COLLECTION)
                 .aggregate([
                     {
-                        $match: { status: 'completed' }
+                        $unwind: '$product'
                     },
                     {
-                        $unwind: '$product'
+                        $match: { 'product.status': 'completed' }
                     },
                     {
                         $project: {
@@ -386,40 +414,27 @@ module.exports = {
                     },
                     {
                         $match: { $and: [{ date: { $gte: fromDate } }, { date: { $lte: ToDate } }] }
-                    },
+                    }
+                    ,
                     {
                         $group: {
                             _id: '$prod',
                             totalquantity: { $sum: '$quantity' },
-                            total: { $sum: { $multiply: ['$price', '$quantity'] } }
+                            total: { $sum: '$price' }
                         }
                     }
                 ]).toArray()
-            let total = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
-                {
-                    $match: { status: 'completed' }
-                },
-                {
-                    $project: {
-                        date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-                        prod: '$product.productName',
-                        total: '$totalAmount'
-                    }
-                },
-                {
-                    $match: { $and: [{ date: { $gte: fromDate } }, { date: { $lte: ToDate } }] }
-                },
-                {
-                    $group: {
-                        _id: 0,
-                        totalPrice: { $sum: '$total' }
-                    }
-                }
-            ]).toArray()
+            let total = 0
+            let totalquantity = 0
+            first.forEach(first => {
+                total = total + first.total
+                totalquantity = totalquantity + first.totalquantity
+            });
             let obj = {}
             obj.data = first
-            obj.total = total[0]
-            console.log(obj.total, "fooooo");
+            obj.total = total
+            obj.quantity = totalquantity
+
             resolve(obj)
         })
     },

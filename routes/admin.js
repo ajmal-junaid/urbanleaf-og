@@ -81,30 +81,38 @@ router.post('/login', (req, res) => {
 router.get('/home', verifyAdmin, async (req, res, next) => {
   let totalorder = await adminhelper.getAllorderCount()
   let count = await adminhelper.getCountAll()
-  let prof = await adminhelper.getTotalProfit()
+  //let prof = await adminhelper.getTotalProfit()
   let barData = await adminhelper.getInsights()
   let pay = await adminhelper.getCodOnline()
+  let rep = await adminhelper.getAllReports()
   let onll = 0
   let cod = 0
   let totl = 0
-  console.log(barData.yearly, "yearly");
-  console.log(barData.monthly, "monthly");
-  console.log(barData.daily, "daily");
-  console.log("------------------------------------------------------");
-  console.log(barData);
+  let wallet =0
+  let paypal
+  let razor 
+  // console.log(barData.yearly, "yearly");
+  // console.log(barData.monthly, "monthly");
+  // console.log(barData.daily, "daily");
+  
   if (pay.razor[0] && pay.paypal[0]) {
     onll = parseInt(pay.razor[0].sum) + parseInt(pay.paypal[0].sum)
   } else if (pay.paypal[0]) {
     onll = parseInt(pay.paypal[0].sum)
+    paypal = parseInt(pay.paypal[0].sum)
   } else if (pay.razor[0]) {
     onll = parseInt(pay.razor[0].sum)
+    razor = parseInt(pay.razor[0].sum)
   }
   if (pay.cod[0]) {
     cod = pay.cod[0].sum
   }
+  if(pay.wallet[0].sum){
+    wallet = pay.wallet[0].sum
+  }
 
   totl = onll + cod
-  res.render('admin/home', { admin: true, layout: 'admin', totalorder, count, prof, onll, cod, totl, barData });
+  res.render('admin/home', { admin: true, layout: 'admin', totalorder, count, onll, cod, totl, barData ,rep,wallet,paypal,razor});
 });
 
 
@@ -273,7 +281,6 @@ router.get('/order-management', verifyAdmin, async (req, res, next) => {
   orders.forEach(orders => {
     orders.date = orders.date.toDateString()
   });
-  console.log(orders, "0000000000000000000000000");
   res.render('admin/order-management', { admin: true, layout: 'admin', err, orders });
   req.session.catErr = null
 });

@@ -20,6 +20,7 @@
 <section class="shoping-cart spad">
     <div class="container">
         <div class="row">
+
             <div class="col-lg-12">
                 <div class="shoping__cart__table">
                     {{#if products}}
@@ -61,10 +62,8 @@
                                     ₹<span id="{{this.product._id}}eachtotal">{{this.total}}</span>
                                 </td>
                                 <td class="shoping__cart__item__close">
-                                    {{!-- <a onclick="removeCartProduct('{{this.product._id}}','{{this._id}}')"><span
-                                            class="icon_close"></span></a> --}}
-                                    <a onclick="return confirm('Delete confirmation of {{this.product.productName}} ?')"
-                                        class="dropdown-item"
+
+                                    <a class="dropdown-item"
                                         href="javascript:removeCartProduct('{{this.product._id}}','{{this._id}}')"><i
                                             class="icon_close"></i>
                                         Delete</a>
@@ -108,6 +107,7 @@
                     </a>
 
                 </p>
+
                 <div class="collapse" id="collapseExample">
                     <ul class="list-group">
                         {{#each coupons}}
@@ -178,49 +178,123 @@
         let quantity = parseInt(document.getElementById(proId).innerHTML)
         let ourprice = parseInt(document.getElementById(proId + 'price').innerHTML)
         count = parseInt(count)
-        console.log(userId)
-        $.ajax({
-            url: '/change-product-quantity',
-            data: {
-                user: userId,
-                cart: cartId,
-                product: proId,
-                count: count,
-                quantity: quantity
-            },
-            method: 'post',
-            success: (response) => {
-                if (response.removeProduct) {
-                    alert("product removed from the cart")
-                    location.reload()
-                } else {
-                    document.getElementById(proId).innerHTML = quantity + count
-                    document.getElementById('total').innerHTML = response.total
-                    document.getElementById('discount').innerHTML = response.discount
-                    document.getElementById(proId + 'eachtotal').innerHTML = (quantity + count) * ourprice
-                }
+        if (quantity + count == 0) {
+            Swal.fire({
+                title: 'Do you want Delete This product From Cart?',
+                showDenyButton: true,
+                showCancelButton: false,
+                confirmButtonText: 'Delete',
+                denyButtonText: `Don't Delete`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/change-product-quantity',
+                        data: {
+                            user: userId,
+                            cart: cartId,
+                            product: proId,
+                            count: count,
+                            quantity: quantity
+                        },
+                        method: 'post',
+                        success: (response) => {
+                            if (response.removeProduct) {
+                                location.reload()
+                            } else {
+                                document.getElementById(proId).innerHTML = quantity + count
+                                document.getElementById('total').innerHTML = response.total
+                                document.getElementById('discount').innerHTML = response.discount
+                                document.getElementById(proId + 'eachtotal').innerHTML = (quantity + count) * ourprice
+                            }
 
-            }
-        })
+                        }
+                    })
+                } else if (result.isDenied) {
+                    Swal.fire('Changes are not saved', '', 'info')
+                }
+            })
+        } else {
+            $.ajax({
+                url: '/change-product-quantity',
+                data: {
+                    user: userId,
+                    cart: cartId,
+                    product: proId,
+                    count: count,
+                    quantity: quantity
+                },
+                method: 'post',
+                success: (response) => {
+                    if (response.removeProduct) {
+                        alert("product removed from the cart")
+                        location.reload()
+                    } else {
+                        document.getElementById(proId).innerHTML = quantity + count
+                        document.getElementById('total').innerHTML = response.total
+                        document.getElementById('discount').innerHTML = response.discount
+                        document.getElementById(proId + 'eachtotal').innerHTML = (quantity + count) * ourprice
+                    }
+
+                }
+            })
+        }
     }
+    $.ajax({
+        url: '/change-product-quantity',
+        data: {
+            user: userId,
+            cart: cartId,
+            product: proId,
+            count: count,
+            quantity: quantity
+        },
+        method: 'post',
+        success: (response) => {
+            if (response.removeProduct) {
+                location.reload()
+            } else {
+                document.getElementById(proId).innerHTML = quantity + count
+                document.getElementById('total').innerHTML = response.total
+                document.getElementById('discount').innerHTML = response.discount
+                document.getElementById(proId + 'eachtotal').innerHTML = (quantity + count) * ourprice
+            }
+
+        }
+    })
+
 
     function removeCartProduct(proId, cartId) {
         console.log(proId, cartId)
-        $.ajax({
-            url: '/remove-product-cart',
-            data: {
-                proId: proId,
-                cartId: cartId
-            },
-            method: 'post',
-            success: (response) => {
-                if (response) {
+        Swal.fire({
+            title: 'Do you want Delete This product From Cart?',
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: 'Delete',
+            denyButtonText: `Don't Delete`,
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/remove-product-cart',
+                    data: {
+                        proId: proId,
+                        cartId: cartId
+                    },
+                    method: 'post',
+                    success: (response) => {
+                        if (response) {
 
-                    location.reload()
+                            location.reload()
 
-                }
+                        }
+                    }
+                })
+            } else if (result.isDenied) {
+                Swal.fire('Changes are not saved', '', 'info')
             }
         })
+
     }
 
     function myFunction(coupon) {
@@ -276,5 +350,4 @@
         visibility: visible;
         opacity: 1;
     }
-</style>
 </style>

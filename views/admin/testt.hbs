@@ -1,43 +1,28 @@
-updateOne({ _id: objectId(details.cartid) }, { $set: { status: (details.status), cancel: true, completed: true, return:
-true, } })
-
-let abc = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
-{
-$match: { _id: objectId(details.cartid) }
-},
-{
-$unwind: '$product'
-},
-{
-$project: {
-_id: '$product.item'
-}
-},
-{
-$match: { _id: objectId(details.productId) }
-},
-{
-$update:{
-$set:{
-'product.status':(details.status), cancel: true, completed: true, return: true,
-}}
-}
-]).toArray()\\
-
-updateOne({ _id: objectId(details.cartid), product.item: objectId(productId) },
- { $set: { status: (details.status), cancel: true, completed: true, return: true, } })
- 
- .then(() => {
-                        db.get().collection(collection.USER_COLLECTION).updateOne({ _id: objectId(details.user) },
-                            {
-                                $inc: { wallet: amt }
-                            }
-                        )
-                        resolve("success")
-                        console.log(details.refund, details.user, "refund amount");
-                    })
-
-
-                    { $set: { status: (details.status), cancel: val, completed: val2 } }
-
-                    product: { $elemMatch: { item: objectId(details.productId) } }
+,
+                    {
+                        $project: {
+                            _id: 0, paymentMethod: 1, product: 1, totalAmount: 1, status: 1, date: 1
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: '$product.item',
+                            totalquantity: { $sum: '$product.quantity' }
+                        }
+                    },
+                    {
+                        $lookup: {
+                            from: collection.PRODUCT_COLLECTION,
+                            localField: '_id',
+                            foreignField: '_id',
+                            as: 'prodName'
+                        }
+                    },
+                    {
+                        $project: {
+                            totalquantity: 1,
+                            _id: { $arrayElemAt: ['$productName', 0] },
+                            // prodAmount: { $arrayElemAt: ['$prodName.OurPrice', 0] } ,
+                            total: { $multiply: ['$totalquantity', { $convert: { input: { $arrayElemAt: ['$prodName.OurPrice', 0] }, to: 'int', onError: 0 } }] }
+                        }
+                    }

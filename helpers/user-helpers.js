@@ -102,7 +102,8 @@ module.exports = {
                 Price: details.OurPrice,
                 Image: details.Image,
                 productName: details.productName,
-                stock: details.stock
+                stock: details.stock,
+                stepper: 25
             }
             let userCart = await db.get().collection(collection.CART_COLLECTION).findOne({ user: objectId(userId) })
             if (userCart) {
@@ -342,7 +343,8 @@ module.exports = {
             let status = order.paymentMethod === 'COD' || 'WALLET' ? 'placed' : 'pending'
             product.forEach(product => {
                 product.status = status,
-                    product.placed = true
+                    product.placed = true,
+                    product.Price = product.Price * product.quantity
             });
             // var date = new Date();
             // var current_time = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate()
@@ -402,9 +404,6 @@ module.exports = {
             }
 
         })
-
-
-
     },
     createPay: (payment) => {
         return new Promise((resolve, reject) => {
@@ -550,7 +549,7 @@ module.exports = {
                 await db.get().collection(collection.ORDER_COLLECTION).
                     updateOne({ _id: objectId(details.cartid), product: { $elemMatch: { item: objectId(details.productId) } } },
                         {
-                            $set: { 'product.$.status': details.status, "product.$.cancel": true, "product.$.ended": true }
+                            $set: { 'product.$.status': details.status, "product.$.cancel": true, "product.$.ended": true, "product.$.stepper": 100 }
                         }
                     ).then(() => {
                         db.get().collection(collection.USER_COLLECTION).updateOne({ _id: objectId(details.user) },
@@ -564,21 +563,24 @@ module.exports = {
             } else {
                 let completed = false;
                 let shipped = false;
+                let val
                 if (details.status == 'shipped') {
                     shipped = true
+                    val = 50
                 } else if (details.status == 'completed') {
 
                     completed = true
-
+                    val = 100
                 }
                 else {
-                    completed = false;
+                    completed = false; val = 75
+
                 }
 
                 await db.get().collection(collection.ORDER_COLLECTION)
                     .updateOne({ _id: objectId(details.cartid), product: { $elemMatch: { item: objectId(details.productId) } } },
                         {
-                            $set: { 'product.$.status': details.status, 'product.$.cancel': true, 'product.$.completed': completed, 'product.$.shipped': shipped }
+                            $set: { 'product.$.status': details.status, 'product.$.cancel': true, 'product.$.completed': completed, 'product.$.shipped': shipped, "product.$.stepper": val }
                         }
                     )
                     .then(() => {
@@ -726,13 +728,16 @@ module.exports = {
     changePaymentStatus: (orderId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.ORDER_COLLECTION)
-                .updateOne({ _id: objectId(orderId) },
+                .updateMany({ $and: [{ _id: objectId(orderId) }, { 'product.status': 'pending' }] },
                     {
-                        $set: {
-                            status: 'placed'
-                        }
+
+                        $set: { 'product.$.status': 'placed' }
+                    },
+                    {
+                        "multi": true
                     }
-                ).then(() => {
+                ).then((tt) => {
+                    console.log(tt, "lugggg");
                     resolve()
                 })
         })
@@ -742,7 +747,7 @@ module.exports = {
             await db.get().collection(collection.ORDER_COLLECTION)
                 .updateOne({ _id: objectId(data.orderId), product: { $elemMatch: { item: objectId(data.productId) } } },
                     {
-                        $set: { 'product.$.status': "canceled", "product.$.cancel": true, "product.$.completed": false, "product.$.ended": true }
+                        $set: { 'product.$.status': "canceled", "product.$.cancel": true, "product.$.completed": false, "product.$.ended": true, "product.$.stepper": 100 }
                     }
                 ).then((response) => {
                     resolve({ status: true })
@@ -755,7 +760,7 @@ module.exports = {
             await db.get().collection(collection.ORDER_COLLECTION)
                 .updateOne({ _id: objectId(data.orderId), product: { $elemMatch: { item: objectId(data.productId) } } },
                     {
-                        $set: { 'product.$.status': "return", "product.$.cancel": false, "product.$.return": true, "product.$.ended": false }
+                        $set: { 'product.$.status': "return", "product.$.cancel": false, "product.$.return": true, "product.$.ended": false, "product.$.stepper": 75 }
                     }
 
                 ).then((response) => {
@@ -973,8 +978,6 @@ module.exports = {
             resolve(coupons)
         })
     }
-
-
 }
 
 

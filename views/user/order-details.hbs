@@ -14,39 +14,20 @@
                 <div class="col-md-11">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="pull-right"><label id="{{this._id}}"
-                                    class="text-dark w-25"><B>{{this.status}}</B></label>
+                            <div class="pull-right"><label id="{{this._id}}" class="text-dark w-25"><B>
+<a data-placement="top" class="btn btn-success btn-sm glyphicon glyphicon-ok m-2 "
+                                href="/view-detail?id={{this._id}}">View</a>
+                            </B></label>
 
                             </div>
-                            {{#if this.return}}
-                            <div class="pull-right">
-                                <br>
-                                <p class="w-75 pull-right text-secondary">Refund of
-                                    <strong>{{this.totalAmount}}</strong>
-                                    Initiated, Will be credited to wallet after 
-                                    Confirmation
-                                </p>
-                            </div>
-                            {{/if}}
+
                             <span><strong>{{this.invoiceNo}}</strong></span> <span class="label label-info">(
                                 {{this.paymentMethod}} )</span><br />
-                             Total Amount: ₹{{this.totalAmount}} <br />
-                            <a data-placement="top" class="btn btn-success btn-sm glyphicon glyphicon-ok m-2 "
-                                href="/view-detail?id={{this._id}}">View</a>
+                            Total Amount: ₹{{this.totalAmount}} <br />
+                            
 
-                            {{#if this.cancel}}
 
-                            {{else}}
-                            <a data-placement="top" class="btn btn-danger btn-sm glyphicon glyphicon-ok text-white m-2"
-                                onclick="return cancelOrder('{{this._id}}')" title="Danger">Cancel</a>
 
-                            {{/if}}
-                            {{#if this.completed}}
-                            {{#unless this.return}}
-                            <a data-placement="top" class="btn btn-warning btn-sm glyphicon glyphicon-ok text-white m-2"
-                                onclick="return returnOrder('{{this._id}}')" title="Danger">Return</a>
-                            {{/unless}}
-                            {{/if}}
                         </div>
                         <div class="col-md-12">order made on: {{this.date}}<br> Delivered to
 
