@@ -98,7 +98,8 @@
 
             <div class="col-lg-4 col-md-6 col-sm-6 mt-4">
               <div class="product__discount__item">
-                <div class="product__discount__item__pic set-bg" data-setbg="/product-images/{{this.Image.[1]}}" style='background-image: url("/product-images/{{this.Image.[1]}}");'>
+                <div class="product__discount__item__pic set-bg" data-setbg="/product-images/{{this.Image.[1]}}"
+                  style='background-image: url("/product-images/{{this.Image.[1]}}");'>
                   <div class="product__discount__percent">{{this.percentage}}%<a>Off</a>
                   </div>
                   <ul class="product__item__pic__hover" style="cursor:pointer">
@@ -119,9 +120,9 @@
             {{/each}}
           </div>
           <div class="product__pagination">
-            <a href="#">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
+            {{#each pageCount}}
+            <a href="/get-products?id={{this}}">{{this}}</a>
+            {{/each}}
             <a href="#"><i class="fa fa-long-arrow-right"></i></a>
           </div>
         </div>

@@ -41,11 +41,9 @@ const verifyAdmin = (req, res, next) => {
   res.header("Expires", "-1");
   res.header("Pragma", "no-cache");
   if (req.session.adminLoggedIn) {
-    console.log(req.session.adminLoggedIn);
     next()
   } else {
-    //res.redirect('/admin')
-    next()
+    res.redirect('/admin')
   }
 }
 /* GET users listing. */
@@ -66,7 +64,6 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/login', (req, res) => {
-  console.log(req.body);
   adminhelper.doAdminLogin(req.body).then((response) => {
     if (response.status) {
       req.session.admin = response.admin
@@ -91,10 +88,6 @@ router.get('/home', verifyAdmin, async (req, res, next) => {
   let wallet =0
   let paypal
   let razor 
-  // console.log(barData.yearly, "yearly");
-  // console.log(barData.monthly, "monthly");
-  // console.log(barData.daily, "daily");
-  
   if (pay.razor[0] && pay.paypal[0]) {
     onll = parseInt(pay.razor[0].sum) + parseInt(pay.paypal[0].sum)
   } else if (pay.paypal[0]) {
@@ -147,7 +140,6 @@ router.get('/add-product', verifyAdmin, (req, res, next) => {
 });
 
 router.post('/add-product', uploadMul.array('Image'), (req, res) => {
-  console.log(req.files, "addprodddddddddddddd");
   let image = []
   req.files.forEach(function (value, index) {
     image.push(value.filename)
@@ -176,7 +168,6 @@ router.post('/add-category', uploadSingleFile, (req, res) => {
   if (req.body.category) {
     req.body.Image = req.files.Image[0].filename
     productHelper.addCatogory(req.body).then((response) => {
-      console.log(response, "resppppp");
       if (response.acknowledged) {
         req.session.msg = "Category Added Succesfully"
         res.redirect('/admin/add-category')
@@ -192,7 +183,6 @@ router.post('/add-category', uploadSingleFile, (req, res) => {
 
 router.get('/delete-product/:id', verifyAdmin, (req, res) => {
   let proId = req.params.id
-  console.log(proId);
   productHelper.deleteProduct(proId).then((response) => {
     req.session.proErr = "Product deleted sucessfully"
     res.redirect('/admin/product-management')
@@ -247,7 +237,6 @@ router.post('/edit-category/', uploadSingleFile, async (req, res) => {
 
 router.post('/edit-product/', uploadMul.array('Image'), async (req, res) => {
   if (req.files.Image == null) {
-    console.log(req.query.id, "idd");
     Images = await productHelper.fetchImages(req.query.id)
   } else {
     let Images = []
@@ -298,7 +287,6 @@ router.get('/coupon-management', verifyAdmin, async (req, res, next) => {
   couponErr = req.session.couponErr
   productHelper.getAllCategories().then((category) => {
     adminhelper.getAllCoupons().then((coupons) => {
-      console.log(coupons, "coupponnnn");
       res.render('admin/coupon-management', { admin: true, layout: 'admin', category, coupons });
     })
   })
@@ -320,7 +308,6 @@ router.post('/add-coupon', (req, res) => {
 
 router.get('/delete-coupon/:id', verifyAdmin, (req, res) => {
   let cId = req.params.id
-  console.log(cId, "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
   adminhelper.deleteCoupon(cId).then(() => {
     req.session.couponErr = "coupon deleted sucessfully"
     res.redirect('/admin/coupon-management')
@@ -330,17 +317,13 @@ router.get('/delete-coupon/:id', verifyAdmin, (req, res) => {
 
 router.get('/reports', async (req, res) => {
   let rep = await adminhelper.getAllReports()
-  console.log(rep, 'report');
-
   let total = await adminhelper.getAllorderCount()
   let totalprofit = await adminhelper.getTotalProfit()
-
   res.render('admin/sales-report', { layout: 'admin', admin: true, rep, totalprofit })
 
 })
 
 router.post('/reports', async (req, res) => {
-
   let rep = await adminhelper.getReportWithDate(req.body.from, req.body.to)
   res.render('admin/sales-report', { layout: 'admin', admin: true, rep, 'date': req.body })
 })

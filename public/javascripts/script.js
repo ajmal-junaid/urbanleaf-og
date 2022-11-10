@@ -54,7 +54,6 @@ function addToCartt(proId) {
         document.getElementById('totalh').innerHTML = response.total
         location.reload()
       }
-
     }
   })
 }
@@ -68,7 +67,6 @@ function addToWishlist(proId) {
         let count = $('#wishlist-count').html()
         count = parseInt(count) + 1
         $("#wishlist-count").html(count)
-        // document.getElementById('totalh').innerHTML = response.total
         Swal.fire({
           position: 'top-end',
           icon: 'success',
@@ -109,7 +107,6 @@ function cancelOrder(ordId, proId) {
     },
     method: 'post',
     success: (response) => {
-      document.getElementById(ordId).innerHTML = "Canceled sucesfully"
       Swal.fire({
         position: 'top-end',
         icon: 'warning',
@@ -131,7 +128,6 @@ function returnOrder(ordId, proId) {
     },
     method: 'post',
     success: (response) => {
-      document.getElementById(ordId).innerHTML = "Return Requested"
       Swal.fire({
         position: 'top-end',
         icon: 'info',
@@ -144,25 +140,25 @@ function returnOrder(ordId, proId) {
   })
 }
 
-let count=0
+let count = 0
 $("#checkout-form").submit((e) => {
- 
+
   e.preventDefault()
-  if(count==0){
+  if (count == 0) {
     count++
     addressSelect = document.querySelector('input[name="address-method"]:checked').value
     paymentMethodS = document.querySelector('input[name="payment-method"]:checked').value
 
     $.ajax({
       url: '/proceed-page',
-  
+
       data: {
         deliveryDetails: addressSelect,
         paymentMethod: paymentMethodS
       },
       method: 'post',
       success: (response) => {
-       
+
         if (response.codSuccess) {
           location.href = '/order-succesfull'
         } else if (response.razor) {
@@ -173,17 +169,17 @@ $("#checkout-form").submit((e) => {
           location.href = '/order-succesfull'
         } else if (response.statusW) {
           location.href = '/payment-failed'
-  
+
         }
-  
+
       }
     })
-  }else{
+  } else {
     location.href = '/payment-failed'
-    count=0;
+    count = 0;
   }
-  
- 
+
+
 })
 
 
@@ -273,7 +269,7 @@ $("#couponForm").submit((e) => {
         // document.getElementById('total').innerHTML = response.Price
 
       } else if (response.statu) {
-        console.log(response,"respooooooo")
+        console.log(response, "respooooooo")
         Swal.fire({
           position: 'top-end',
           icon: 'error',

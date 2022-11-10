@@ -13,20 +13,14 @@ module.exports = {
             if (admin) {
                 bcrypt.compare(adminData.password, admin.password).then((status) => {
                     if (status) {
-                        console.log("adm success");
                         response.admin = admin
                         response.status = true
                         resolve(response)
                     } else {
-                        console.log("adm password failed");
-
                         resolve({ status: false })
                     }
                 }).catch()
             } else {
-                console.log("admin not found");
-
-
                 resolve({ status: false })
             }
         })
@@ -47,7 +41,6 @@ module.exports = {
     deleteCategory: (categ) => {
         return new Promise(async (resolve, reject) => {
             await db.get().collection(collection.CATEGORY_COLLECTION).findOne({ category: categ }).then(async () => {
-                console.log("dffff", categ);
                 let elements = await db.get().collection(collection.PRODUCT_COLLECTION).find({ category: categ }).toArray()
                 let obj = { category: categ }
                 if (elements.length > 0) {
@@ -380,7 +373,6 @@ module.exports = {
                         }
                     }
                 ]).toArray()
-            console.log(first, "firsttttttttt");
             let total = 0
             let quantity = 0
             first.forEach(first => {
@@ -440,7 +432,6 @@ module.exports = {
     },
     addCoupon: (coupon) => {
         coupon.date = new Date()
-        console.log(coupon, "helperrrrrrrrrrrrrrrrrr");
         return new Promise(async (resolve, reject) => {
             let coupo = await db.get().collection(collection.COUPON_COLLECTION).findOne({ code: coupon.code })
             if (coupo) {

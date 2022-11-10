@@ -4,7 +4,6 @@ var objectId = require('mongodb').ObjectId
 
 module.exports = {
     addProduct: (product, cb) => {
-        console.log(product);
         // product.featured = false
         product.date = new Date().toISOString()
         product.discountAmount = parseInt((product.percentage / 100) * product.marketPrice)
@@ -110,14 +109,12 @@ module.exports = {
     fetchImage:(catId)=>{
         return new Promise(async(resolve,reject)=>{
             let data= await db.get().collection(collection.CATEGORY_COLLECTION).findOne({_id:objectId(catId)})
-            console.log(data,"imagename");
             resolve(data.Image)
         })
     },
     fetchImages:(proId)=>{
         return new Promise(async(resolve,reject)=>{
             let data= await db.get().collection(collection.PRODUCT_COLLECTION).findOne({_id:objectId(proId)})
-            console.log(data,"imagename");
             resolve(data.Image)
         })
     }

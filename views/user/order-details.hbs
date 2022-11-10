@@ -15,16 +15,17 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="pull-right"><label id="{{this._id}}" class="text-dark w-25"><B>
-<a data-placement="top" class="btn btn-success btn-sm glyphicon glyphicon-ok m-2 "
-                                href="/view-detail?id={{this._id}}">View</a>
-                            </B></label>
+                                        <a data-placement="top"
+                                            class="btn btn-success btn-sm glyphicon glyphicon-ok m-2 "
+                                            href="/view-detail?id={{this._id}}">View</a>
+                                    </B></label>
 
                             </div>
 
                             <span><strong>{{this.invoiceNo}}</strong></span> <span class="label label-info">(
                                 {{this.paymentMethod}} )</span><br />
                             Total Amount: ₹{{this.totalAmount}} <br />
-                            
+
 
 
 
@@ -39,6 +40,31 @@
         </div>
         <div class="panel-footer m-5">Thank you for shopping with us.....Keep Shopping</div>
     </div>
+
+    <div class="row mb-4">
+        <div class="col"></div>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only text-white">Previous</span>
+                    </a>
+                </li>
+                {{#each pageCount}}
+                <li class="page-item"><a class="page-link" href="/get-order?id={{this}}">{{this}}</a></li>
+                {{/each}}
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="col"></div>
+    </div>
+
 </div>
 
 
@@ -98,3 +124,15 @@
         margin-bottom: 0;
     }
 </style>
+<script>
+    function paginator(pageno) {
+        $.ajax({
+            url: '/pagination/',
+            method: 'post',
+            let skipVal = (pageno - 1) * 10
+            data: {
+                skip = skipVal
+            }
+        })
+    }
+</script>

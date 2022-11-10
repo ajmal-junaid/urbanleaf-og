@@ -19,14 +19,11 @@ module.exports = {
             let mob = await db.get().collection(collection.USER_COLLECTION).findOne({ mobile: userData.mobile })
             if (user) {
                 resolve({ status: "email" })
-                console.log("user already exists");
             } else if (mob) {
                 resolve({ status: "mobile" })
-                console.log("mobile number already exists");
             }
             else {
                 let referral = await db.get().collection(collection.USER_COLLECTION).findOne({ mobile: userData.referral })
-                console.log(referral, "refferal");
                 let balance
                 if (referral) {
                     balance = 50
@@ -58,11 +55,9 @@ module.exports = {
                     response.status = true
                     resolve(response)
                 } else {
-                    // console.log("user blocked contact admn");
                     resolve({ status: 222 })
                 }
             } else {
-                // console.log("user not found regi");
                 resolve({ status: false })
             }
         }).catch()
@@ -182,31 +177,22 @@ module.exports = {
             let loginStatus = false
             let response = {}
             let user = await db.get().collection(collection.USER_COLLECTION).findOne({ email: userData.email })
-
             if (user) {
                 bcrypt.compare(userData.password, user.password).then((status) => {
                     if (status) {
                         let blck = user.status
                         if (blck) {
-                            //console.log("success");
                             response.user = user
                             response.status = true
                             resolve(response)
                         } else {
-                            //console.log("user blocked contact admn");
                             resolve({ status: 222 })
                         }
-
                     } else {
-                        console.log("wrong password");
-
                         resolve({ status: 333 })
                     }
                 }).catch()
             } else {
-                console.log("user not found regi");
-
-
                 resolve({ status: false })
             }
         }).catch()
@@ -381,16 +367,13 @@ module.exports = {
                 receipt: orderId.toHexString()
             };
             instance.orders.create(options, function (err, order) {
-                console.log(order, "otderrrrr");
                 if (err) {
-                    console.log(err, "error occured");
+                    res.send("error occured")
                 } else {
                     resolve(order)
                 }
-
             });
         })
-
     },
     walletPayment: (userId, total) => {
         return new Promise(async (resolve, reject) => {
@@ -402,7 +385,6 @@ module.exports = {
             } else {
                 resolve({ status: false })
             }
-
         })
     },
     createPay: (payment) => {
@@ -419,7 +401,6 @@ module.exports = {
     },
     getCartProductList: (userId) => {
         return new Promise(async (resolve, reject) => {
-
             let cart = await db.get().collection(collection.CART_COLLECTION).findOne({ user: objectId(userId) })
             if (cart) {
                 resolve(cart.product)
@@ -447,7 +428,6 @@ module.exports = {
                     $unwind: '$product'
                 }
             ]).toArray()
-            console.log(orderItems, "loooooooooooooooooooooooooooooo");
             resolve(orderItems)
         })
     },
@@ -537,14 +517,12 @@ module.exports = {
                     $sort: { _id: -1 }
                 }
             ]).toArray()
-            console.log(orders[0], "PPPPPPPpppppppp");
             resolve(orders)
         })
     },
     changestatus: (details) => {
         return new Promise(async (resolve, reject) => {
             if (details.status == 'return-completed' || details.status == 'canceled') {
-                console.log(details, "details");
                 let amt = parseInt(details.refund)
                 await db.get().collection(collection.ORDER_COLLECTION).
                     updateOne({ _id: objectId(details.cartid), product: { $elemMatch: { item: objectId(details.productId) } } },
@@ -558,7 +536,6 @@ module.exports = {
                             }
                         )
                         resolve("success")
-                        console.log(details.refund, details.user, "refund amount");
                     })
             } else {
                 let completed = false;
@@ -737,7 +714,6 @@ module.exports = {
                         "multi": true
                     }
                 ).then((tt) => {
-                    console.log(tt, "lugggg");
                     resolve()
                 })
         })
@@ -777,7 +753,6 @@ module.exports = {
         })
     },
     deleteAddress: (uId, aId) => {
-        console.log(uId, aId);
         return new Promise((resolve, reject) => {
             db.get().collection(collection.ADDRESS_COLLECTION)
                 .updateOne({ user: objectId(uId) },
@@ -813,7 +788,6 @@ module.exports = {
 
 
             } else {
-                console.log("new wishlist created");
                 let cartObj = {
                     user: objectId(userId),
                     product: [proObj]
@@ -873,11 +847,9 @@ module.exports = {
                 stock: details.stock
             }
             let userCart = await db.get().collection(collection.CART_COLLECTION).findOne({ user: objectId(userId) })
-            //console.log("dgdgdgd", userCart);
             if (userCart) {
                 let proExist = userCart.product.findIndex(product => product.item == prodId)
                 if (proExist != -1) {
-                    console.log("not e -1");
                     db.get().collection(collection.CART_COLLECTION)
                         .updateOne({ user: objectId(userId), 'product.item': objectId(prodId) },
                             {
@@ -909,7 +881,6 @@ module.exports = {
                         })
                 }
             } else {
-                console.log("new cart created");
                 let cartObj = {
                     user: objectId(userId),
                     product: [proObj]
@@ -952,18 +923,15 @@ module.exports = {
             let coupon = await db.get().collection(collection.COUPON_COLLECTION).findOne({ code: data.code })
             if (coupon) {
                 let discAmount = total * (parseInt(coupon.percentage) / 100)
-                console.log(coupon, "coup detailsss")
                 if (total < coupon.minPurchase) {
                     resolve({ statu: true })
                 }
                 if (discAmount > parseInt(coupon.maxDiscount)) {
                     coupon.Price = total - parseInt(coupon.maxDiscount)
                     coupon.discAmount = parseInt(coupon.maxDiscount)
-                    console.log("settin max to disccccc");
                 } else {
                     coupon.Price = total - discAmount
                     coupon.discAmount = discAmount
-                    console.log("setting priceee");
                 }
                 resolve(coupon)
             } else {
@@ -976,6 +944,34 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             let coupons = await db.get().collection(collection.COUPON_COLLECTION).find().toArray()
             resolve(coupons)
+        })
+    },
+    paginatorCount: (count) => {
+        return new Promise((resolve, reject) => {
+            pages = Math.ceil(count / 10)
+            let arr = []
+            for (let i = 1; i <= pages; i++) {
+                arr.push(i)
+            }
+            resolve(arr)
+        })
+    },
+    getTenOrders: (userId,Pageno) => {
+        return new Promise(async (resolve, reject) => {
+            let val = (Pageno-1)*10
+            let orders = await db.get().collection(collection.ORDER_COLLECTION)
+                .find({ userId: objectId(userId) }).sort({ _id: -1 }).skip(val).limit(10).toArray()
+
+            resolve(orders)
+        })
+    },
+    getTenProducts: (Pageno) => {
+        return new Promise(async (resolve, reject) => {
+            let val = (Pageno-1)*9
+            let orders = await db.get().collection(collection.PRODUCT_COLLECTION)
+                .find().sort({ _id: -1 }).skip(val).limit(9).toArray()
+
+            resolve(orders)
         })
     }
 }
