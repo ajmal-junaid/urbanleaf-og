@@ -50,7 +50,7 @@
                     </div>
                   </div>
                 </div>
-                <span class="fw-semibold d-block mb-1">Profit</span>
+                <span class="fw-semibold d-block mb-1">Total Sales Profit</span>
                 <h3 class="card-title mb-2">₹{{rep.total}}</h3>
                 <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i>
                   +72.80%</small>
@@ -231,7 +231,7 @@
     </div>
     <div class="row">
       <!-- Order Statistics -->
-      <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
+      <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
         <div class="card h-100">
           <div class="card-header d-flex align-items-center justify-content-between pb-0">
             <div class="card-title mb-0">
@@ -259,7 +259,7 @@
                 <h2 class="mb-2">{{totalorder}}</h2>
                 <span>Total Orders</span>
               </div>
-              <div id="orderStatisticsChart"></div>
+              <div id="myChart"></div>
             </div>
             <ul class="p-0 m-0">
               <li class="d-flex mb-4 pb-1">
@@ -365,15 +365,6 @@
 <!-- Overlay -->
 <div class="layout-overlay layout-menu-toggle"></div>
 </div>
-{{!-- {{#each barData.completed}}
-barData.unshift('{{this.count}}')
-{{/each}}
-{{#each barData.canceled}}
-barData.unshift('{{this.count}}')
-{{/each}}
-{{#each barData.placed}}
-barData.unshift('{{this.count}}')
-{{/each}} --}}
 <script>
   barData = [0]
   barData.unshift('{{barData.completed.count}}')
@@ -422,7 +413,7 @@ barData.unshift('{{this.count}}')
   let ydata=[]
 {{#each barData.daily}}
   ydata.push('{{this.count}}')
-  xdata.push('{{this._id.day}}')
+  xdata.push('{{this.day}}')
   {{/each}}
   var xValues = xdata
   var yValues = ydata;

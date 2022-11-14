@@ -2,9 +2,12 @@ var db = require('../config/connection')
 const moment = require('moment');
 var collection = require('../config/collections')
 const bcrypt = require('bcrypt')
-const { get } = require('../app')
+const { get, response } = require('../app')
 var objectId = require('mongodb').ObjectId
 module.exports = {
+
+    //<--------------------------------ADMIN LOGIN------------------------------------------>
+
     doAdminLogin: (adminData) => {
         return new Promise(async (resolve, reject) => {
             let loginStatus = false
@@ -25,12 +28,16 @@ module.exports = {
             }
         })
     },
+     //<--------------------------------ALL USER DETAILS------------------------------------------>
+
     getAllUsers: () => {
         return new Promise(async (resolve, reject) => {
             let users = await db.get().collection(collection.USER_COLLECTION).find().toArray()
             resolve(users)
         })
     },
+     //<--------------------------------DELETE USER------------------------------------------>
+
     deleteUser: (userId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.USER_COLLECTION).deleteOne({ _id: objectId(userId) }).then((response) => {
@@ -38,6 +45,8 @@ module.exports = {
             })
         })
     },
+     //<--------------------------------DELETE CATEGORY------------------------------------------>
+
     deleteCategory: (categ) => {
         return new Promise(async (resolve, reject) => {
             await db.get().collection(collection.CATEGORY_COLLECTION).findOne({ category: categ }).then(async () => {
@@ -55,6 +64,8 @@ module.exports = {
             })
         })
     },
+     //<--------------------------------TOTAL ORDER COUNT------------------------------------------>
+
     getAllorderCount: () => {
         return new Promise((resolve, reject) => {
             let count = db.get().collection(collection.ORDER_COLLECTION)
@@ -62,6 +73,7 @@ module.exports = {
             resolve(count)
         })
     },
+     //<--------------------------------COUNT ACCORDING TO PAYMENT METHOD------------------------------------------>
     getCountAll: () => {
         return new Promise(async (resolve, reject) => {
             let completed = await db.get().collection(collection.ORDER_COLLECTION)
@@ -86,6 +98,9 @@ module.exports = {
             resolve(count)
         })
     },
+
+     //<--------------------------------PROFIT COMPLETED ORDERS------------------------------------------>
+
     getTotalProfit: () => {
         return new Promise(async (resolve, reject) => {
             let total = await db.get().collection(collection.ORDER_COLLECTION)
@@ -131,6 +146,9 @@ module.exports = {
         })
 
     },
+
+     //<--------------------------------LAST MONTH,WEEK,YEAR ORDERS COUNT------------------------------------------>
+
     getInsights: () => {
         return new Promise(async (resolve, reject) => {
             let completed = await db.get().collection(collection.ORDER_COLLECTION)
@@ -212,7 +230,7 @@ module.exports = {
                 },
                 {
                     $group: {
-                        _id: { day: { $dayOfMonth: { $toDate: "$date" } } },
+                        _id: { day: { $dayOfYear: { $toDate: "$date" } } },
                         count: { $sum: 1 },
                         date: { '$first': "$date" }
 
@@ -221,18 +239,20 @@ module.exports = {
                 {
                     $project: {
                         count: 1,
-                        year: { $year: "$date" },
+                        year: { $dayOfYear: "$date" },
                         month: { $month: "$date" },
+                        yy: { $year: "$date" },
                         day: { $dayOfMonth: "$date" },
                     }
                 },
                 {
-                    $sort: { month: -1, day: -1 }
+                    $sort: { year: 1 }
                 },
                 {
                     $limit: 7
                 }
             ]).toArray()
+            console.log(daily, "daillllll");
             let monthly = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
                 {
                     $unwind: "$product"
@@ -355,6 +375,8 @@ module.exports = {
         })
 
     },
+
+     //<--------------------------------PRODUCT WISE REPORT------------------------------------------>
     getAllReports: () => {
         return new Promise(async (resolve, reject) => {
             let first = await db.get().collection(collection.ORDER_COLLECTION)
@@ -367,7 +389,7 @@ module.exports = {
                     },
                     {
                         $group: {
-                            _id: '$product.item',
+                            _id: '$product.productName',
                             total: { $sum: '$product.Price' },
                             totalquantity: { $sum: '$product.quantity' }
                         }
@@ -386,6 +408,9 @@ module.exports = {
             resolve(obj)
         })
     },
+
+     //<--------------------------------PRODUCT WISE REPORT ACCORDING TO DATE------------------------------------->
+
     getReportWithDate: (fromDate, ToDate) => {
         return new Promise(async (resolve, reject) => {
             let first = await db.get().collection(collection.ORDER_COLLECTION)
@@ -430,6 +455,8 @@ module.exports = {
             resolve(obj)
         })
     },
+     //<--------------------------------ADD COUPON------------------------------------------>
+
     addCoupon: (coupon) => {
         coupon.date = new Date()
         return new Promise(async (resolve, reject) => {
@@ -443,6 +470,8 @@ module.exports = {
             }
         })
     },
+     //<--------------------------------DELETE COUPON------------------------------------------>
+
     deleteCoupon: (coupon) => {
         return new Promise(async (resolve, reject) => {
             db.get().collection(collection.COUPON_COLLECTION).deleteOne({ _id: objectId(coupon) }).then((response) => {
@@ -451,10 +480,39 @@ module.exports = {
 
         })
     },
+     //<--------------------------------VIEW ALL COUPONS------------------------------------------>
+
     getAllCoupons: () => {
         return new Promise(async (resolve, reject) => {
             let coupons = await db.get().collection(collection.COUPON_COLLECTION).find().toArray()
             resolve(coupons)
+        })
+    },
+     //<--------------------------------ADD BANNER------------------------------------------>
+     
+    addBanner: (data) => {
+        console.log(data, "data");
+        return new Promise(async (resolve, reject) => {
+            let check = await db.get().collection(collection.BANNER_COLLECTION).findOne()
+            if (check) {
+                console.log("existssss");
+                await db.get().collection(collection.BANNER_COLLECTION).deleteOne({ name: "banner" })
+                await db.get().collection(collection.BANNER_COLLECTION).insertOne(data)
+                resolve({ status: true })
+            } else {
+                console.log("newwwwwwwwwwwwww");
+                await db.get().collection(collection.BANNER_COLLECTION).insertOne(data).then((response) => {
+                    resolve(response)
+                })
+            }
+        })
+    },
+     //<--------------------------------GET BANNER DETAILS------------------------------------------>
+
+    getBanner: () => {
+        return new Promise(async (resolve, reject) => {
+            let banner = await db.get().collection(collection.BANNER_COLLECTION).find().toArray()
+            resolve(banner[0])
         })
     }
 }

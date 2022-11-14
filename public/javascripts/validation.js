@@ -1,15 +1,10 @@
-var NameError = document.getElementById("fname-error");  //span id
+var NameError = document.getElementById("fname-error");
 var mobileError = document.getElementById("mobile-error");
 var emailError = document.getElementById("email-error")
 var passwordError = document.getElementById("password-error")
 var submitError = document.getElementById("submit-error");
-
-
-
-
 function validateName() {
   var fname = document.getElementById("contact-fname").value; //input id
-
   if (fname.length == 0) {
     NameError.innerHTML = 'First Name required';
     return false;
@@ -54,7 +49,6 @@ function validatePassword() {
   return true;
 
 }
-
 
 function validateMobile() {
   var mobile = document.getElementById("contact-mobile").value;
@@ -102,7 +96,6 @@ function validateLoginForm() {
     setTimeout(function () { submitError.style.display = 'none'; }, 4000)
     return false;
   }
-
 }
 
 function validateLoginMailForm() {
@@ -111,7 +104,17 @@ function validateLoginMailForm() {
     setTimeout(function () { submitError.style.display = 'none'; }, 4000)
     return false;
   }
+}
 
+function lessThanHundread(){
+  let percentage = document.getElementById('percentage').value
+  if(percentage>100){
+    document.getElementById('percentage-err').innerHTML='Percentage Must not Exceed 100%'
+    document.getElementById("addSub").disabled = true;
+  }else{
+    document.getElementById('percentage-err').innerHTML=''
+    document.getElementById("addSub").disabled = false;
+  }
 }
 
 $("#loginmail").submit((e) => {

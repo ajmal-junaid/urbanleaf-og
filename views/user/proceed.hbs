@@ -119,15 +119,23 @@
                                 <div class="col-sm-6 p-3">
                                     <div class="card card-block border-dark p-3">
 
-                                        <div class="row ">
+                                        <div class="row">
                                             <div class="col-2 mt-2">
                                                 <input class="form-chec ml-0" type="radio" name="address-method"
                                                     id="flexRadioDefault1" value="{{this.address.no}}" checked>
                                             </div>
-                                            <div class="col-8 m-1">
+                                            <div class="col-6 m-1">
+
                                                 <strong>
                                                     <h4 class="card-title">{{this.address.fname}}</h4>
                                                 </strong>
+                                            </div>
+                                            <div class="col-3 m-1">
+                                                <button type="button" class="btn btn-primary btn-sm text-white"
+                                                    data-toggle="modal" data-target="#exampleModal{{this.address.no}}"
+                                                    data-whatever="@mdo">Edit
+                                                </button>
+
                                             </div>
 
 
@@ -146,13 +154,151 @@
                                         <h5>Email: {{this.address.email}}</h5>
                                     </div>
                                 </div>
+
+                                <div class="modal fade" id="exampleModal{{this.address.no}}" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-secondary">
+                                                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body border">
+                                                <form action="/updateaddress" method="post" id="address-update">
+                                                    <div class="row ">
+                                                        <div class="col-lg-12 col-md-12">
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <div class="checkout__input">
+                                                                        <p>Full Name<span>*</span></p>
+                                                                        <input type="text" class="form-control"
+                                                                            name="fname" value="{{this.address.fname}}"
+                                                                            required>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="checkout__input">
+                                                                <p>Country<span>*</span></p>
+                                                                <input type="text" class="form-control" name="country"
+                                                                    value="{{this.address.country}}" required>
+                                                                <input type="text" value="{{this.address.no}}" name="no"
+                                                                    hidden>
+                                                            </div>
+                                                            <div class="checkout__input">
+                                                                <p>Address<span>*</span></p>
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Street Address"
+                                                                    class="checkout__input__add" name="address"
+                                                                    value="{{this.address.address}}" required>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="checkout__input">
+                                                                        <p>Town/City<span>*</span>
+                                                                        </p>
+                                                                        <input class="form-control" type="text"
+                                                                            name="city" value="{{this.address.city}}"
+                                                                            required>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="checkout__input">
+                                                                        <p>State<span>*</span></p>
+                                                                        <input class="form-control" type="text"
+                                                                            name="state" value="{{this.address.state}}"
+                                                                            required>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="checkout__input">
+                                                                <p>Postcode / ZIP<span>*</span></p>
+                                                                <input class="form-control" type="text" name="pincode"
+                                                                    value="{{this.address.pincode}}" required>
+                                                            </div>
+                                                            <div class="checkout__input">
+                                                                <p>mobile<span>*</span></p>
+                                                                <input class="form-control" type="text" name="mobile"
+                                                                    value="{{this.address.mobile}}" required>
+                                                            </div>
+                                                            <div class="checkout__input">
+                                                                <p>E-mail<span>*</span></p>
+                                                                <input class="form-control" type="email" name="email"
+                                                                    value="{{this.address.email}}" required>
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                    <div class="modal-footer">
+
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">Close</button>
+                                                        <button type="submit" class="site-btn">Update</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
                                 {{/each}}
 
                             </div>
                         </div>
                     </div>
                     <div class="checkout__input">
+                        <div class="shoping__continue">
+                            <div class="shoping__discount">
+                                <h5>Discount Codes</h5>
+                                <form action="" id="couponForm">
+                                    <input type="text" name="code" placeholder="Enter your coupon code">
+                                    <input type="text" value="{{user._id}}" name="userId" hidden>
 
+                                    <button type="submit" class="site-btn">APPLY COUPON</button>
+                                </form>
+                            </div>
+                            <span id="couponDescription" class="text-success"></span>
+                        </div>
+                        <p>
+                            <a class="bg-secondary text-white site-btn mt-4" data-toggle="collapse"
+                                href="#collapseExample" role="button" aria-expanded="false"
+                                aria-controls="collapseExample">
+                                Show coupons
+                            </a>
+                        </p>
+
+                        <div class="collapse" id="collapseExample">
+                            <ul class="list-group">
+                                {{#each coupons}}
+                                <div class="card card-body">
+                                    <li class="list-group-item">
+                                        <a onclick="myFunction('{{this._id}}')">
+                                            <strong>
+                                                <b>
+                                                    <p id="{{this._id}}">{{this.code}}</p>
+                                                </b>
+                                            </strong> {{this.name}} (upto{{this.percentage}}%Off)- Max discount upto
+                                            ₹{{this.maxDiscount}} <sub>Min purchase of ₹{{this.minPurchase}}</sub>
+                                            <div class="colman">
+                                                <span class="tooltiptext text-success">Tap to
+                                                    Copy</span>
+                                            </div>
+
+                                        </a>
+                                    </li>
+                                </div>
+                                {{/each}}
+
+                            </ul>
+
+
+
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6">
@@ -169,8 +315,11 @@
                         </ul>
                         <input type="text" id="" name="userId" value="{{user._id}}" hidden>
                         <div class="checkout__order__subtotal">Total <span>₹{{actual}}</span></div>
-                        <div class="checkout__order__subtotal">Total discount <span>₹{{discount}}</span></div>
-                        <div class="checkout__order__total">Grand Total <span>₹{{total}}</span></div>
+                        <div class="checkout__order__subtotal">Discount<span>₹</span><span>{{discount}}</span></div>
+                        <ul id="cartTotal">
+
+                        </ul>
+                        <div class="checkout__order__total">Grand Total <span>₹<span id="gtotal">{{total}}</span></span></div>
 
 
                         <div class="checkout__input__checkbox">
@@ -224,5 +373,57 @@
         width: 100%;
         height: 1rem;
     }
+
+    <style>.tooltip {
+        position: relative;
+        display: inline-block;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 140px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 150%;
+        left: 50%;
+        margin-left: -75px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
 </style>
+<script>
+
+    function myFunction(coupon) {
+        var copyText = document.getElementById(coupon).innerHTML
+        navigator.clipboard.writeText(copyText);
+        Swal.fire({
+            position: 'top-end',
+            title: '<h5>Coupon Copied To Clipboard</h5>',
+            showConfirmButton: false,
+            timer: 1000
+        })
+
+    }
+</script>
 <!-- Checkout Section End -->

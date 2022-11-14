@@ -98,19 +98,14 @@
 <div class="banner mb-5">
   <div class="container">
     <div class="row">
+      {{#each banner.Image}}
       <div class="col-lg-6 col-md-6 col-sm-6">
         <div class="banner__pic">
-          <img src="img/banner/banner-1.jpg" alt="" />
+          <img src="/banner-images/{{this}}" alt="" />
         </div>
       </div>
-      <div class="col-lg-6 col-md-6 col-sm-6">
-        <div class="banner__pic">
-          <img src="img/banner/banner-2.jpg" alt="" />
-        </div>
-      </div>
+      {{/each}}
     </div>
   </div>
 </div>
 <!-- Banner End -->
-
-<!-- Latest Product Section Begin -->

@@ -88,53 +88,7 @@
                 </div>
             </div>
             <div class="col-lg-6">
-                <div class="shoping__continue">
-                    <div class="shoping__discount">
-                        <h5>Discount Codes</h5>
-                        <form action="" id="couponForm">
-                            <input type="text" name="code" placeholder="Enter your coupon code">
-                            <input type="text" value="{{user._id}}" name="userId" hidden>
-
-                            <button type="submit" class="site-btn">APPLY COUPON</button>
-                        </form>
-                    </div>
-                    <span id="couponDescription" class="text-success"></span>
-                </div>
-                <p>
-                    <a class="bg-secondary text-white site-btn mt-4" data-toggle="collapse" href="#collapseExample"
-                        role="button" aria-expanded="false" aria-controls="collapseExample">
-                        Show coupons
-                    </a>
-
-                </p>
-
-                <div class="collapse" id="collapseExample">
-                    <ul class="list-group">
-                        {{#each coupons}}
-                        <div class="card card-body">
-                            <li class="list-group-item">
-                                <a onclick="myFunction('{{this._id}}')">
-                                    <strong>
-                                        <b>
-                                            <p id="{{this._id}}">{{this.code}}</p>
-                                        </b>
-                                    </strong> {{this.name}} (upto{{this.percentage}}%Off)- Max discount upto
-                                    ₹{{this.maxDiscount}} <sub>Min purchase of ₹{{this.minPurchase}}</sub>
-                                    <div class="colman">
-                                        <span class="tooltiptext text-success">Tap to
-                                            Copy</span>
-                                    </div>
-
-                                </a>
-                            </li>
-                        </div>
-                        {{/each}}
-
-                    </ul>
-
-
-
-                </div>
+               
 
             </div>
             <div class="col-lg-6">
@@ -271,7 +225,7 @@
             showDenyButton: true,
             showCancelButton: false,
             confirmButtonText: 'Delete',
-            denyButtonText: `Don't Delete`,
+            denyButtonText: `Cancel`,
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
@@ -313,41 +267,5 @@
 
 </script>
 <style>
-    <style>.tooltip {
-        position: relative;
-        display: inline-block;
-    }
-
-    .tooltip .tooltiptext {
-        visibility: hidden;
-        width: 140px;
-        background-color: #555;
-        color: #fff;
-        text-align: center;
-        border-radius: 6px;
-        padding: 5px;
-        position: absolute;
-        z-index: 1;
-        bottom: 150%;
-        left: 50%;
-        margin-left: -75px;
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-
-    .tooltip .tooltiptext::after {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        margin-left: -5px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: #555 transparent transparent transparent;
-    }
-
-    .tooltip:hover .tooltiptext {
-        visibility: visible;
-        opacity: 1;
-    }
+    
 </style>

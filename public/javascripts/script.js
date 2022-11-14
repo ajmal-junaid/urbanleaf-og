@@ -1,10 +1,8 @@
 function addToCart(proId) {
-
   $.ajax({
     url: '/add-to-cart/' + proId,
     method: 'get',
     success: (response) => {
-
       if (response.status) {
         Swal.fire({
           position: 'top-end',
@@ -17,16 +15,12 @@ function addToCart(proId) {
         if (!response.stat) {
           count = parseInt(count) + 1
         }
-
         $("#cart-count").html(count)
         document.getElementById('totalh').innerHTML = response.total
-
-
         location.reload()
       } else {
         location.href = '/loginmail'
       }
-
     }
   })
 }
@@ -46,7 +40,6 @@ function addToCartt(proId) {
       setTimeout(() => {
         location.reload()
       }, 1500);
-
       if (response.status) {
         let count = $('#cart-count').html()
         count = parseInt(count) + 1
@@ -74,7 +67,6 @@ function addToWishlist(proId) {
           showConfirmButton: false,
           timer: 1500
         })
-
       } else if (response.mod == 0) {
         Swal.fire({
           position: 'top-end',
@@ -92,10 +84,10 @@ function addToWishlist(proId) {
           timer: 1500
         })
       }
-
     }
   })
 }
+
 function cancelOrder(ordId, proId) {
   console.log(proId, "=============", ordId)
   $.ajax({
@@ -114,7 +106,6 @@ function cancelOrder(ordId, proId) {
         showConfirmButton: false,
         timer: 1000
       })
-
     }
   })
 }
@@ -135,14 +126,12 @@ function returnOrder(ordId, proId) {
         showConfirmButton: false,
         timer: 1500
       })
-
     }
   })
 }
 
 let count = 0
 $("#checkout-form").submit((e) => {
-
   e.preventDefault()
   if (count == 0) {
     count++
@@ -151,14 +140,12 @@ $("#checkout-form").submit((e) => {
 
     $.ajax({
       url: '/proceed-page',
-
       data: {
         deliveryDetails: addressSelect,
         paymentMethod: paymentMethodS
       },
       method: 'post',
       success: (response) => {
-
         if (response.codSuccess) {
           location.href = '/order-succesfull'
         } else if (response.razor) {
@@ -169,17 +156,13 @@ $("#checkout-form").submit((e) => {
           location.href = '/order-succesfull'
         } else if (response.statusW) {
           location.href = '/payment-failed'
-
         }
-
       }
     })
   } else {
     location.href = '/payment-failed'
     count = 0;
   }
-
-
 })
 
 
@@ -209,6 +192,23 @@ function razorpayPayment(order) {
     },
     "theme": {
       "color": "#3399cc"
+    },
+    "modal": {
+      "backdropclose": (val) => {
+        location.href = '/payment-failed'
+      },
+      "escape": (val) => {
+        location.href = '/payment-failed'
+      },
+      "handleback": (val) => {
+        location.href = '/payment-failed'
+      },
+      "confirm_close": (val) => {
+        location.href = '/payment-failed'
+      },
+      "ondismiss": (val) => {
+        location.href = '/payment-failed'
+      }
     }
   };
   var rzp1 = new Razorpay(options);
@@ -243,18 +243,17 @@ $("#couponForm").submit((e) => {
     data: $('#couponForm').serialize(),
 
     success: (response) => {
+      console.log(response, "respoooo")
       if (response.Price) {
         if (visit >= 2) {
           swal("Coupon " + response.code + " Already Applied", "One Coupon at a time", "error")
           // location.reload()
         } else {
           document.getElementById('couponDescription').innerHTML = response.code + " applied succesfully <br>" + response.percentage + "% Off Upto ₹" + response.maxDiscount
-          var newSpan = document.createElement('li');
           var newSpan2 = document.createElement('li');
           newSpan2.innerHTML = "Coupon Offer <span>₹</span><span id='total'><span>" + response.discAmount + "</span><sub>(" + response.percentage + "%)</sub></span>"
-          newSpan.innerHTML = "After Coupon Offer <span>₹</span><span id='total'>" + response.Price + "</span>"
           document.getElementById('cartTotal').appendChild(newSpan2);
-          document.getElementById('cartTotal').appendChild(newSpan);
+          document.getElementById('gtotal').innerHTML = response.Price
           visit += 1
 
           Swal.fire({
@@ -310,13 +309,34 @@ $("#address-form").submit((e) => {
           confirmButtonText: 'Continue..'
         }).then((result) => {
           if (result.isConfirmed) {
-            Swal.fire(
-              location.reload()
-            )
+            location.reload()
           }
         })
-        //setTimeout(location.reload(),1000)
-        //location.reload()
+      }
+    }
+  })
+})
+
+$("#address-update").submit((e) => {
+  e.preventDefault()
+  $.ajax({
+    url: '/updateaddress',
+    method: 'post',
+    data: $('#address-update').serialize(),
+    success: (response) => {
+      if (response) {
+        $("#address-update").trigger("reset");
+        Swal.fire({
+          title: 'Address Edited Succesfully',
+          icon: 'success',
+          showCancelButton: false,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Continue..'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            location.reload()
+          }
+        })
       }
     }
   })

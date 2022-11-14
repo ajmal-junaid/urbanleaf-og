@@ -28,44 +28,164 @@
                                 </div>
                                 <hr class="my-0" />
                                 <div class="card-body">
-                                   
-                                        <div class="row">
-                                            <div class="mb-3 col-md-6">
-                                                <label for="firstName" class="form-label">First Name</label>
-                                                <input class="form-control" type="text" name="name"
-                                                    value="{{userdata.name}}" autofocus required />
-                                            </div>
-                                            <div class="mb-3 col-md-6">
-                                                <label for="email" class="form-label">E-mail</label>
-                                                <input class="form-control" type="text" id="email" name="email"
-                                                    value="{{userdata.email}}" required />
-                                            </div>
 
-                                            <div class="mb-3 col-md-6">
-                                                <label class="form-label" for="phoneNumber">Phone Number</label>
-                                                <div class="input-group input-group-merge">
-                                                    <span class="input-group-text">IN (+91)</span>
-                                                    <input type="text" id="phoneNumber" name="mobile"
-                                                        class="form-control" value="{{userdata.mobile}}" required />
+                                    <div class="row">
+                                        <div class="mb-3 col-md-6">
+                                            <label for="firstName" class="form-label">First Name</label>
+                                            <input class="form-control" type="text" name="name"
+                                                value="{{userdata.name}}" autofocus required disabled />
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label for="email" class="form-label">E-mail</label>
+                                            <input class="form-control" type="text" id="email" name="email"
+                                                value="{{userdata.email}}" required disabled />
+                                        </div>
+
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label" for="phoneNumber">Phone Number</label>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">IN (+91)</span>
+                                                <input type="text" id="phoneNumber" name="mobile" class="form-control"
+                                                    value="{{userdata.mobile}}" required disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row m-2">
+                                        <div class="col">
+                                            <h4>
+                                                Saved Addresses
+                                            </h4>
+                                        </div>
+                                        <div class="col-2 d-flex"><button type="button" class="btn btn-primary"
+                                                data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Add
+                                                Address</button> </div>
+                                    </div>
+                                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-success">
+                                                    <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
                                                 </div>
+                                                <div class="modal-body border">
+                                                    <form action="/address" method="post" id="address-form">
+                                                        <div class="row ">
+                                                            <div class="col-lg-12 col-md-12">
+                                                                <div class="row">
+                                                                    <div class="col-lg-12">
+                                                                        <div class="checkout__input">
+                                                                            <p>Full Name<span>*</span></p>
+                                                                            <input type="text" class="form-control"
+                                                                                name="fname" required>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="checkout__input">
+                                                                    <p>Country<span>*</span></p>
+                                                                    <input type="text" class="form-control"
+                                                                        name="country" required>
+                                                                </div>
+                                                                <div class="checkout__input">
+                                                                    <p>Address<span>*</span></p>
+                                                                    <input type="text" class="form-control"
+                                                                        placeholder="Street Address"
+                                                                        class="checkout__input__add" name="address"
+                                                                        required>
+                                                                    <input type="text" id="" name="userId"
+                                                                        value="{{user._id}}" hidden>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-lg-6">
+                                                                        <div class="checkout__input">
+                                                                            <p>Town/City<span>*</span></p>
+                                                                            <input class="form-control" type="text"
+                                                                                name="city" required>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-6">
+                                                                        <div class="checkout__input">
+                                                                            <p>State<span>*</span></p>
+                                                                            <input class="form-control" type="text"
+                                                                                name="state" required>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="checkout__input">
+                                                                    <p>Postcode / ZIP<span>*</span></p>
+                                                                    <input class="form-control" type="text"
+                                                                        name="pincode" required>
+                                                                </div>
+                                                                <div class="checkout__input">
+                                                                    <p>mobile<span>*</span></p>
+                                                                    <input class="form-control" type="text"
+                                                                        name="mobile" required>
+                                                                </div>
+                                                                <div class="checkout__input">
+                                                                    <p>E-mail<span>*</span></p>
+                                                                    <input class="form-control" type="email"
+                                                                        name="email" required>
+                                                                </div>
+
+                                                            </div>
+
+
+                                                        </div>
+
+                                                        <div class="modal-footer">
+
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">Close</button>
+                                                            <button type="submit" class="site-btn"> Submit</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+
                                             </div>
                                         </div>
-                                        <div class="row m-2">
-                                            <div class="col">
-                                                <h4>
-                                                    Saved Addresses
-                                                </h4>
+                                    </div>
+                                    <div class="row mt-3">
+                                        {{#each address}}
+                                        <div class="mb-3 col-md-5 ml-2 ">
+
+                                            <div class="card card-block border-dark p-3">
+                                                <div class="row d-flex flex-row-reverse">
+                                                    <div class="col">
+                                                        <button type="button" class="btn btn-primary btn-sm text-white"
+                                                            data-toggle="modal"
+                                                            data-target="#exampleModal{{this.address.no}}"
+                                                            data-whatever="@mdo">Edit
+                                                        </button>
+                                                        <a class="btn btn-danger btn-sm text-white"
+                                                            href="/delete-address?id={{this.address.no}}">Delete</a>
+                                                    </div>
+                                                    {{!-- value="{{this.address.no}}" --}}
+
+                                                    <div class="col-8 m-1">
+                                                        <strong>
+                                                            <h4 class="card-title">{{this.address.fname}}</h4>
+                                                        </strong>
+                                                    </div>
+                                                </div>
+                                                <p class="card-text">{{this.address.address}} ,
+                                                    {{this.address.city}} ,
+                                                    {{this.address.city}} ,
+                                                    {{this.address.state}}, {{this.address.country}},
+                                                    {{this.address.pincode}}
+                                                </p>
+                                                <h5>Mobile: {{this.address.mobile}}</h5>
+                                                <h5>Email: {{this.address.email}}</h5>
                                             </div>
-                                            <div class="col-2 d-flex"><button type="button" class="btn btn-primary"
-                                                    data-toggle="modal" data-target="#exampleModal"
-                                                    data-whatever="@mdo">Add
-                                                    Address</button> </div>
                                         </div>
-                                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+                                        <div class="modal fade" id="exampleModal{{this.address.no}}" tabindex="-1"
+                                            role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
-                                                    <div class="modal-header bg-success">
+                                                    <div class="modal-header bg-secondary">
                                                         <h5 class="modal-title" id="exampleModalLabel">New message</h5>
                                                         <button type="button" class="close" data-dismiss="modal"
                                                             aria-label="Close">
@@ -73,7 +193,7 @@
                                                         </button>
                                                     </div>
                                                     <div class="modal-body border">
-                                                        <form action="/address" method="post" id="address-form">
+                                                        <form id="address-update">
                                                             <div class="row ">
                                                                 <div class="col-lg-12 col-md-12">
                                                                     <div class="row">
@@ -81,66 +201,71 @@
                                                                             <div class="checkout__input">
                                                                                 <p>Full Name<span>*</span></p>
                                                                                 <input type="text" class="form-control"
-                                                                                    name="fname" required>
+                                                                                    name="fname"
+                                                                                    value="{{this.address.fname}}"
+                                                                                    required>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="checkout__input">
                                                                         <p>Country<span>*</span></p>
                                                                         <input type="text" class="form-control"
-                                                                            name="country" required>
+                                                                            name="country"
+                                                                            value="{{this.address.country}}" required>
+                                                                            <input type="text" value="{{this.address.no}}" name="no" hidden>
                                                                     </div>
                                                                     <div class="checkout__input">
                                                                         <p>Address<span>*</span></p>
                                                                         <input type="text" class="form-control"
                                                                             placeholder="Street Address"
                                                                             class="checkout__input__add" name="address"
-                                                                            required>
-                                                                        <input type="text" id="" name="userId"
-                                                                            value="{{user._id}}" hidden>
+                                                                            value="{{this.address.address}}" required>
                                                                     </div>
                                                                     <div class="row">
                                                                         <div class="col-lg-6">
                                                                             <div class="checkout__input">
-                                                                                <p>Town/City<span>*</span></p>
+                                                                                <p>Town/City<span>*</span>
+                                                                                </p>
                                                                                 <input class="form-control" type="text"
-                                                                                    name="city" required>
+                                                                                    name="city"
+                                                                                    value="{{this.address.city}}"
+                                                                                    required>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-lg-6">
                                                                             <div class="checkout__input">
                                                                                 <p>State<span>*</span></p>
                                                                                 <input class="form-control" type="text"
-                                                                                    name="state" required>
+                                                                                    name="state"
+                                                                                    value="{{this.address.state}}"
+                                                                                    required>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="checkout__input">
                                                                         <p>Postcode / ZIP<span>*</span></p>
                                                                         <input class="form-control" type="text"
-                                                                            name="pincode" required>
+                                                                            name="pincode"
+                                                                            value="{{this.address.pincode}}" required>
                                                                     </div>
                                                                     <div class="checkout__input">
                                                                         <p>mobile<span>*</span></p>
                                                                         <input class="form-control" type="text"
-                                                                            name="mobile" required>
+                                                                            name="mobile"
+                                                                            value="{{this.address.mobile}}" required>
                                                                     </div>
                                                                     <div class="checkout__input">
                                                                         <p>E-mail<span>*</span></p>
                                                                         <input class="form-control" type="email"
-                                                                            name="email" required>
+                                                                            name="email" value="{{this.address.email}}"
+                                                                            required>
                                                                     </div>
-
                                                                 </div>
-
-
                                                             </div>
-
                                                             <div class="modal-footer">
-
                                                                 <button type="button" class="btn btn-secondary"
                                                                     data-dismiss="modal">Close</button>
-                                                                <button type="submit" class="site-btn"> Submit</button>
+                                                                <button type="submit" class="site-btn"> Update</button>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -148,46 +273,9 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row mt-3">
-                                            {{#each address}}
-                                            <div class="mb-3 col-md-5 ml-5 ">
+                                        {{/each}}
+                                    </div>
 
-                                                <div class="card card-block border-dark p-3">
-                                                    <div class="row d-flex flex-row-reverse">
-                                                        <div class="col">
-                                                            <a class="btn btn-danger btn-sm mr-3 text-white"
-                                                                href="/delete-address?id={{this.address.no}}">Delete</a>
-                                                        </div>
-                                                        {{!-- value="{{this.address.no}}" --}}
-
-                                                        <div class="col-8 m-1">
-                                                            <strong>
-                                                                <h4 class="card-title">{{this.address.fname}}</h4>
-                                                            </strong>
-                                                        </div>
-                                                    </div>
-                                                    <p class="card-text">{{this.address.address}} ,
-                                                        {{this.address.city}} ,
-                                                        {{this.address.city}} ,
-                                                        {{this.address.state}}, {{this.address.country}},
-                                                        {{this.address.pincode}}
-                                                    </p>
-                                                    <h5>Mobile: {{this.address.mobile}}</h5>
-                                                    <h5>Email: {{this.address.email}}</h5>
-                                                </div>
-                                            </div>
-                                            {{/each}}
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="mt-2">
-                                                {{!-- <button type="submit" class="btn btn-primary me-2">Save
-                                                    changes</button> --}}
-                                                {{!-- <button type="reset"
-                                                    class="btn btn-outline-secondary">Cancel</button> --}}
-                                            </div>
-                                        </div>
-                                    
                                 </div>
                                 <!-- /Account -->
                             </div>

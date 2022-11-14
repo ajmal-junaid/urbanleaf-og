@@ -3,6 +3,8 @@ var collection = require('../config/collections')
 var objectId = require('mongodb').ObjectId
 
 module.exports = {
+     //<--------------------------------ADD PRODUCT USING CALLBACK------------------------------------------>
+
     addProduct: (product, cb) => {
         // product.featured = false
         product.date = new Date().toISOString()
@@ -12,6 +14,8 @@ module.exports = {
             cb(data)
         }).catch()
     },
+     //<--------------------------------ADD CATEGORY------------------------------------------>
+
     addCatogory:  (category) => {
         return new Promise(async(resolve,reject)=>{
             let cat = await db.get().collection(collection.CATEGORY_COLLECTION).findOne({ category: category.category })
@@ -24,9 +28,9 @@ module.exports = {
                 }).catch()
             }
         })
-        
-        
     },
+     //<--------------------------------ALL PRODUCTS------------------------------------------>
+
     getAllProducts: () => {
         return new Promise(async (resolve, reject) => {
             let products = await db.get().collection(collection.PRODUCT_COLLECTION).find().sort({
@@ -36,6 +40,8 @@ module.exports = {
             resolve(products)
         })
     },
+     //<--------------------------------DELETE PRODUCT------------------------------------------>
+
     deleteProduct: (prodId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.PRODUCT_COLLECTION).deleteOne({ _id: objectId(prodId) }).then((response) => {
@@ -43,24 +49,35 @@ module.exports = {
             })
         })
     },
+     //<--------------------------------DISPLAY ALL CATEGORIES------------------------------------------>
+
     getAllCategories: () => {
         return new Promise(async (resolve, reject) => {
             let categories = await db.get().collection(collection.CATEGORY_COLLECTION).find().toArray()
             resolve(categories)
         })
-    }, getProductDetails: (proId) => {
+    }, 
+    //<--------------------------------SINGLE PRODUCT DETAILS------------------------------------------>
+
+    getProductDetails: (proId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.PRODUCT_COLLECTION).findOne({ _id: objectId(proId) }).then((product) => {
                 resolve(product)
             })
         })
-    }, getCategoryDetails: (proId) => {
+    }, 
+     //<--------------------------------CATEGORY DETAILS------------------------------------------>
+
+    getCategoryDetails: (proId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.CATEGORY_COLLECTION).findOne({ _id: objectId(proId) }).then((product) => {
                 resolve(product)
             })
         })
-    }, updateProduct: (proId, proDetails) => {
+    }, 
+     //<--------------------------------UPDATE PRODUCT------------------------------------------>
+
+    updateProduct: (proId, proDetails) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.PRODUCT_COLLECTION)
                 .updateOne({ _id: objectId(proId) }, {
@@ -76,7 +93,10 @@ module.exports = {
                     resolve()
                 })
         })
-    }, updateCategory: (catId, catDetails) => {
+    },
+     //<--------------------------------UPDATE CATEGORY------------------------------------------>
+
+     updateCategory: (catId, catDetails) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.CATEGORY_COLLECTION)
                 .updateOne({ _id: objectId(catId) }, {
@@ -90,6 +110,8 @@ module.exports = {
                 })
         })
     },
+     //<--------------------------------CATEGORY WISE PRODUCTS------------------------------------------>
+
     getCategoryProducts: (catName) => {
         return new Promise((resolve, reject) => {
             let prods = db.get().collection(collection.PRODUCT_COLLECTION)
@@ -97,6 +119,8 @@ module.exports = {
             resolve(prods)
         })
     },
+     //<--------------------------------TO GET EIGHT LATEST PRODUCTS------------------------------------------>
+
     getLatestProducts: () => {
         return new Promise(async (resolve, reject) => {
             let products = await db.get().collection(collection.PRODUCT_COLLECTION).find().sort({
@@ -106,12 +130,16 @@ module.exports = {
             resolve(products)
         })
     },
+     //<--------------------------------FETCH SINGLE IMAGE------------------------------------------>
+
     fetchImage:(catId)=>{
         return new Promise(async(resolve,reject)=>{
             let data= await db.get().collection(collection.CATEGORY_COLLECTION).findOne({_id:objectId(catId)})
             resolve(data.Image)
         })
     },
+     //<--------------------------------FETCH MULTIPLE IMAGES------------------------------------------>
+
     fetchImages:(proId)=>{
         return new Promise(async(resolve,reject)=>{
             let data= await db.get().collection(collection.PRODUCT_COLLECTION).findOne({_id:objectId(proId)})

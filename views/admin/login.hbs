@@ -72,7 +72,7 @@
             <div class="mt-5 div"><button type="submit" class="btn btn-outline-success">Submit</button></div>
           </form>
           {{#if adminErr}}
-                            <h4 class="error text-danger" id="successMessage"> {{adminErr}}</h4>
+                            <h4 class="error text-danger m-5" id="successMessage"> {{adminErr}}</h4>
                            
                             {{/if}}
 
@@ -82,3 +82,5 @@
     </div>
   </div>
 </div>
+<script
+  type="text/javascript">window.setTimeout("document.getElementById('successMessage').style.display='none';", 3000); </script>
