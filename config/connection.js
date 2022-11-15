@@ -12,7 +12,6 @@ module.exports.connect = (done)=>{
         done()
     }))
 
-    
 }
 
 module.exports.get = ()=>{
