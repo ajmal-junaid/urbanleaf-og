@@ -362,7 +362,9 @@ module.exports = {
                 invoiceNo: uid()
             }
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((response) => {
-                db.get().collection(collection.CART_COLLECTION).deleteOne({ user: objectId(order.userId) })
+                if (status=='placed'){
+                    db.get().collection(collection.CART_COLLECTION).deleteOne({ user: objectId(order.userId) })
+                }
                 resolve(response.insertedId)
             })
         })
@@ -736,6 +738,7 @@ module.exports = {
                         "multi": true
                     }
                 ).then((tt) => {
+                    //db.get().collection(collection.CART_COLLECTION).deleteOne({ user: objectId(order.userId) })
                     resolve()
                 })
         })
