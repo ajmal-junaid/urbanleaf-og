@@ -133,11 +133,10 @@ function returnOrder(ordId, proId) {
 let count = 0
 $("#checkout-form").submit((e) => {
   e.preventDefault()
+  addressSelect = document.querySelector('input[name="address-method"]:checked').value
+  paymentMethodS = document.querySelector('input[name="payment-method"]:checked').value
   if (count == 0) {
     count++
-    addressSelect = document.querySelector('input[name="address-method"]:checked').value
-    paymentMethodS = document.querySelector('input[name="payment-method"]:checked').value
-
     $.ajax({
       url: '/proceed-page',
       data: {
