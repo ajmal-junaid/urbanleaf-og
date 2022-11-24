@@ -34,8 +34,8 @@ module.exports = {
     getAllProducts: () => {
         return new Promise(async (resolve, reject) => {
             let products = await db.get().collection(collection.PRODUCT_COLLECTION).find().sort({
-                date
-                    : -1
+                date: -1
+                    
             }).toArray()
             resolve(products)
         })
