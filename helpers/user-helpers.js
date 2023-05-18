@@ -3,11 +3,9 @@ var collection = require('../config/collections')
 const bcrypt = require('bcrypt')
 const { response } = require('express')
 let { uid } = require('uid')
-const { NewKeyInstance } = require('twilio/lib/rest/api/v2010/account/newKey')
 var objectId = require('mongodb').ObjectId
 const paypal = require('paypal-rest-sdk');
 const Razorpay = require('razorpay');
-const { resolve } = require('node:path')
 var instance = new Razorpay({
     key_id: 'rzp_test_RQe2RaERuutCC1',
     key_secret: 'b4wOGlQREVbeZxvsoXtT0tLo',
